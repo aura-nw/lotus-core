@@ -3,9 +3,9 @@ package operator
 import (
 	"log/slog"
 
-	"github.com/aura-nw/bitcoin-bridge/bitcoin"
+	"github.com/aura-nw/bitcoin-bridge/clients/bitcoin"
+	"github.com/aura-nw/bitcoin-bridge/clients/evm"
 	"github.com/aura-nw/bitcoin-bridge/config"
-	"github.com/aura-nw/bitcoin-bridge/evm"
 )
 
 type Operator struct {

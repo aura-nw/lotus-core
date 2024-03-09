@@ -3,7 +3,7 @@ package bitcoin
 import (
 	"log/slog"
 
-	"github.com/aura-nw/bitcoin-bridge/bitcoin/rpc"
+	"github.com/aura-nw/bitcoin-bridge/clients/bitcoin/rpc"
 	"github.com/aura-nw/bitcoin-bridge/config"
 )
 
