@@ -14,6 +14,9 @@ operator:
 test:
 	go test -v ./...
 
+proto-gen:
+	bash ./scripts/protoc.sh protos/envelope.proto
+
 lint:
 	golangci-lint run ./...
 
@@ -21,4 +24,5 @@ lint:
 	bridge \
 	clean \
 	test \
-	lint
+	lint \
+	proto-gen

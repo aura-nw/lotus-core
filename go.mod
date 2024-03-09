@@ -5,6 +5,7 @@ go 1.21.7
 require (
 	github.com/ethereum/go-ethereum v1.13.14
 	github.com/stretchr/testify v1.8.4
+	google.golang.org/protobuf v1.27.1
 	gorm.io/driver/postgres v1.5.6
 	gorm.io/gorm v1.25.7
 )

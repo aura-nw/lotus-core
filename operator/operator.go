@@ -28,13 +28,13 @@ func NewOperator(logger *slog.Logger, config *config.OperatorConfig) (*Operator,
 }
 
 func (op *Operator) initClients() error {
-	bitcoinClient, err := bitcoin.NewClient(op.logger, op.config.BitcoinInfo)
+	bitcoinClient, err := bitcoin.NewClient(op.logger, op.config.Bitcoin)
 	if err != nil {
 		return err
 	}
 	op.bitcoinClient = bitcoinClient
 
-	evmClient, err := evm.NewClient(op.logger, op.config.EvmInfo)
+	evmClient, err := evm.NewClient(op.logger, op.config.Evm)
 	if err != nil {
 		return err
 	}

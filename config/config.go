@@ -1,26 +1,32 @@
 package config
 
 type BridgeConfig struct {
-	DBInfo      *DBInfo      `json:"db_info"`
-	BitcoinInfo *BitcoinInfo `json:"bitcoin_info"`
-	EvmInfo     *EvmInfo     `json:"evm_info"`
+	Server  *ServerInfo  `toml:"server"`
+	DB      *DBInfo      `toml:"db"`
+	Bitcoin *BitcoinInfo `toml:"bitcoin"`
+	Evm     *EvmInfo     `toml:"evm"`
 }
 
 type OperatorConfig struct {
-	BitcoinInfo *BitcoinInfo `json:"bitcoin_info"`
-	EvmInfo     *EvmInfo     `json:"evm_info"`
+	BrideUrl string       `toml:"bridge-url"`
+	Bitcoin  *BitcoinInfo `toml:"bitcoin"`
+	Evm      *EvmInfo     `toml:"evm"`
 }
 
 type EvmInfo struct {
-	Url     string
-	ChainId string
+	Url     string `toml:"url"`
+	ChainId string `toml:"chain-id"`
 }
 
 type BitcoinInfo struct {
-	Network  string
-	Host     string
-	User     string
-	Password string
+	Network  string `toml:"network"`
+	Host     string `toml:"host"`
+	User     string `toml:"user"`
+	Password string `toml:"password"`
+}
+
+type ServerInfo struct {
+	Port string `toml:"port"`
 }
 
 func GetBitcoinInfoTestnet() BitcoinInfo {

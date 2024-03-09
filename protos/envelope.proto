@@ -1,0 +1,46 @@
+syntax = "proto3";
+option go_package = "github.com/aura-nw/bitcoin-bridge/protos";
+
+package envelope;
+
+service EnvelopeService {
+  // Verify deposit side
+  rpc VerifyBitcoinDeposits(VerifyBitcoinDepositsRequest) returns (VerifyBitcoinDepositsResponse);
+  rpc VerifyTokenDeposits(VerifyTokenDepositsRequest) returns (VerifyTokenDepositsResponse);
+
+  // Verify withdrawal side
+  rpc VerifyBitcoinWithdrawals(VerifyBitcoinWithdrawalsRequest) returns (VerifyBitcoinWithdrawalsResponse);
+  rpc VerifyTokenWithdrawals(VerifyTokenWithdrawalsRequest) returns (VerifyTokenWithdrawalsResponse);
+}
+
+message VerifyBitcoinDepositsRequest {
+  uint64 height = 1;
+}
+
+message VerifyBitcoinDepositsResponse {
+  uint64 height = 1;
+}
+
+message VerifyTokenDepositsRequest{
+  uint64 height = 1;
+}
+
+message VerifyTokenDepositsResponse {
+  uint64 height = 1;
+}
+
+message VerifyBitcoinWithdrawalsRequest {
+  uint64 height = 1;
+}
+
+message VerifyBitcoinWithdrawalsResponse {
+  uint64 height = 1;
+}
+
+message VerifyTokenWithdrawalsRequest {
+  uint64 height = 1;
+}
+
+message VerifyTokenWithdrawalsResponse {
+  uint64 height = 1;
+}

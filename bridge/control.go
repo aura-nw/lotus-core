@@ -1,4 +1,4 @@
-package bridgectrl
+package bridge
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/aura-nw/bitcoin-bridge/database"
 )
 
-type BridgeControl struct {
+type Control struct {
 	ctx           context.Context
 	ctxCancel     context.CancelFunc
 	logger        *slog.Logger
@@ -24,21 +24,21 @@ func checkConfig(config *config.BridgeConfig) {
 	if config == nil {
 		panic("nil config")
 	}
-	if config.DBInfo == nil {
+	if config.DB == nil {
 		panic("nil db info")
 	}
-	if config.BitcoinInfo == nil {
+	if config.Bitcoin == nil {
 		panic("nil bitcoin info")
 	}
-	if config.EvmInfo == nil {
+	if config.Evm == nil {
 		panic("nil evm info")
 	}
 }
 
-func NewBridgeControl(ctx context.Context, logger *slog.Logger, config *config.BridgeConfig) (*BridgeControl, error) {
+func NewControl(ctx context.Context, logger *slog.Logger, config *config.BridgeConfig) (*Control, error) {
 	checkConfig(config)
 	ctx, ctxCancel := context.WithCancel(ctx)
-	bc := &BridgeControl{
+	bc := &Control{
 		logger:    logger,
 		config:    config,
 		ctx:       ctx,
@@ -58,30 +58,30 @@ func NewBridgeControl(ctx context.Context, logger *slog.Logger, config *config.B
 	return bc, nil
 }
 
-func (bc *BridgeControl) initDB() error {
-	db, err := database.NewDB(bc.ctx, bc.logger, bc.config.DBInfo)
+func (c *Control) initDB() error {
+	db, err := database.NewDB(c.ctx, c.logger, c.config.DB)
 	if err != nil {
 		return err
 	}
-	bc.db = db
+	c.db = db
 	return nil
 }
 
-func (bc *BridgeControl) initClients() error {
-	bitcoinClient, err := bitcoin.NewClient(bc.logger, bc.config.BitcoinInfo)
+func (c *Control) initClients() error {
+	bitcoinClient, err := bitcoin.NewClient(c.logger, c.config.Bitcoin)
 	if err != nil {
 		return err
 	}
-	bc.bitcoinClient = bitcoinClient
+	c.bitcoinClient = bitcoinClient
 
-	evmClient, err := evm.NewClient(bc.logger, bc.config.EvmInfo)
+	evmClient, err := evm.NewClient(c.logger, c.config.Evm)
 	if err != nil {
 		return err
 	}
-	bc.evmClient = evmClient
+	c.evmClient = evmClient
 
 	return nil
 }
 
-func (bc *BridgeControl) Start() {}
-func (bc *BridgeControl) Stop()  {}
+func (c *Control) Start() {}
+func (c *Control) Stop()  {}
