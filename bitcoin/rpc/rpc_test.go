@@ -5,10 +5,12 @@ import (
 	"testing"
 
 	"github.com/aura-nw/bitcoin-bridge/bitcoin/rpc"
+	"github.com/aura-nw/bitcoin-bridge/config"
 )
 
 func TestBasic(t *testing.T) {
-	rpcClient, err := rpc.NewClient("127.0.0.1:18332", "rpcuser", "rpcpass", slog.Default())
+	authInfo := config.GetBitcoinInfoTestnet()
+	rpcClient, err := rpc.NewClient(slog.Default(), authInfo.Host, authInfo.User, authInfo.Password)
 	if err != nil {
 		t.Fatal(err)
 	}

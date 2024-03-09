@@ -31,7 +31,7 @@ type Client struct {
 	c      *rpc.Client
 }
 
-func NewClient(host string, user string, password string, logger *slog.Logger) (*Client, error) {
+func NewClient(logger *slog.Logger, host string, user string, password string) (*Client, error) {
 	authFn := func(h http.Header) error {
 		auth := base64.StdEncoding.EncodeToString([]byte(user + ":" + password))
 		h.Set("Authorization", fmt.Sprintf("Basic %s", auth))

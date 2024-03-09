@@ -1,4 +1,4 @@
-package postgres
+package database
 
 import (
 	"context"
@@ -15,9 +15,12 @@ import (
 type DB struct {
 	logger *slog.Logger
 	gormDB *gorm.DB
+
+	BitcoinDB BitcoinDB
+	EvmDB     EvmDB
 }
 
-func NewDB(ctx context.Context, logger *slog.Logger, dbConfig config.DBConfig) (*DB, error) {
+func NewDB(ctx context.Context, logger *slog.Logger, dbConfig *config.DBInfo) (*DB, error) {
 	dsn := fmt.Sprintf("host=%s dbname=%s sslmode=disable", dbConfig.Host, dbConfig.Name)
 	if dbConfig.Port != 0 {
 		dsn += fmt.Sprintf(" port=%d", dbConfig.Port)
@@ -41,12 +44,16 @@ func NewDB(ctx context.Context, logger *slog.Logger, dbConfig config.DBConfig) (
 	}
 
 	gormDB, err := gorm.Open(postgres.Open(dsn), &gormConfig)
+	logger.Info("NewDB: opened gorm db")
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to database: %w", err)
 	}
 	return &DB{
 		logger: logger,
 		gormDB: gormDB,
+
+		BitcoinDB: newBitcoinDBImpl(logger, gormDB),
+		EvmDB:     newEvmDBImpl(logger, gormDB),
 	}, nil
 }
 

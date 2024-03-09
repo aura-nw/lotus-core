@@ -5,21 +5,23 @@ import (
 
 	"github.com/aura-nw/bitcoin-bridge/bitcoin/rpc"
 	"github.com/aura-nw/bitcoin-bridge/config"
-	btcecv2 "github.com/btcsuite/btcd/btcec/v2"
 )
 
 // Client defines Bitcoin client.
 type Client struct {
-	cfg     *config.Config
-	logger  *slog.Logger
-	rpc     *rpc.Client
-	pubKey  string
-	privKey *btcecv2.PrivateKey
+	info   *config.BitcoinInfo
+	logger *slog.Logger
+	rpc    *rpc.Client
 }
 
-func NewClient(cfg *config.Config, logger *slog.Logger) (*Client, error) {
+func NewClient(logger *slog.Logger, info *config.BitcoinInfo) (*Client, error) {
+	rpcClient, err := rpc.NewClient(logger, info.Host, info.Password, info.Password)
+	if err != nil {
+		return nil, err
+	}
 	return &Client{
-		cfg:    cfg,
+		info:   info,
 		logger: logger,
+		rpc:    rpcClient,
 	}, nil
 }
