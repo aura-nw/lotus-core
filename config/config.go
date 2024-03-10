@@ -1,21 +1,26 @@
 package config
 
 type BridgeConfig struct {
-	Server  *ServerInfo  `toml:"server"`
-	DB      *DBInfo      `toml:"db"`
-	Bitcoin *BitcoinInfo `toml:"bitcoin"`
-	Evm     *EvmInfo     `toml:"evm"`
+	Server  BridgeServer `toml:"server"`
+	DB      DBInfo       `toml:"db"`
+	Bitcoin BitcoinInfo  `toml:"bitcoin"`
+	Evm     EvmInfo      `toml:"evm"`
+	// List addresses of operators on EVM
+	EvmOperators []string `toml:"evm-operators"`
+	// Address of bitcoin multsig wallet
+	BitcoinMultisig string `toml:"bitcoin-multisig"`
 }
 
 type OperatorConfig struct {
-	BrideUrl string       `toml:"bridge-url"`
-	Bitcoin  *BitcoinInfo `toml:"bitcoin"`
-	Evm      *EvmInfo     `toml:"evm"`
+	Server    OperatorServer `toml:"server"`
+	BridgeUrl string         `toml:"bridge-url"`
+	Bitcoin   BitcoinInfo    `toml:"bitcoin"`
+	Evm       EvmInfo        `toml:"evm"`
 }
 
 type EvmInfo struct {
 	Url     string `toml:"url"`
-	ChainId string `toml:"chain-id"`
+	ChainID int64  `toml:"chain-id"`
 }
 
 type BitcoinInfo struct {
@@ -25,7 +30,11 @@ type BitcoinInfo struct {
 	Password string `toml:"password"`
 }
 
-type ServerInfo struct {
+type OperatorServer struct {
+	GrpcPort string `toml:"grpc-port"`
+}
+
+type BridgeServer struct {
 	Port string `toml:"port"`
 }
 

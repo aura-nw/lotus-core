@@ -20,23 +20,7 @@ type Control struct {
 	evmClient     *evm.Client
 }
 
-func checkConfig(config *config.BridgeConfig) {
-	if config == nil {
-		panic("nil config")
-	}
-	if config.DB == nil {
-		panic("nil db info")
-	}
-	if config.Bitcoin == nil {
-		panic("nil bitcoin info")
-	}
-	if config.Evm == nil {
-		panic("nil evm info")
-	}
-}
-
 func NewControl(ctx context.Context, logger *slog.Logger, config *config.BridgeConfig) (*Control, error) {
-	checkConfig(config)
 	ctx, ctxCancel := context.WithCancel(ctx)
 	bc := &Control{
 		logger:    logger,

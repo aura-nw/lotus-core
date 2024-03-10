@@ -12,7 +12,7 @@ import (
 
 func TestOpenDB(t *testing.T) {
 	dbConfig := config.DBConfigForTest()
-	db, err := database.NewDB(context.TODO(), slog.Default(), &dbConfig)
+	db, err := database.NewDB(context.TODO(), slog.Default(), dbConfig)
 	require.NoError(t, err)
 	t.Cleanup(func() { db.Close() })
 }

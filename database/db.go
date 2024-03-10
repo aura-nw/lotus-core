@@ -20,7 +20,7 @@ type DB struct {
 	EvmDB     EvmDB
 }
 
-func NewDB(ctx context.Context, logger *slog.Logger, dbConfig *config.DBInfo) (*DB, error) {
+func NewDB(ctx context.Context, logger *slog.Logger, dbConfig config.DBInfo) (*DB, error) {
 	dsn := fmt.Sprintf("host=%s dbname=%s sslmode=disable", dbConfig.Host, dbConfig.Name)
 	if dbConfig.Port != 0 {
 		dsn += fmt.Sprintf(" port=%d", dbConfig.Port)

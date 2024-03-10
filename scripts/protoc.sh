@@ -23,4 +23,4 @@ if test -z $gengo; then
   exit 1
 fi
 
-exec protoc --go_out=. --go_opt=paths=source_relative,Mgoogle/protobuf/timestamp.proto=google.golang.org/protobuf/types/known/timestamppb ${1+"$@"}
+exec protoc --go_out=. --go_opt=paths=source_relative,Mgoogle/protobuf/timestamp.proto=google.golang.org/protobuf/types/known/timestamppb --go-grpc_out=. --go-grpc_opt=paths=source_relative ${1+"$@"}
