@@ -20,27 +20,36 @@ type Operator struct {
 	logger *slog.Logger
 	config *config.OperatorConfig
 
-	grpcServer *grpc.Server
-
 	bitcoinClient *bitcoin.Client
 	evmClient     *evm.Client
+
+	// cache must thread-safe
+	cache BlockCache
 }
 
-func NewOperator(ctx context.Context, logger *slog.Logger, config *config.OperatorConfig) (*Operator, error) {
+func NewOperator(
+	ctx context.Context,
+	logger *slog.Logger,
+	config *config.OperatorConfig,
+	cache BlockCache,
+) (*Operator, error) {
 	ctx, ctxCancel := context.WithCancel(ctx)
 	op := &Operator{
 		ctx:       ctx,
 		ctxCancel: ctxCancel,
 		logger:    logger,
 		config:    config,
+		cache:     cache,
 	}
+
+	if err := op.initCache(); err != nil {
+		return nil, err
+	}
+
 	if err := op.initClients(); err != nil {
 		return nil, err
 	}
 
-	if err := op.initServer(); err != nil {
-		return nil, err
-	}
 	return op, nil
 }
 
@@ -60,29 +69,33 @@ func (op *Operator) initClients() error {
 	return nil
 }
 
-func (op *Operator) initServer() error {
+func (op *Operator) runGrpcServer() {
 	grpcServer := grpc.NewServer()
-	protos.RegisterEnvelopeServiceServer(grpcServer, &envelopeServiceImpl{})
 
+	go func() {
+		<-op.ctx.Done()
+		grpcServer.GracefulStop()
+	}()
+
+	protos.RegisterEnvelopeServiceServer(grpcServer, &envelopeServiceImpl{})
 	grpc_health_v1.RegisterHealthServer(grpcServer, &healthCheckImpl{})
 
-	op.grpcServer = grpcServer
+	lis, err := net.Listen("tcp", ":"+op.config.Server.GrpcPort)
+	if err != nil {
+		panic(err)
+	}
+	if err := grpcServer.Serve(lis); err != nil {
+		panic(err)
+	}
+}
 
+func (op *Operator) initCache() error {
 	return nil
 }
 
 func (op *Operator) Start() {
-	lis, err := net.Listen("tcp", ":"+op.config.Server.GrpcPort)
-	if err != nil {
-		op.logger.Error("Start: bind listener falied", "err", err)
-		panic(err)
-	}
-	if err := op.grpcServer.Serve(lis); err != nil {
-		op.logger.Error("Start: serving grpc failed", "err", err)
-		panic(err)
-	}
+	go op.runGrpcServer()
 }
 func (op *Operator) Stop() {
-	op.grpcServer.GracefulStop()
 	op.ctxCancel()
 }
