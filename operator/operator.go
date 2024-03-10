@@ -77,7 +77,10 @@ func (op *Operator) Start() {
 		op.logger.Error("Start: bind listener falied", "err", err)
 		panic(err)
 	}
-	op.grpcServer.Serve(lis)
+	if err := op.grpcServer.Serve(lis); err != nil {
+		op.logger.Error("Start: serving grpc failed", "err", err)
+		panic(err)
+	}
 }
 func (op *Operator) Stop() {
 	op.grpcServer.GracefulStop()
