@@ -5,10 +5,10 @@ import (
 	"log/slog"
 	"net"
 
-	"github.com/aura-nw/bitcoin-bridge/clients/bitcoin"
-	"github.com/aura-nw/bitcoin-bridge/clients/evm"
-	"github.com/aura-nw/bitcoin-bridge/config"
-	"github.com/aura-nw/bitcoin-bridge/protos"
+	"github.com/aura-nw/btc-bridge/clients/bitcoin"
+	"github.com/aura-nw/btc-bridge/clients/evm"
+	"github.com/aura-nw/btc-bridge/config"
+	"github.com/aura-nw/btc-bridge/protos"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"
 )

@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/aura-nw/bitcoin-bridge/config"
+	"github.com/aura-nw/btc-bridge/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

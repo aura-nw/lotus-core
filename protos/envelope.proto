@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package = "github.com/aura-nw/bitcoin-bridge/protos";
+option go_package = "github.com/aura-nw/btc-bridge/protos";
 
 package envelope;
 

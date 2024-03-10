@@ -4,10 +4,10 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/aura-nw/bitcoin-bridge/clients/bitcoin"
-	"github.com/aura-nw/bitcoin-bridge/clients/evm"
-	"github.com/aura-nw/bitcoin-bridge/config"
-	"github.com/aura-nw/bitcoin-bridge/database"
+	"github.com/aura-nw/btc-bridge/clients/bitcoin"
+	"github.com/aura-nw/btc-bridge/clients/evm"
+	"github.com/aura-nw/btc-bridge/config"
+	"github.com/aura-nw/btc-bridge/database"
 )
 
 type Control struct {

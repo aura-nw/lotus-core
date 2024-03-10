@@ -5,8 +5,8 @@ import (
 	"log/slog"
 	"testing"
 
-	"github.com/aura-nw/bitcoin-bridge/config"
-	"github.com/aura-nw/bitcoin-bridge/database"
+	"github.com/aura-nw/btc-bridge/config"
+	"github.com/aura-nw/btc-bridge/database"
 	"github.com/stretchr/testify/require"
 )
 

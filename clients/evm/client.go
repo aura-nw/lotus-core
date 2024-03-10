@@ -3,7 +3,7 @@ package evm
 import (
 	"log/slog"
 
-	"github.com/aura-nw/bitcoin-bridge/config"
+	"github.com/aura-nw/btc-bridge/config"
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 

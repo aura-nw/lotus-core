@@ -3,8 +3,8 @@ package bitcoin
 import (
 	"log/slog"
 
-	"github.com/aura-nw/bitcoin-bridge/clients/bitcoin/rpc"
-	"github.com/aura-nw/bitcoin-bridge/config"
+	"github.com/aura-nw/btc-bridge/clients/bitcoin/rpc"
+	"github.com/aura-nw/btc-bridge/config"
 )
 
 // Client defines Bitcoin client.

@@ -3,7 +3,7 @@ package operator
 import (
 	"context"
 
-	"github.com/aura-nw/bitcoin-bridge/protos"
+	"github.com/aura-nw/btc-bridge/protos"
 )
 
 type envelopeServiceImpl struct {
