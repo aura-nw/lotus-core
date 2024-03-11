@@ -84,6 +84,7 @@ func (op *Operator) runGrpcServer() {
 	if err != nil {
 		panic(err)
 	}
+	op.logger.Info("Start serving grpc server", "addr", lis.Addr().String())
 	if err := grpcServer.Serve(lis); err != nil {
 		panic(err)
 	}
@@ -94,8 +95,10 @@ func (op *Operator) initCache() error {
 }
 
 func (op *Operator) Start() {
+	op.logger.Info("Starting operator service")
 	go op.runGrpcServer()
 }
 func (op *Operator) Stop() {
+	op.logger.Info("Stopping operator service")
 	op.ctxCancel()
 }

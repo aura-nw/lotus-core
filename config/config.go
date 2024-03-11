@@ -16,10 +16,9 @@ type OperatorInfo struct {
 }
 
 type OperatorConfig struct {
-	Server    OperatorServer `toml:"server"`
-	BridgeUrl string         `toml:"bridge-url"`
-	Bitcoin   BitcoinInfo    `toml:"bitcoin"`
-	Evm       EvmInfo        `toml:"evm"`
+	Server  OperatorServer `toml:"server"`
+	Bitcoin BitcoinInfo    `toml:"bitcoin"`
+	Evm     EvmInfo        `toml:"evm"`
 }
 
 type EvmInfo struct {

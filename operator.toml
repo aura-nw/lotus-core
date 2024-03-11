@@ -1,0 +1,17 @@
+# Server configuration
+[server]
+grpc-port = "5055"
+
+# Bitcoin configuration
+[bitcoin]
+network = "testnet3"           # Or "mainnet"
+host = "103.154.187.179:18332" # Replace with the Bitcoin node host
+user = "user"                  # Replace with the Bitcoin node user
+password = "123@abcD"          # Replace with the Bitcoin node password
+interval = 60                  # Check interval in seconds
+
+# EVM configuration
+[evm]
+url = "http://localhost:8545" # Replace with the EVM node URL
+chain-id = 1                  # Replace with the EVM chain ID
+interval = 30                 # Check interval in seconds
