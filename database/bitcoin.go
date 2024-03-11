@@ -16,8 +16,8 @@ type BitcoinDB interface {
 	ChainView
 
 	// For BTC transfer
-	StoreBTCDeposits([]types.BtcDeposit) error
-	StoreBTCWithdrawals() error
+	StoreBtcDeposits([]types.BtcDeposit) error
+	StoreBtcWithdrawals() error
 
 	// For incriptions transfer
 	StoreTokenDeposits() error
@@ -36,13 +36,13 @@ func (b *bitcoinDBImpl) GetLastSeenHeight() (int64, error) {
 	panic("unimplemented")
 }
 
-// StoreBTCDeposits implements BitcoinDB.
-func (b *bitcoinDBImpl) StoreBTCDeposits(deposits []types.BtcDeposit) error {
+// StoreBtcDeposits implements BitcoinDB.
+func (b *bitcoinDBImpl) StoreBtcDeposits(deposits []types.BtcDeposit) error {
 	panic("unimplemented")
 }
 
-// StoreBTCWithdrawals implements BitcoinDB.
-func (b *bitcoinDBImpl) StoreBTCWithdrawals() error {
+// StoreBtcWithdrawals implements BitcoinDB.
+func (b *bitcoinDBImpl) StoreBtcWithdrawals() error {
 	panic("unimplemented")
 }
 

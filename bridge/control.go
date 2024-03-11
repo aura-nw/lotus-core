@@ -113,7 +113,7 @@ func (c *Control) watchBitcoin() {
 				c.logger.Error("watchBitcoin: get btc deposits from btc client failed", "err", err)
 				continue
 			}
-			if err := c.BitcoinDB().StoreBTCDeposits(btcDeposits); err != nil {
+			if err := c.BitcoinDB().StoreBtcDeposits(btcDeposits); err != nil {
 				c.logger.Error("watchBitcoin: store btc deposits failed", "err", err)
 				continue
 			}
