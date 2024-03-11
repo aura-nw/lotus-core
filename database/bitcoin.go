@@ -3,11 +3,12 @@ package database
 import (
 	"log/slog"
 
+	"github.com/aura-nw/btc-bridge/types"
 	"gorm.io/gorm"
 )
 
 type ChainView interface {
-	GetLastSeenHeight() (uint64, error)
+	GetLastSeenHeight() (int64, error)
 }
 
 type BitcoinDB interface {
@@ -15,7 +16,7 @@ type BitcoinDB interface {
 	ChainView
 
 	// For BTC transfer
-	StoreBTCDeposits() error
+	StoreBTCDeposits([]types.BtcDeposit) error
 	StoreBTCWithdrawals() error
 
 	// For incriptions transfer
@@ -31,12 +32,12 @@ type bitcoinDBImpl struct {
 var _ BitcoinDB = &bitcoinDBImpl{}
 
 // GetLastSeenHeight implements BitcoinDB.
-func (b *bitcoinDBImpl) GetLastSeenHeight() (uint64, error) {
+func (b *bitcoinDBImpl) GetLastSeenHeight() (int64, error) {
 	panic("unimplemented")
 }
 
 // StoreBTCDeposits implements BitcoinDB.
-func (b *bitcoinDBImpl) StoreBTCDeposits() error {
+func (b *bitcoinDBImpl) StoreBTCDeposits(deposits []types.BtcDeposit) error {
 	panic("unimplemented")
 }
 

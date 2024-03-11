@@ -1,14 +1,18 @@
 package config
 
 type BridgeConfig struct {
-	Server  BridgeServer `toml:"server"`
-	DB      DBInfo       `toml:"db"`
-	Bitcoin BitcoinInfo  `toml:"bitcoin"`
-	Evm     EvmInfo      `toml:"evm"`
-	// List addresses of operators on EVM
-	EvmOperators []string `toml:"evm-operators"`
+	Server    BridgeServer   `toml:"server"`
+	DB        DBInfo         `toml:"db"`
+	Bitcoin   BitcoinInfo    `toml:"bitcoin"`
+	Evm       EvmInfo        `toml:"evm"`
+	Operators []OperatorInfo `toml:"operators"`
 	// Address of bitcoin multsig wallet
 	BitcoinMultisig string `toml:"bitcoin-multisig"`
+}
+
+type OperatorInfo struct {
+	EvmAddress string `toml:"evm-address"`
+	GrpcUrl    string `toml:"grpc-url"`
 }
 
 type OperatorConfig struct {
@@ -19,8 +23,9 @@ type OperatorConfig struct {
 }
 
 type EvmInfo struct {
-	Url     string `toml:"url"`
-	ChainID int64  `toml:"chain-id"`
+	Url      string `toml:"url"`
+	ChainID  int64  `toml:"chain-id"`
+	Interval int64  `toml:"interval"`
 }
 
 type BitcoinInfo struct {
@@ -28,6 +33,7 @@ type BitcoinInfo struct {
 	Host     string `toml:"host"`
 	User     string `toml:"user"`
 	Password string `toml:"password"`
+	Interval int64  `toml:"interval"`
 }
 
 type OperatorServer struct {

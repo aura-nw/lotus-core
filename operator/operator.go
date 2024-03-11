@@ -20,8 +20,8 @@ type Operator struct {
 	logger *slog.Logger
 	config *config.OperatorConfig
 
-	bitcoinClient *bitcoin.Client
-	evmClient     *evm.Client
+	btcClient bitcoin.Client
+	evmClient *evm.Client
 
 	// cache must thread-safe
 	cache BlockCache
@@ -54,11 +54,11 @@ func NewOperator(
 }
 
 func (op *Operator) initClients() error {
-	bitcoinClient, err := bitcoin.NewClient(op.logger, op.config.Bitcoin)
+	btcClient, err := bitcoin.NewClient(op.logger, op.config.Bitcoin)
 	if err != nil {
 		return err
 	}
-	op.bitcoinClient = bitcoinClient
+	op.btcClient = btcClient
 
 	evmClient, err := evm.NewClient(op.logger, op.config.Evm)
 	if err != nil {
