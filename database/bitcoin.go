@@ -35,8 +35,7 @@ var _ BitcoinDB = &bitcoinDBImpl{}
 // GetLastSeenHeight implements BitcoinDB.
 func (b *bitcoinDBImpl) GetLastSeenHeight() (int64, error) {
 	var lastHeight int64
-	var err error
-	err = b.db.Model(&types.BtcDeposit{}).Select("max(height)").Scan(&lastHeight).Error
+	err := b.db.Model(&types.BtcDeposit{}).Select("max(height)").Scan(&lastHeight).Error
 	return lastHeight, err
 }
 
