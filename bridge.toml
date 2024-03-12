@@ -1,0 +1,30 @@
+[server]
+port = "8080"
+
+[db]
+# Add your DB configuration here
+
+[bitcoin]
+network = "tesnet3"
+host = "localhost:18332"
+user = "aurauser"
+password = "aurapassword"
+interval = 60
+
+[evm]
+url = "https://your-evm-node-url.com"
+chain-id = 1
+interval = 30
+
+[[operators]]
+evm-address = "0xYourEvmAddress1"
+grpc-url = "https://your-operator-grpc-url1.com"
+
+[[operators]]
+evm-address = "0xYourEvmAddress2"
+grpc-url = "https://your-operator-grpc-url2.com"
+
+# Add more operators if needed
+
+# Address of bitcoin multsig wallet
+bitcoin-multisig = "3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy"
