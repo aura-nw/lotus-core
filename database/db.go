@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/aura-nw/btc-bridge/config"
+	"github.com/aura-nw/btc-bridge/types"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -44,10 +45,16 @@ func NewDB(ctx context.Context, logger *slog.Logger, dbConfig config.DBInfo) (*D
 	}
 
 	gormDB, err := gorm.Open(postgres.Open(dsn), &gormConfig)
-	logger.Info("NewDB: opened gorm db")
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to database: %w", err)
 	}
+	logger.Info("NewDB: opened gorm db")
+
+	// Auto migrations
+	if err := autoMigrate(gormDB); err != nil {
+		return nil, fmt.Errorf("auto migrate failed: %w", err)
+	}
+
 	return &DB{
 		logger: logger,
 		gormDB: gormDB,
@@ -55,6 +62,15 @@ func NewDB(ctx context.Context, logger *slog.Logger, dbConfig config.DBInfo) (*D
 		BitcoinDB: newBitcoinDBImpl(logger, gormDB),
 		EvmDB:     newEvmDBImpl(logger, gormDB),
 	}, nil
+}
+
+func autoMigrate(gormDB *gorm.DB) error {
+	return gormDB.AutoMigrate(
+		&types.BtcDeposit{},
+		&types.BtcWithdrawal{},
+		&types.InscriptionDeposit{},
+		&types.InscriptionWithdrawal{},
+	)
 }
 
 func (db *DB) ExecuteSQLMigration(migrationsFolder string) error {
