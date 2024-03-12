@@ -65,7 +65,7 @@ func DBConfigForTest() DBInfo {
 	return DBInfo{
 		Host:     "127.0.0.1",
 		Port:     5432,
-		Name:     "bitcoin-bridge",
+		Name:     "btc-bridge",
 		User:     "aurauser",
 		Password: "aurapassword",
 	}
