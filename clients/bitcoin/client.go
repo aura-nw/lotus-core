@@ -12,7 +12,7 @@ import (
 // Client defines Bitcoin client.
 type Client interface {
 	GetBtcDeposits(height int64, filterAddr string) ([]types.BtcDeposit, error)
-	GetTokenDeposits(height int64, filterAddr string) ([]types.TokenDeposit, error)
+	GetTokenDeposits(height int64, filterAddr string) ([]types.InscriptionDeposit, error)
 }
 
 type clientImpl struct {
@@ -66,7 +66,7 @@ func (c *clientImpl) GetBtcDeposits(height int64, filterAddr string) ([]types.Bt
 	return results, nil
 }
 
-func (c *clientImpl) GetTokenDeposits(height int64, filterAddr string) ([]types.TokenDeposit, error) {
-	var results []types.TokenDeposit
+func (c *clientImpl) GetTokenDeposits(height int64, filterAddr string) ([]types.InscriptionDeposit, error) {
+	var results []types.InscriptionDeposit
 	return results, nil
 }
