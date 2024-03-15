@@ -8,6 +8,10 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+const (
+	defaultBatchSize = 100
+)
+
 type ChainView interface {
 	GetLastSeenHeight() (int64, error)
 }
@@ -44,28 +48,28 @@ func (b *bitcoinDBImpl) GetLastSeenHeight() (int64, error) {
 func (b *bitcoinDBImpl) StoreBtcDeposits(deposits []types.BtcDeposit) error {
 	return b.db.Clauses(clause.OnConflict{
 		UpdateAll: true,
-	}).Create(&deposits).Error
+	}).CreateInBatches(&deposits, defaultBatchSize).Error
 }
 
 // StoreBtcWithdrawals implements BitcoinDB.
 func (b *bitcoinDBImpl) StoreBtcWithdrawals(withdrawals []types.BtcWithdrawal) error {
 	return b.db.Clauses(clause.OnConflict{
 		UpdateAll: true,
-	}).Create(&withdrawals).Error
+	}).CreateInBatches(&withdrawals, defaultBatchSize).Error
 }
 
 // StoreInscriptionDeposits implements BitcoinDB.
 func (b *bitcoinDBImpl) StoreInscriptionDeposits(deposits []types.InscriptionDeposit) error {
 	return b.db.Clauses(clause.OnConflict{
 		UpdateAll: true,
-	}).Create(&deposits).Error
+	}).CreateInBatches(&deposits, defaultBatchSize).Error
 }
 
 // StoreInscriptionWithdrawals implements BitcoinDB.
 func (b *bitcoinDBImpl) StoreInscriptionWithdrawals(withdrawals []types.InscriptionWithdrawal) error {
 	return b.db.Clauses(clause.OnConflict{
 		UpdateAll: true,
-	}).Create(&withdrawals).Error
+	}).CreateInBatches(&withdrawals, defaultBatchSize).Error
 }
 
 func newBitcoinDBImpl(logger *slog.Logger, db *gorm.DB) BitcoinDB {

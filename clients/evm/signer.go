@@ -76,7 +76,7 @@ func (cs *ContractSigner) CreateIncomingInvoice(utxo string, amount *big.Int, re
 }
 
 func SignMsg(privateKey *ecdsa.PrivateKey, msg []byte) ([]byte, error) {
-	// Hash the data (using Keccak-256)
+	// Hash the data using Keccak-256
 	hash := crypto.Keccak256Hash(msg)
 	sig, err := crypto.Sign(hash.Bytes(), privateKey)
 	if err != nil {
@@ -86,7 +86,7 @@ func SignMsg(privateKey *ecdsa.PrivateKey, msg []byte) ([]byte, error) {
 }
 
 func VerifySig(publicKey *ecdsa.PublicKey, msg []byte, sig []byte) (bool, error) {
-	// Hash the data (using Keccak-256)
+	// Hash the data using Keccak-256
 	hash := crypto.Keccak256Hash(msg)
 
 	// Verify the signature

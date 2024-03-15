@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/aura-nw/btc-bridge/clients/bitcoin"
@@ -17,15 +18,16 @@ import (
 )
 
 type Control struct {
-	ctx       context.Context
-	ctxCancel context.CancelFunc
-	logger    *slog.Logger
-	config    *config.BridgeConfig
-	db        *database.DB
-	btcClient bitcoin.Client
-	evmClient *evm.Client
-	envelopes map[string]protos.EnvelopeServiceClient
-	wg        sync.WaitGroup
+	ctx           context.Context
+	ctxCancel     context.CancelFunc
+	logger        *slog.Logger
+	config        *config.BridgeConfig
+	db            *database.DB
+	btcClient     bitcoin.Client
+	evmClient     *evm.Client
+	envelopes     map[string]protos.EnvelopeServiceClient
+	lastHeightBtc atomic.Int64
+	wg            sync.WaitGroup
 }
 
 func NewControl(ctx context.Context, logger *slog.Logger, config *config.BridgeConfig) (*Control, error) {
@@ -50,6 +52,13 @@ func NewControl(ctx context.Context, logger *slog.Logger, config *config.BridgeC
 		logger.Error("init envelope client failed", "err", err)
 		return nil, err
 	}
+
+	lastHeightBtc, err := c.BitcoinDB().GetLastSeenHeight()
+	if err != nil {
+		logger.Error("get last seen height from bitcoin db failed", "err", err)
+		return nil, err
+	}
+	c.lastHeightBtc.Store(lastHeightBtc)
 
 	return c, nil
 }
@@ -103,37 +112,33 @@ func (c *Control) watchBitcoin() {
 			c.logger.Info("watchBitcoin: context done")
 			return
 		case <-ticker.C:
-			lastHeight, err := c.BitcoinDB().GetLastSeenHeight()
-			if err != nil {
-				c.logger.Error("watchBitcoin: get last seen heigth from database failed", "err", err)
-				time.Sleep(1 * time.Second)
-				continue
-			}
-			c.logger.Info("watchBitcoin: get btc deposits", "height", lastHeight)
-			btcDeposits, err := c.btcClient.GetBtcDeposits(lastHeight, c.config.BitcoinMultisig)
+			c.logger.Info("watchBitcoin: get btc deposits", "height", c.lastHeightBtc.Load())
+			btcDeposits, err := c.btcClient.GetBtcDeposits(c.lastHeightBtc.Load(), c.config.BitcoinMultisig)
 			if err != nil {
 				c.logger.Error("watchBitcoin: get btc deposits from btc client failed", "err", err)
 				time.Sleep(1 * time.Second)
 				continue
 			}
 			if len(btcDeposits) == 0 {
-				c.logger.Info("watchBitcoin: not found btc deposits", "height", lastHeight)
+				c.logger.Info("watchBitcoin: not found btc deposits", "height", c.lastHeightBtc.Load())
 				time.Sleep(1 * time.Second)
 				continue
 			}
-			c.logger.Info("watchBitcoin: found btc deposits", "height", lastHeight, "len", len(btcDeposits))
+			c.logger.Info("watchBitcoin: found btc deposits", "height", c.lastHeightBtc.Load(), "len", len(btcDeposits))
 			if err := c.BitcoinDB().StoreBtcDeposits(btcDeposits); err != nil {
 				c.logger.Error("watchBitcoin: store btc deposits failed", "err", err)
 				time.Sleep(1 * time.Second)
 				continue
 			}
 
-			c.logger.Info("watchBitcoin: requestEnvelopesAndWait", "height", lastHeight)
-			if err := c.requestEnvelopesAndWait(lastHeight); err != nil {
+			c.logger.Info("watchBitcoin: requestEnvelopesAndWait", "height", c.lastHeightBtc.Load())
+			if err := c.requestEnvelopesAndWait(c.lastHeightBtc.Load()); err != nil {
 				c.logger.Error("watchBitcoin: store btc deposits failed", "err", err)
 				time.Sleep(1 * time.Second)
 				continue
 			}
+
+			c.lastHeightBtc.Add(1)
 
 			// build create invoice tx and send throught eth client
 		}

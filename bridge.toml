@@ -22,7 +22,7 @@ interval = 30
 
 [[operators]]
 evm-address = "0xYourEvmAddress1"
-grpc-url = "localhost:5055"
+grpc-url = "127.0.0.1:5055"
 
 # [[operators]]
 # evm-address = "0xYourEvmAddress2"

@@ -24,7 +24,7 @@ type clientImpl struct {
 var _ Client = &clientImpl{}
 
 func NewClient(logger *slog.Logger, info config.BitcoinInfo) (Client, error) {
-	rpcClient, err := rpc.NewClient(logger, info.Host, info.Password, info.Password)
+	rpcClient, err := rpc.NewClient(logger, info.Host, info.User, info.Password)
 	if err != nil {
 		return nil, err
 	}
