@@ -14,33 +14,41 @@ service EnvelopeService {
 }
 
 message VerifyBitcoinDepositsRequest {
-  uint64 height = 1;
+  int64 height = 1;
 }
 
 message VerifyBitcoinDepositsResponse {
-  uint64 height = 1;
+  int64 height = 1;
+  string signature = 2;
+  string address = 3;
 }
 
 message VerifyTokenDepositsRequest{
-  uint64 height = 1;
+  int64 height = 1;
 }
 
 message VerifyTokenDepositsResponse {
-  uint64 height = 1;
+  int64 height = 1;
+  string signature = 2;
+  string address = 3;
 }
 
 message VerifyBitcoinWithdrawalsRequest {
-  uint64 height = 1;
+  int64 height = 1;
 }
 
 message VerifyBitcoinWithdrawalsResponse {
-  uint64 height = 1;
+  int64 height = 1;
+  string signature = 2;
+  string address = 3;
 }
 
 message VerifyTokenWithdrawalsRequest {
-  uint64 height = 1;
+  int64 height = 1;
 }
 
 message VerifyTokenWithdrawalsResponse {
-  uint64 height = 1;
+  int64 height = 1;
+  string signature = 2;
+  string address = 3;
 }

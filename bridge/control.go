@@ -2,6 +2,7 @@ package bridge
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"sync"
 	"time"
@@ -35,7 +36,6 @@ func NewControl(ctx context.Context, logger *slog.Logger, config *config.BridgeC
 		ctx:       ctx,
 		ctxCancel: ctxCancel,
 	}
-
 	if err := c.initClients(); err != nil {
 		logger.Error("init clients failed", "err", err)
 		return nil, err
@@ -94,32 +94,75 @@ func (c *Control) initEnvelopeClient() error {
 func (c *Control) watchBitcoin() {
 	defer c.wg.Done()
 
-	ticker := time.NewTicker(time.Duration(c.config.Bitcoin.Interval))
+	ticker := time.NewTicker(time.Duration(c.config.Bitcoin.Interval) * time.Second)
 	defer ticker.Stop()
 
 	for {
 		select {
 		case <-c.ctx.Done():
-			c.logger.Info("watch bitcoin: context done")
+			c.logger.Info("watchBitcoin: context done")
 			return
 		case <-ticker.C:
 			lastHeight, err := c.BitcoinDB().GetLastSeenHeight()
 			if err != nil {
 				c.logger.Error("watchBitcoin: get last seen heigth from database failed", "err", err)
+				time.Sleep(1 * time.Second)
 				continue
 			}
+			c.logger.Info("watchBitcoin: get btc deposits", "height", lastHeight)
 			btcDeposits, err := c.btcClient.GetBtcDeposits(lastHeight, c.config.BitcoinMultisig)
 			if err != nil {
 				c.logger.Error("watchBitcoin: get btc deposits from btc client failed", "err", err)
+				time.Sleep(1 * time.Second)
 				continue
 			}
+			if len(btcDeposits) == 0 {
+				c.logger.Info("watchBitcoin: not found btc deposits", "height", lastHeight)
+				time.Sleep(1 * time.Second)
+				continue
+			}
+			c.logger.Info("watchBitcoin: found btc deposits", "height", lastHeight, "len", len(btcDeposits))
 			if err := c.BitcoinDB().StoreBtcDeposits(btcDeposits); err != nil {
 				c.logger.Error("watchBitcoin: store btc deposits failed", "err", err)
+				time.Sleep(1 * time.Second)
 				continue
 			}
+
+			c.logger.Info("watchBitcoin: requestEnvelopesAndWait", "height", lastHeight)
+			if err := c.requestEnvelopesAndWait(lastHeight); err != nil {
+				c.logger.Error("watchBitcoin: store btc deposits failed", "err", err)
+				time.Sleep(1 * time.Second)
+				continue
+			}
+
+			// build create invoice tx and send throught eth client
 		}
 	}
+}
 
+func (c *Control) requestEnvelopesAndWait(height int64) error {
+	if len(c.envelopes) == 0 {
+		return fmt.Errorf("no envelopes")
+	}
+	var wg sync.WaitGroup
+	wg.Add(len(c.envelopes))
+	for _, envelope := range c.envelopes {
+		ctx := c.ctx
+		envelope := envelope
+		go func() {
+			defer wg.Done()
+			resp, err := envelope.VerifyBitcoinDeposits(ctx, &protos.VerifyBitcoinDepositsRequest{
+				Height: height,
+			})
+			if err != nil {
+				c.logger.Error("verify bitcoin deposits failed", "height", height, "err", err)
+				return
+			}
+			c.logger.Info("verify bitcoin deposits response", "resp", resp.String())
+		}()
+	}
+	wg.Wait()
+	return nil
 }
 
 func (c *Control) watchEvm() {

@@ -2,29 +2,33 @@
 port = "8080"
 
 [db]
-# Add your DB configuration here
+host = "localhost"
+post = 5432
+name = "btc-bridge"
+user = "aurauser"
+password = "aurapassword"
 
 [bitcoin]
 network = "tesnet3"
-host = "localhost:18332"
-user = "aurauser"
-password = "aurapassword"
-interval = 60
+host = "103.154.187.179:18332"
+user = "user"
+password = "123@abcD"
+interval = 10
 
 [evm]
-url = "https://your-evm-node-url.com"
+url = "https://evmos-testnet-jsonrpc.alkadeta.com"
 chain-id = 1
 interval = 30
 
 [[operators]]
 evm-address = "0xYourEvmAddress1"
-grpc-url = "https://your-operator-grpc-url1.com"
+grpc-url = "localhost:5055"
 
-[[operators]]
-evm-address = "0xYourEvmAddress2"
-grpc-url = "https://your-operator-grpc-url2.com"
+# [[operators]]
+# evm-address = "0xYourEvmAddress2"
+# grpc-url = "https://your-operator-grpc-url2.com"
 
 # Add more operators if needed
 
 # Address of bitcoin multsig wallet
-bitcoin-multisig = "3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy"
+bitcoin-multisig = "tb1qqgnkrkhkeql9n2ear5z2c3t49496t6ca0r5ckj"

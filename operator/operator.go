@@ -25,6 +25,8 @@ type Operator struct {
 
 	// cache must thread-safe
 	cache BlockCache
+
+	evmAddr string
 }
 
 func NewOperator(
@@ -77,7 +79,7 @@ func (op *Operator) runGrpcServer() {
 		grpcServer.GracefulStop()
 	}()
 
-	protos.RegisterEnvelopeServiceServer(grpcServer, &envelopeServiceImpl{})
+	protos.RegisterEnvelopeServiceServer(grpcServer, NewEnvelopeServiceImpl(op))
 	grpc_health_v1.RegisterHealthServer(grpcServer, &healthCheckImpl{})
 
 	lis, err := net.Listen("tcp", ":"+op.config.Server.GrpcPort)
@@ -101,4 +103,8 @@ func (op *Operator) Start() {
 func (op *Operator) Stop() {
 	op.logger.Info("Stopping operator service")
 	op.ctxCancel()
+}
+
+func (op *Operator) EvmAddr() string {
+	return op.evmAddr
 }

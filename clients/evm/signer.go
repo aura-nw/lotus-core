@@ -20,13 +20,13 @@ type ContractSigner struct {
 	client *Client
 
 	// Contracts
-	AuraWrappedBitcoin *contracts.AuraWrappedBitcoin
-	Gateway            *contracts.Gateway
+	WBitcoin *contracts.AuraWrappedBitcoin
+	Gateway  *contracts.Gateway
 }
 
 type ContractInfo struct {
-	AuraWrappedBitcoinAddress common.Address
-	GatewayAddress            common.Address
+	WBitcoinAddr common.Address
+	GatewayAddr  common.Address
 }
 
 func NewContractSigner(
@@ -46,27 +46,27 @@ func NewContractSigner(
 		return nil, err
 	}
 
-	wbtcContract, err := contracts.NewAuraWrappedBitcoin(info.AuraWrappedBitcoinAddress, c.client)
+	wbtcContract, err := contracts.NewAuraWrappedBitcoin(info.WBitcoinAddr, c.client)
 	if err != nil {
 		return nil, err
 	}
-	gatewayContract, err := contracts.NewGateway(info.GatewayAddress, c.client)
+	gatewayContract, err := contracts.NewGateway(info.GatewayAddr, c.client)
 	if err != nil {
 		return nil, err
 	}
 
 	return &ContractSigner{
-		logger:             logger,
-		sender:             crypto.PubkeyToAddress(*publicKeyECDSA),
-		auth:               auth,
-		client:             c,
-		AuraWrappedBitcoin: wbtcContract,
-		Gateway:            gatewayContract,
+		logger:   logger,
+		sender:   crypto.PubkeyToAddress(*publicKeyECDSA),
+		auth:     auth,
+		client:   c,
+		WBitcoin: wbtcContract,
+		Gateway:  gatewayContract,
 	}, nil
 }
 
-func (cs *ContractSigner) CreateIncomingInvoice() error {
-	tx, err := cs.Gateway.CreateIncomingInvoice(cs.auth, "", big.NewInt(0), common.Address{})
+func (cs *ContractSigner) CreateIncomingInvoice(utxo string, amount *big.Int, recipient common.Address) error {
+	tx, err := cs.Gateway.CreateIncomingInvoice(cs.auth, utxo, amount, recipient)
 	if err != nil {
 		cs.logger.Error("CreateIncomingInvoice failed", "err", err)
 		return err
