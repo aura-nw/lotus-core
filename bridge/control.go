@@ -112,27 +112,28 @@ func (c *Control) watchBitcoin() {
 			c.logger.Info("watchBitcoin: context done")
 			return
 		case <-ticker.C:
-			c.logger.Info("watchBitcoin: get btc deposits", "height", c.lastHeightBtc.Load())
-			btcDeposits, err := c.btcClient.GetBtcDeposits(c.lastHeightBtc.Load(), c.config.BitcoinMultisig)
+			height := c.lastHeightBtc.Load()
+			c.logger.Info("watchBitcoin: get btc deposits", "height", height)
+			btcDeposits, err := c.btcClient.GetBtcDeposits(height, c.config.BitcoinMultisig, c.config.Bitcoin.MinConfirms)
 			if err != nil {
 				c.logger.Error("watchBitcoin: get btc deposits from btc client failed", "err", err)
 				time.Sleep(1 * time.Second)
 				continue
 			}
 			if len(btcDeposits) == 0 {
-				c.logger.Info("watchBitcoin: not found btc deposits", "height", c.lastHeightBtc.Load())
+				c.logger.Info("watchBitcoin: not found btc deposits", "height", height)
 				time.Sleep(1 * time.Second)
 				continue
 			}
-			c.logger.Info("watchBitcoin: found btc deposits", "height", c.lastHeightBtc.Load(), "len", len(btcDeposits))
+			c.logger.Info("watchBitcoin: found btc deposits", "height", height, "len", len(btcDeposits))
 			if err := c.BitcoinDB().StoreBtcDeposits(btcDeposits); err != nil {
 				c.logger.Error("watchBitcoin: store btc deposits failed", "err", err)
 				time.Sleep(1 * time.Second)
 				continue
 			}
 
-			c.logger.Info("watchBitcoin: requestEnvelopesAndWait", "height", c.lastHeightBtc.Load())
-			if err := c.requestEnvelopesAndWait(c.lastHeightBtc.Load()); err != nil {
+			c.logger.Info("watchBitcoin: requestEnvelopesAndWait", "height", height)
+			if err := c.requestEnvelopesAndWait(height); err != nil {
 				c.logger.Error("watchBitcoin: store btc deposits failed", "err", err)
 				time.Sleep(1 * time.Second)
 				continue

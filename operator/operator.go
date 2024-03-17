@@ -2,6 +2,7 @@ package operator
 
 import (
 	"context"
+	"crypto/ecdsa"
 	"log/slog"
 	"net"
 
@@ -9,6 +10,8 @@ import (
 	"github.com/aura-nw/btc-bridge/clients/evm"
 	"github.com/aura-nw/btc-bridge/config"
 	"github.com/aura-nw/btc-bridge/protos"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"
 )
@@ -26,7 +29,13 @@ type Operator struct {
 	// cache must thread-safe
 	cache BlockCache
 
-	evmAddr string
+	// evm signer info for signing transaction
+	evmSignerInfo evmSignerInfo
+}
+
+type evmSignerInfo struct {
+	Address    common.Address
+	PrivateKey *ecdsa.PrivateKey
 }
 
 func NewOperator(
@@ -52,9 +61,14 @@ func NewOperator(
 		return nil, err
 	}
 
+	if err := op.initEvmSignerInfo(); err != nil {
+		return nil, err
+	}
+
 	return op, nil
 }
 
+// initClients inits all clients for operating
 func (op *Operator) initClients() error {
 	btcClient, err := bitcoin.NewClient(op.logger, op.config.Bitcoin)
 	if err != nil {
@@ -68,6 +82,27 @@ func (op *Operator) initClients() error {
 	}
 	op.evmClient = evmClient
 
+	return nil
+}
+
+// initEvmSignerInfo init signer information of evm network
+func (op *Operator) initEvmSignerInfo() error {
+	privateKey, err := crypto.HexToECDSA(op.config.EvmPrivateKey)
+	if err != nil {
+		op.logger.Error("init evm signer failed", "err", err)
+		return err
+	}
+	var info evmSignerInfo
+	info.PrivateKey = privateKey
+
+	publicKey := privateKey.Public()
+	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+	if !ok {
+		panic("error casting public key to ECDSA")
+	}
+	info.Address = crypto.PubkeyToAddress(*publicKeyECDSA)
+
+	op.evmSignerInfo = info
 	return nil
 }
 
@@ -106,5 +141,5 @@ func (op *Operator) Stop() {
 }
 
 func (op *Operator) EvmAddr() string {
-	return op.evmAddr
+	return op.evmSignerInfo.Address.Hex()
 }

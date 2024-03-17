@@ -46,30 +46,46 @@ func (b *bitcoinDBImpl) GetLastSeenHeight() (int64, error) {
 
 // StoreBtcDeposits implements BitcoinDB.
 func (b *bitcoinDBImpl) StoreBtcDeposits(deposits []types.BtcDeposit) error {
-	return b.db.Clauses(clause.OnConflict{
-		UpdateAll: true,
-	}).CreateInBatches(&deposits, defaultBatchSize).Error
+	deduped := b.db.Clauses(clause.OnConflict{Columns: []clause.Column{{Name: "tx_hash"}}, DoNothing: true})
+	result := deduped.CreateInBatches(&deposits, defaultBatchSize)
+	if result.Error == nil && int(result.RowsAffected) < len(deposits) {
+		b.logger.Warn("ignored btc deposit duplicates", "duplicates", len(deposits)-int(result.RowsAffected))
+	}
+
+	return result.Error
 }
 
 // StoreBtcWithdrawals implements BitcoinDB.
 func (b *bitcoinDBImpl) StoreBtcWithdrawals(withdrawals []types.BtcWithdrawal) error {
-	return b.db.Clauses(clause.OnConflict{
-		UpdateAll: true,
-	}).CreateInBatches(&withdrawals, defaultBatchSize).Error
+	deduped := b.db.Clauses(clause.OnConflict{Columns: []clause.Column{{Name: "tx_hash"}}, DoNothing: true})
+	result := deduped.CreateInBatches(&withdrawals, defaultBatchSize)
+	if result.Error == nil && int(result.RowsAffected) < len(withdrawals) {
+		b.logger.Warn("ignored btc withdrawal duplicates", "duplicates", len(withdrawals)-int(result.RowsAffected))
+	}
+
+	return result.Error
 }
 
 // StoreInscriptionDeposits implements BitcoinDB.
 func (b *bitcoinDBImpl) StoreInscriptionDeposits(deposits []types.InscriptionDeposit) error {
-	return b.db.Clauses(clause.OnConflict{
-		UpdateAll: true,
-	}).CreateInBatches(&deposits, defaultBatchSize).Error
+	deduped := b.db.Clauses(clause.OnConflict{Columns: []clause.Column{{Name: "tx_hash"}}, DoNothing: true})
+	result := deduped.CreateInBatches(&deposits, defaultBatchSize)
+	if result.Error == nil && int(result.RowsAffected) < len(deposits) {
+		b.logger.Warn("ignored inscription deposit duplicates", "duplicates", len(deposits)-int(result.RowsAffected))
+	}
+
+	return result.Error
 }
 
 // StoreInscriptionWithdrawals implements BitcoinDB.
 func (b *bitcoinDBImpl) StoreInscriptionWithdrawals(withdrawals []types.InscriptionWithdrawal) error {
-	return b.db.Clauses(clause.OnConflict{
-		UpdateAll: true,
-	}).CreateInBatches(&withdrawals, defaultBatchSize).Error
+	deduped := b.db.Clauses(clause.OnConflict{Columns: []clause.Column{{Name: "tx_hash"}}, DoNothing: true})
+	result := deduped.CreateInBatches(&withdrawals, defaultBatchSize)
+	if result.Error == nil && int(result.RowsAffected) < len(withdrawals) {
+		b.logger.Warn("ignored inscription deposit duplicates", "duplicates", len(withdrawals)-int(result.RowsAffected))
+	}
+
+	return result.Error
 }
 
 func newBitcoinDBImpl(logger *slog.Logger, db *gorm.DB) BitcoinDB {

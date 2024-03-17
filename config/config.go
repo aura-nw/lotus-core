@@ -16,9 +16,10 @@ type OperatorInfo struct {
 }
 
 type OperatorConfig struct {
-	Server  OperatorServer `toml:"server"`
-	Bitcoin BitcoinInfo    `toml:"bitcoin"`
-	Evm     EvmInfo        `toml:"evm"`
+	Server        OperatorServer `toml:"server"`
+	Bitcoin       BitcoinInfo    `toml:"bitcoin"`
+	Evm           EvmInfo        `toml:"evm"`
+	EvmPrivateKey string         `toml:"evm-private-key"`
 }
 
 type EvmInfo struct {
@@ -28,11 +29,12 @@ type EvmInfo struct {
 }
 
 type BitcoinInfo struct {
-	Network  string `toml:"network"`
-	Host     string `toml:"host"`
-	User     string `toml:"user"`
-	Password string `toml:"password"`
-	Interval int64  `toml:"interval"`
+	Network     string `toml:"network"`
+	Host        string `toml:"host"`
+	User        string `toml:"user"`
+	Password    string `toml:"password"`
+	Interval    int64  `toml:"interval"`
+	MinConfirms int64  `toml:"min-confirms"`
 }
 
 type OperatorServer struct {
@@ -45,10 +47,12 @@ type BridgeServer struct {
 
 func GetBitcoinInfoTestnet() BitcoinInfo {
 	return BitcoinInfo{
-		Network:  "testnet3",
-		Host:     "103.154.187.179:18332",
-		User:     "user",
-		Password: "123@abcD",
+		Network:     "testnet3",
+		Host:        "103.154.187.179:18332",
+		User:        "user",
+		Password:    "123@abcD",
+		MinConfirms: 3,
+		Interval:    60,
 	}
 }
 

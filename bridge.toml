@@ -21,12 +21,16 @@ chain-id = 1
 interval = 30
 
 [[operators]]
-evm-address = "0xYourEvmAddress1"
+evm-address = "0xC32B94C38bbbfe65eCe90daF3493c7603dA2c19A"
 grpc-url = "127.0.0.1:5055"
 
 # [[operators]]
-# evm-address = "0xYourEvmAddress2"
-# grpc-url = "https://your-operator-grpc-url2.com"
+# evm-address = "0x778Daaec5D30e03367c53eAcC845f9cBF5E931BF"
+# grpc-url = "127.0.0.1:5056"
+
+# [[operators]]
+# evm-address = "0x1f703E98E188564C971F5ac6DC32786fc6973749"
+# grpc-url = "127.0.0.1:5057"
 
 # Add more operators if needed
 
