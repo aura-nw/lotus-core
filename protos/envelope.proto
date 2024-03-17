@@ -5,49 +5,66 @@ package envelope;
 
 service EnvelopeService {
   // Verify deposit side
-  rpc VerifyBitcoinDeposits(VerifyBitcoinDepositsRequest) returns (VerifyBitcoinDepositsResponse);
-  rpc VerifyTokenDeposits(VerifyTokenDepositsRequest) returns (VerifyTokenDepositsResponse);
+  rpc VerifyBtcDeposits(VerifyBtcDepositsRequest) returns (VerifyBtcDepositsResponse);
+  rpc VerifyInscriptionDeposits(VerifyInscriptionDepositsRequest) returns (VerifyInscriptionDepositsResponse);
 
   // Verify withdrawal side
-  rpc VerifyBitcoinWithdrawals(VerifyBitcoinWithdrawalsRequest) returns (VerifyBitcoinWithdrawalsResponse);
-  rpc VerifyTokenWithdrawals(VerifyTokenWithdrawalsRequest) returns (VerifyTokenWithdrawalsResponse);
+  rpc VerifyBtcWithdrawals(VerifyBtcWithdrawalsRequest) returns (VerifyBtcWithdrawalsResponse);
+  rpc VerifyInscriptionWithdrawals(VerifyInscriptionWithdrawalsRequest) returns (VerifyInscriptionWithdrawalsResponse);
 }
 
-message VerifyBitcoinDepositsRequest {
+message VerifyBtcDepositsRequest {
   int64 height = 1;
+  repeated BtcDepositTx txs = 2;
 }
 
-message VerifyBitcoinDepositsResponse {
-  int64 height = 1;
-  string signature = 2;
-  string address = 3;
+message BtcDepositTx {
+  string tx_hash = 1;
+  string memo = 2;
+  string receiver = 3;
+  string sender = 4;
+  string amount = 5;
 }
 
-message VerifyTokenDepositsRequest{
-  int64 height = 1;
-}
-
-message VerifyTokenDepositsResponse {
-  int64 height = 1;
-  string signature = 2;
-  string address = 3;
-}
-
-message VerifyBitcoinWithdrawalsRequest {
-  int64 height = 1;
-}
-
-message VerifyBitcoinWithdrawalsResponse {
+message VerifyBtcDepositsResponse {
   int64 height = 1;
   string signature = 2;
   string address = 3;
 }
 
-message VerifyTokenWithdrawalsRequest {
+message VerifyInscriptionDepositsRequest{
   int64 height = 1;
 }
 
-message VerifyTokenWithdrawalsResponse {
+message InscriptionDepositTx {
+  string tx_hash = 1;
+  string memo = 2;
+  string receiver = 3;
+  string sender = 4;
+  string amount = 5;
+}
+
+message VerifyInscriptionDepositsResponse {
+  int64 height = 1;
+  string signature = 2;
+  string address = 3;
+}
+
+message VerifyBtcWithdrawalsRequest {
+  int64 height = 1;
+}
+
+message VerifyBtcWithdrawalsResponse {
+  int64 height = 1;
+  string signature = 2;
+  string address = 3;
+}
+
+message VerifyInscriptionWithdrawalsRequest {
+  int64 height = 1;
+}
+
+message VerifyInscriptionWithdrawalsResponse {
   int64 height = 1;
   string signature = 2;
   string address = 3;

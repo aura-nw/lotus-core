@@ -157,8 +157,9 @@ func (c *Control) requestEnvelopesAndWait(height int64) error {
 		envelope := envelope
 		go func() {
 			defer wg.Done()
-			resp, err := envelope.VerifyBitcoinDeposits(ctx, &protos.VerifyBitcoinDepositsRequest{
+			resp, err := envelope.VerifyBtcDeposits(ctx, &protos.VerifyBtcDepositsRequest{
 				Height: height,
+				Txs:    []*protos.BtcDepositTx{},
 			})
 			if err != nil {
 				c.logger.Error("verify bitcoin deposits failed", "height", height, "err", err)

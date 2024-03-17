@@ -19,10 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	EnvelopeService_VerifyBitcoinDeposits_FullMethodName    = "/envelope.EnvelopeService/VerifyBitcoinDeposits"
-	EnvelopeService_VerifyTokenDeposits_FullMethodName      = "/envelope.EnvelopeService/VerifyTokenDeposits"
-	EnvelopeService_VerifyBitcoinWithdrawals_FullMethodName = "/envelope.EnvelopeService/VerifyBitcoinWithdrawals"
-	EnvelopeService_VerifyTokenWithdrawals_FullMethodName   = "/envelope.EnvelopeService/VerifyTokenWithdrawals"
+	EnvelopeService_VerifyBtcDeposits_FullMethodName            = "/envelope.EnvelopeService/VerifyBtcDeposits"
+	EnvelopeService_VerifyInscriptionDeposits_FullMethodName    = "/envelope.EnvelopeService/VerifyInscriptionDeposits"
+	EnvelopeService_VerifyBtcWithdrawals_FullMethodName         = "/envelope.EnvelopeService/VerifyBtcWithdrawals"
+	EnvelopeService_VerifyInscriptionWithdrawals_FullMethodName = "/envelope.EnvelopeService/VerifyInscriptionWithdrawals"
 )
 
 // EnvelopeServiceClient is the client API for EnvelopeService service.
@@ -30,11 +30,11 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type EnvelopeServiceClient interface {
 	// Verify deposit side
-	VerifyBitcoinDeposits(ctx context.Context, in *VerifyBitcoinDepositsRequest, opts ...grpc.CallOption) (*VerifyBitcoinDepositsResponse, error)
-	VerifyTokenDeposits(ctx context.Context, in *VerifyTokenDepositsRequest, opts ...grpc.CallOption) (*VerifyTokenDepositsResponse, error)
+	VerifyBtcDeposits(ctx context.Context, in *VerifyBtcDepositsRequest, opts ...grpc.CallOption) (*VerifyBtcDepositsResponse, error)
+	VerifyInscriptionDeposits(ctx context.Context, in *VerifyInscriptionDepositsRequest, opts ...grpc.CallOption) (*VerifyInscriptionDepositsResponse, error)
 	// Verify withdrawal side
-	VerifyBitcoinWithdrawals(ctx context.Context, in *VerifyBitcoinWithdrawalsRequest, opts ...grpc.CallOption) (*VerifyBitcoinWithdrawalsResponse, error)
-	VerifyTokenWithdrawals(ctx context.Context, in *VerifyTokenWithdrawalsRequest, opts ...grpc.CallOption) (*VerifyTokenWithdrawalsResponse, error)
+	VerifyBtcWithdrawals(ctx context.Context, in *VerifyBtcWithdrawalsRequest, opts ...grpc.CallOption) (*VerifyBtcWithdrawalsResponse, error)
+	VerifyInscriptionWithdrawals(ctx context.Context, in *VerifyInscriptionWithdrawalsRequest, opts ...grpc.CallOption) (*VerifyInscriptionWithdrawalsResponse, error)
 }
 
 type envelopeServiceClient struct {
@@ -45,36 +45,36 @@ func NewEnvelopeServiceClient(cc grpc.ClientConnInterface) EnvelopeServiceClient
 	return &envelopeServiceClient{cc}
 }
 
-func (c *envelopeServiceClient) VerifyBitcoinDeposits(ctx context.Context, in *VerifyBitcoinDepositsRequest, opts ...grpc.CallOption) (*VerifyBitcoinDepositsResponse, error) {
-	out := new(VerifyBitcoinDepositsResponse)
-	err := c.cc.Invoke(ctx, EnvelopeService_VerifyBitcoinDeposits_FullMethodName, in, out, opts...)
+func (c *envelopeServiceClient) VerifyBtcDeposits(ctx context.Context, in *VerifyBtcDepositsRequest, opts ...grpc.CallOption) (*VerifyBtcDepositsResponse, error) {
+	out := new(VerifyBtcDepositsResponse)
+	err := c.cc.Invoke(ctx, EnvelopeService_VerifyBtcDeposits_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *envelopeServiceClient) VerifyTokenDeposits(ctx context.Context, in *VerifyTokenDepositsRequest, opts ...grpc.CallOption) (*VerifyTokenDepositsResponse, error) {
-	out := new(VerifyTokenDepositsResponse)
-	err := c.cc.Invoke(ctx, EnvelopeService_VerifyTokenDeposits_FullMethodName, in, out, opts...)
+func (c *envelopeServiceClient) VerifyInscriptionDeposits(ctx context.Context, in *VerifyInscriptionDepositsRequest, opts ...grpc.CallOption) (*VerifyInscriptionDepositsResponse, error) {
+	out := new(VerifyInscriptionDepositsResponse)
+	err := c.cc.Invoke(ctx, EnvelopeService_VerifyInscriptionDeposits_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *envelopeServiceClient) VerifyBitcoinWithdrawals(ctx context.Context, in *VerifyBitcoinWithdrawalsRequest, opts ...grpc.CallOption) (*VerifyBitcoinWithdrawalsResponse, error) {
-	out := new(VerifyBitcoinWithdrawalsResponse)
-	err := c.cc.Invoke(ctx, EnvelopeService_VerifyBitcoinWithdrawals_FullMethodName, in, out, opts...)
+func (c *envelopeServiceClient) VerifyBtcWithdrawals(ctx context.Context, in *VerifyBtcWithdrawalsRequest, opts ...grpc.CallOption) (*VerifyBtcWithdrawalsResponse, error) {
+	out := new(VerifyBtcWithdrawalsResponse)
+	err := c.cc.Invoke(ctx, EnvelopeService_VerifyBtcWithdrawals_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *envelopeServiceClient) VerifyTokenWithdrawals(ctx context.Context, in *VerifyTokenWithdrawalsRequest, opts ...grpc.CallOption) (*VerifyTokenWithdrawalsResponse, error) {
-	out := new(VerifyTokenWithdrawalsResponse)
-	err := c.cc.Invoke(ctx, EnvelopeService_VerifyTokenWithdrawals_FullMethodName, in, out, opts...)
+func (c *envelopeServiceClient) VerifyInscriptionWithdrawals(ctx context.Context, in *VerifyInscriptionWithdrawalsRequest, opts ...grpc.CallOption) (*VerifyInscriptionWithdrawalsResponse, error) {
+	out := new(VerifyInscriptionWithdrawalsResponse)
+	err := c.cc.Invoke(ctx, EnvelopeService_VerifyInscriptionWithdrawals_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -86,11 +86,11 @@ func (c *envelopeServiceClient) VerifyTokenWithdrawals(ctx context.Context, in *
 // for forward compatibility
 type EnvelopeServiceServer interface {
 	// Verify deposit side
-	VerifyBitcoinDeposits(context.Context, *VerifyBitcoinDepositsRequest) (*VerifyBitcoinDepositsResponse, error)
-	VerifyTokenDeposits(context.Context, *VerifyTokenDepositsRequest) (*VerifyTokenDepositsResponse, error)
+	VerifyBtcDeposits(context.Context, *VerifyBtcDepositsRequest) (*VerifyBtcDepositsResponse, error)
+	VerifyInscriptionDeposits(context.Context, *VerifyInscriptionDepositsRequest) (*VerifyInscriptionDepositsResponse, error)
 	// Verify withdrawal side
-	VerifyBitcoinWithdrawals(context.Context, *VerifyBitcoinWithdrawalsRequest) (*VerifyBitcoinWithdrawalsResponse, error)
-	VerifyTokenWithdrawals(context.Context, *VerifyTokenWithdrawalsRequest) (*VerifyTokenWithdrawalsResponse, error)
+	VerifyBtcWithdrawals(context.Context, *VerifyBtcWithdrawalsRequest) (*VerifyBtcWithdrawalsResponse, error)
+	VerifyInscriptionWithdrawals(context.Context, *VerifyInscriptionWithdrawalsRequest) (*VerifyInscriptionWithdrawalsResponse, error)
 	mustEmbedUnimplementedEnvelopeServiceServer()
 }
 
@@ -98,17 +98,17 @@ type EnvelopeServiceServer interface {
 type UnimplementedEnvelopeServiceServer struct {
 }
 
-func (UnimplementedEnvelopeServiceServer) VerifyBitcoinDeposits(context.Context, *VerifyBitcoinDepositsRequest) (*VerifyBitcoinDepositsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method VerifyBitcoinDeposits not implemented")
+func (UnimplementedEnvelopeServiceServer) VerifyBtcDeposits(context.Context, *VerifyBtcDepositsRequest) (*VerifyBtcDepositsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyBtcDeposits not implemented")
 }
-func (UnimplementedEnvelopeServiceServer) VerifyTokenDeposits(context.Context, *VerifyTokenDepositsRequest) (*VerifyTokenDepositsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method VerifyTokenDeposits not implemented")
+func (UnimplementedEnvelopeServiceServer) VerifyInscriptionDeposits(context.Context, *VerifyInscriptionDepositsRequest) (*VerifyInscriptionDepositsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyInscriptionDeposits not implemented")
 }
-func (UnimplementedEnvelopeServiceServer) VerifyBitcoinWithdrawals(context.Context, *VerifyBitcoinWithdrawalsRequest) (*VerifyBitcoinWithdrawalsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method VerifyBitcoinWithdrawals not implemented")
+func (UnimplementedEnvelopeServiceServer) VerifyBtcWithdrawals(context.Context, *VerifyBtcWithdrawalsRequest) (*VerifyBtcWithdrawalsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyBtcWithdrawals not implemented")
 }
-func (UnimplementedEnvelopeServiceServer) VerifyTokenWithdrawals(context.Context, *VerifyTokenWithdrawalsRequest) (*VerifyTokenWithdrawalsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method VerifyTokenWithdrawals not implemented")
+func (UnimplementedEnvelopeServiceServer) VerifyInscriptionWithdrawals(context.Context, *VerifyInscriptionWithdrawalsRequest) (*VerifyInscriptionWithdrawalsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyInscriptionWithdrawals not implemented")
 }
 func (UnimplementedEnvelopeServiceServer) mustEmbedUnimplementedEnvelopeServiceServer() {}
 
@@ -123,74 +123,74 @@ func RegisterEnvelopeServiceServer(s grpc.ServiceRegistrar, srv EnvelopeServiceS
 	s.RegisterService(&EnvelopeService_ServiceDesc, srv)
 }
 
-func _EnvelopeService_VerifyBitcoinDeposits_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VerifyBitcoinDepositsRequest)
+func _EnvelopeService_VerifyBtcDeposits_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyBtcDepositsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(EnvelopeServiceServer).VerifyBitcoinDeposits(ctx, in)
+		return srv.(EnvelopeServiceServer).VerifyBtcDeposits(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: EnvelopeService_VerifyBitcoinDeposits_FullMethodName,
+		FullMethod: EnvelopeService_VerifyBtcDeposits_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EnvelopeServiceServer).VerifyBitcoinDeposits(ctx, req.(*VerifyBitcoinDepositsRequest))
+		return srv.(EnvelopeServiceServer).VerifyBtcDeposits(ctx, req.(*VerifyBtcDepositsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _EnvelopeService_VerifyTokenDeposits_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VerifyTokenDepositsRequest)
+func _EnvelopeService_VerifyInscriptionDeposits_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyInscriptionDepositsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(EnvelopeServiceServer).VerifyTokenDeposits(ctx, in)
+		return srv.(EnvelopeServiceServer).VerifyInscriptionDeposits(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: EnvelopeService_VerifyTokenDeposits_FullMethodName,
+		FullMethod: EnvelopeService_VerifyInscriptionDeposits_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EnvelopeServiceServer).VerifyTokenDeposits(ctx, req.(*VerifyTokenDepositsRequest))
+		return srv.(EnvelopeServiceServer).VerifyInscriptionDeposits(ctx, req.(*VerifyInscriptionDepositsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _EnvelopeService_VerifyBitcoinWithdrawals_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VerifyBitcoinWithdrawalsRequest)
+func _EnvelopeService_VerifyBtcWithdrawals_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyBtcWithdrawalsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(EnvelopeServiceServer).VerifyBitcoinWithdrawals(ctx, in)
+		return srv.(EnvelopeServiceServer).VerifyBtcWithdrawals(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: EnvelopeService_VerifyBitcoinWithdrawals_FullMethodName,
+		FullMethod: EnvelopeService_VerifyBtcWithdrawals_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EnvelopeServiceServer).VerifyBitcoinWithdrawals(ctx, req.(*VerifyBitcoinWithdrawalsRequest))
+		return srv.(EnvelopeServiceServer).VerifyBtcWithdrawals(ctx, req.(*VerifyBtcWithdrawalsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _EnvelopeService_VerifyTokenWithdrawals_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VerifyTokenWithdrawalsRequest)
+func _EnvelopeService_VerifyInscriptionWithdrawals_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyInscriptionWithdrawalsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(EnvelopeServiceServer).VerifyTokenWithdrawals(ctx, in)
+		return srv.(EnvelopeServiceServer).VerifyInscriptionWithdrawals(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: EnvelopeService_VerifyTokenWithdrawals_FullMethodName,
+		FullMethod: EnvelopeService_VerifyInscriptionWithdrawals_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EnvelopeServiceServer).VerifyTokenWithdrawals(ctx, req.(*VerifyTokenWithdrawalsRequest))
+		return srv.(EnvelopeServiceServer).VerifyInscriptionWithdrawals(ctx, req.(*VerifyInscriptionWithdrawalsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -203,20 +203,20 @@ var EnvelopeService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*EnvelopeServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "VerifyBitcoinDeposits",
-			Handler:    _EnvelopeService_VerifyBitcoinDeposits_Handler,
+			MethodName: "VerifyBtcDeposits",
+			Handler:    _EnvelopeService_VerifyBtcDeposits_Handler,
 		},
 		{
-			MethodName: "VerifyTokenDeposits",
-			Handler:    _EnvelopeService_VerifyTokenDeposits_Handler,
+			MethodName: "VerifyInscriptionDeposits",
+			Handler:    _EnvelopeService_VerifyInscriptionDeposits_Handler,
 		},
 		{
-			MethodName: "VerifyBitcoinWithdrawals",
-			Handler:    _EnvelopeService_VerifyBitcoinWithdrawals_Handler,
+			MethodName: "VerifyBtcWithdrawals",
+			Handler:    _EnvelopeService_VerifyBtcWithdrawals_Handler,
 		},
 		{
-			MethodName: "VerifyTokenWithdrawals",
-			Handler:    _EnvelopeService_VerifyTokenWithdrawals_Handler,
+			MethodName: "VerifyInscriptionWithdrawals",
+			Handler:    _EnvelopeService_VerifyInscriptionWithdrawals_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
