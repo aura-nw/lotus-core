@@ -1,7 +1,6 @@
 package operator
 
 type BlockCache interface {
-	Get(height uint64) (BlockDef, bool)
-	Set(height uint64, blockDef BlockDef)
+	Get(chain string, height int64) ([]byte, bool)
+	Set(chain string, height int64, blockDef []byte)
 }
-type BlockDef interface{}

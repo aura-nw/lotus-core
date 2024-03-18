@@ -59,9 +59,10 @@ func (c *clientImpl) GetBtcDeposits(height int64, filterAddr string, minConfirms
 	for _, tx := range block.Tx {
 		for _, vout := range tx.Vout {
 			if filterAddr == vout.ScriptPubKey.Address {
-				memo, err := c.getMemo(&tx)
+				memo, err := c.getMemo(&vout)
 				if err != nil {
 					c.logger.Error("get memo failed", "err", err)
+					continue
 				}
 				results = append(results, types.BtcDeposit{
 					TxHash:         tx.Hash,
@@ -87,44 +88,27 @@ func (c *clientImpl) GetTokenDeposits(height int64, filterAddr string, minConfir
 }
 
 // getMemo returns memo for a btc tx, using vout OP_RETURN
-func (c *clientImpl) getMemo(tx *btcjson.TxRawResult) (string, error) {
-	if tx == nil {
-		return "", fmt.Errorf("nil transaction result")
-	}
+func (c *clientImpl) getMemo(vOut *btcjson.Vout) (string, error) {
 	var opReturns string
-	for _, vOut := range tx.Vout {
-		if !strings.EqualFold(vOut.ScriptPubKey.Type, "nulldata") {
-			continue
-		}
-		buf, err := hex.DecodeString(vOut.ScriptPubKey.Hex)
+	buf, err := hex.DecodeString(vOut.ScriptPubKey.Hex)
+	if err != nil {
+		c.logger.Error("fail to hex decode scriptPubKey", "err", err)
+	}
+
+	asm, err := txscript.DisasmString(buf)
+
+	if err != nil {
+		c.logger.Error("fail to disasm script pubkey", "err", err)
+	}
+	opReturnFields := strings.Fields(asm)
+	if len(opReturnFields) == 2 {
+		var decoded []byte
+		decoded, err = hex.DecodeString(opReturnFields[1])
 		if err != nil {
-			c.logger.Error("fail to hex decode scriptPubKey", "err", err)
-			continue
+			c.logger.Error("fail to decode OP_RETURN string: %s", "err", err)
 		}
-
-		asm, err := txscript.DisasmString(buf)
-
-		if err != nil {
-			c.logger.Error("fail to disasm script pubkey", "err", err)
-			continue
-		}
-		opReturnFields := strings.Fields(asm)
-		if len(opReturnFields) == 2 {
-			// skip "0" field to avoid log noise
-			if opReturnFields[1] == "0" {
-				continue
-			}
-
-			var decoded []byte
-			decoded, err = hex.DecodeString(opReturnFields[1])
-			if err != nil {
-				c.logger.Error("fail to decode OP_RETURN string: %s", "err", err)
-				continue
-			}
-			opReturns += string(decoded)
-		}
+		opReturns += string(decoded)
 	}
 
 	return opReturns, nil
-
 }

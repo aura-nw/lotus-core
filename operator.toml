@@ -16,4 +16,4 @@ url = "http://localhost:8545" # Replace with the EVM node URL
 chain-id = 1                  # Replace with the EVM chain ID
 interval = 30                 # Check interval in seconds
 
-evm-private-key = "7cf06d80baec389b7c63daff9eccfae043a2068a2c37a3d1e8be8976eec8928b"
+evm-private-key = "883d80012adf2272875981428715c56558eb388dcea4b48e030bd63ddd23c128"
