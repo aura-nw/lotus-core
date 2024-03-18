@@ -6,8 +6,8 @@ import (
 	"log/slog"
 	"strings"
 
-	"github.com/aura-nw/btc-bridge/config"
-	"github.com/aura-nw/btc-bridge/types"
+	"github.com/aura-nw/btc-bridge-core/config"
+	"github.com/aura-nw/btc-bridge-core/types"
 	"github.com/btcsuite/btcd/btcjson"
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/btcsuite/btcd/txscript"

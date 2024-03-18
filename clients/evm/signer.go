@@ -7,7 +7,7 @@ import (
 	"log/slog"
 	"math/big"
 
-	"github.com/aura-nw/btc-bridge/clients/evm/contracts"
+	"github.com/aura-nw/btc-bridge-core/clients/evm/contracts"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"

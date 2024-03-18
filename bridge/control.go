@@ -8,11 +8,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/aura-nw/btc-bridge/clients/bitcoin"
-	"github.com/aura-nw/btc-bridge/clients/evm"
-	"github.com/aura-nw/btc-bridge/config"
-	"github.com/aura-nw/btc-bridge/database"
-	"github.com/aura-nw/btc-bridge/protos"
+	"github.com/aura-nw/btc-bridge-core/clients/bitcoin"
+	"github.com/aura-nw/btc-bridge-core/clients/evm"
+	"github.com/aura-nw/btc-bridge-core/config"
+	"github.com/aura-nw/btc-bridge-core/database"
+	"github.com/aura-nw/btc-bridge-core/protos"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )

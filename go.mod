@@ -1,4 +1,4 @@
-module github.com/aura-nw/btc-bridge
+module github.com/aura-nw/btc-bridge-core
 
 go 1.21.7
 

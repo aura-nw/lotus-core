@@ -3,7 +3,7 @@ package database
 import (
 	"log/slog"
 
-	"github.com/aura-nw/btc-bridge/types"
+	"github.com/aura-nw/btc-bridge-core/types"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )

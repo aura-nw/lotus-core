@@ -5,7 +5,7 @@ import (
 	"errors"
 	"log/slog"
 
-	"github.com/aura-nw/btc-bridge/clients/evm/txmgr"
+	"github.com/aura-nw/btc-bridge-core/clients/evm/txmgr"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 )

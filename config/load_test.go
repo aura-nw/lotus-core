@@ -3,7 +3,7 @@ package config_test
 import (
 	"testing"
 
-	"github.com/aura-nw/btc-bridge/config"
+	"github.com/aura-nw/btc-bridge-core/config"
 	"github.com/stretchr/testify/require"
 )
 

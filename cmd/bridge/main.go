@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log/slog"
 
-	"github.com/aura-nw/btc-bridge/bridge"
-	"github.com/aura-nw/btc-bridge/config"
+	"github.com/aura-nw/btc-bridge-core/bridge"
+	"github.com/aura-nw/btc-bridge-core/config"
 )
 
 const (
