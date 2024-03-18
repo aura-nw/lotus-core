@@ -7,8 +7,6 @@ require (
 	github.com/ethereum/go-ethereum v1.13.14
 	github.com/stretchr/testify v1.8.4
 	golang.org/x/sync v0.6.0
-	google.golang.org/grpc v1.62.1
-	google.golang.org/protobuf v1.33.0
 	gorm.io/driver/postgres v1.5.6
 	gorm.io/gorm v1.25.7
 )
@@ -45,8 +43,8 @@ require (
 	github.com/getsentry/sentry-go v0.18.0 // indirect
 	github.com/gofrs/flock v0.8.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.5-0.20220116011046-fa5810519dcb // indirect
+	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/gofuzz v1.2.1-0.20220503160820-4a35382e8fc8 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/go-bexpr v0.1.11 // indirect
@@ -83,7 +81,7 @@ require (
 	golang.org/x/net v0.20.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240123012728-ef4313101c80 // indirect
+	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	rsc.io/tmplfunc v0.0.3 // indirect
 )

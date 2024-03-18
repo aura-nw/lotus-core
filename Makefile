@@ -14,9 +14,6 @@ operator:
 test:
 	go test -v ./...
 
-proto-gen:
-	bash ./scripts/protoc.sh protos/envelope.proto
-
 abigen:
 	bash ./scripts/abigen.sh
 
@@ -28,5 +25,4 @@ lint:
 	bridge \
 	clean \
 	test \
-	lint \
-	proto-gen
+	lint

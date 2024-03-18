@@ -2,7 +2,6 @@ package bridge
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 	"sync"
 	"sync/atomic"
@@ -12,25 +11,21 @@ import (
 	"github.com/aura-nw/btc-bridge-core/clients/evm"
 	"github.com/aura-nw/btc-bridge-core/config"
 	"github.com/aura-nw/btc-bridge-core/database"
-	"github.com/aura-nw/btc-bridge-core/protos"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
 type Control struct {
 	ctx           context.Context
 	ctxCancel     context.CancelFunc
 	logger        *slog.Logger
-	config        *config.BridgeConfig
+	config        *config.Config
 	db            *database.DB
 	btcClient     bitcoin.Client
 	evmClient     *evm.Client
-	envelopes     map[string]protos.EnvelopeServiceClient
 	lastHeightBtc atomic.Int64
 	wg            sync.WaitGroup
 }
 
-func NewControl(ctx context.Context, logger *slog.Logger, config *config.BridgeConfig) (*Control, error) {
+func NewControl(ctx context.Context, logger *slog.Logger, config *config.Config) (*Control, error) {
 	ctx, ctxCancel := context.WithCancel(ctx)
 	c := &Control{
 		logger:    logger,
@@ -45,11 +40,6 @@ func NewControl(ctx context.Context, logger *slog.Logger, config *config.BridgeC
 
 	if err := c.initDB(); err != nil {
 		logger.Error("init DB failed", "err", err)
-		return nil, err
-	}
-
-	if err := c.initEnvelopeClient(); err != nil {
-		logger.Error("init envelope client failed", "err", err)
 		return nil, err
 	}
 
@@ -88,18 +78,6 @@ func (c *Control) initClients() error {
 	return nil
 }
 
-func (c *Control) initEnvelopeClient() error {
-	c.envelopes = map[string]protos.EnvelopeServiceClient{}
-	for _, opInfo := range c.config.Operators {
-		conn, err := grpc.Dial(opInfo.GrpcUrl, grpc.WithTransportCredentials(insecure.NewCredentials()))
-		if err != nil {
-			return err
-		}
-		c.envelopes[opInfo.GrpcUrl] = protos.NewEnvelopeServiceClient(conn)
-	}
-	return nil
-}
-
 func (c *Control) watchBitcoin() {
 	defer c.wg.Done()
 
@@ -132,44 +110,11 @@ func (c *Control) watchBitcoin() {
 				continue
 			}
 
-			c.logger.Info("watchBitcoin: requestEnvelopesAndWait", "height", height)
-			if err := c.requestEnvelopesAndWait(height); err != nil {
-				c.logger.Error("watchBitcoin: store btc deposits failed", "err", err)
-				time.Sleep(1 * time.Second)
-				continue
-			}
-
 			c.lastHeightBtc.Add(1)
 
 			// build create invoice tx and send throught eth client
 		}
 	}
-}
-
-func (c *Control) requestEnvelopesAndWait(height int64) error {
-	if len(c.envelopes) == 0 {
-		return fmt.Errorf("no envelopes")
-	}
-	var wg sync.WaitGroup
-	wg.Add(len(c.envelopes))
-	for _, envelope := range c.envelopes {
-		ctx := c.ctx
-		envelope := envelope
-		go func() {
-			defer wg.Done()
-			resp, err := envelope.VerifyBtcDeposits(ctx, &protos.VerifyBtcDepositsRequest{
-				Height: height,
-				Txs:    []*protos.BtcDepositTx{},
-			})
-			if err != nil {
-				c.logger.Error("verify bitcoin deposits failed", "height", height, "err", err)
-				return
-			}
-			c.logger.Info("verify bitcoin deposits response", "resp", resp.String())
-		}()
-	}
-	wg.Wait()
-	return nil
 }
 
 func (c *Control) watchEvm() {

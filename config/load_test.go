@@ -8,9 +8,6 @@ import (
 )
 
 func TestLoad(t *testing.T) {
-	_, err := config.LoadBridgeConfig("../bridge.toml")
-	require.NoError(t, err)
-
-	_, err = config.LoadOperatorConfig("../operator.toml")
+	_, err := config.LoadConfig("../bridge.toml")
 	require.NoError(t, err)
 }

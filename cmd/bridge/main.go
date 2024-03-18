@@ -14,7 +14,7 @@ const (
 )
 
 func main() {
-	config, err := config.LoadBridgeConfig(defaultConfigPath)
+	config, err := config.LoadConfig(defaultConfigPath)
 	if err != nil {
 		panic(err)
 	}

@@ -1,7 +1,7 @@
 package config
 
-type BridgeConfig struct {
-	Server    BridgeServer   `toml:"server"`
+type Config struct {
+	Server    ServerInfo     `toml:"server"`
 	DB        DBInfo         `toml:"db"`
 	Bitcoin   BitcoinInfo    `toml:"bitcoin"`
 	Evm       EvmInfo        `toml:"evm"`
@@ -13,13 +13,6 @@ type BridgeConfig struct {
 type OperatorInfo struct {
 	EvmAddress string `toml:"evm-address"`
 	GrpcUrl    string `toml:"grpc-url"`
-}
-
-type OperatorConfig struct {
-	Server        OperatorServer `toml:"server"`
-	Bitcoin       BitcoinInfo    `toml:"bitcoin"`
-	Evm           EvmInfo        `toml:"evm"`
-	EvmPrivateKey string         `toml:"evm-private-key"`
 }
 
 type EvmInfo struct {
@@ -36,12 +29,7 @@ type BitcoinInfo struct {
 	Interval    int64  `toml:"interval"`
 	MinConfirms int64  `toml:"min-confirms"`
 }
-
-type OperatorServer struct {
-	GrpcPort string `toml:"grpc-port"`
-}
-
-type BridgeServer struct {
+type ServerInfo struct {
 	Port string `toml:"port"`
 }
 
