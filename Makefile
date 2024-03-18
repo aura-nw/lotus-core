@@ -8,9 +8,6 @@ LDFLAGS := -ldflags "$(LDFLAGSSTRING)"
 bridge:
 	env GO111MODULE=on go build -v $(LDFLAGS) ./cmd/bridge
 
-operator:
-	env GO111MODULE=on go build -v $(LDFLAGS) ./cmd/operator
-
 test:
 	go test -v ./...
 
