@@ -74,6 +74,31 @@
       },
       {
         "indexed": false,
+        "internalType": "enum IGateway.InvoiceStatus",
+        "name": "status",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "executor",
+        "type": "address"
+      }
+    ],
+    "name": "IncomingInvoiceCompleted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "invoiceId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "string",
         "name": "utxo",
         "type": "string"
@@ -92,31 +117,6 @@
       }
     ],
     "name": "IncomingInvoiceCreated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "invoiceId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "enum IGateway.InvoiceStatus",
-        "name": "status",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "executor",
-        "type": "address"
-      }
-    ],
-    "name": "IncomingInvoiceProcessed",
     "type": "event"
   },
   {
@@ -155,9 +155,40 @@
       },
       {
         "indexed": false,
+        "internalType": "enum IGateway.InvoiceStatus",
+        "name": "status",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "executor",
+        "type": "address"
+      }
+    ],
+    "name": "IncomingInvoiceRejected",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "invoiceId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "address",
         "name": "validator",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "verified",
+        "type": "bool"
       }
     ],
     "name": "IncomingInvoiceVerified",
@@ -339,9 +370,26 @@
     "name": "allValidators",
     "outputs": [
       {
-        "internalType": "address[]",
+        "components": [
+          {
+            "internalType": "address",
+            "name": "validator",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "nextIncomingInvoice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "nextOutgoingInvoice",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IGateway.ValidatorInfo[]",
         "name": "",
-        "type": "address[]"
+        "type": "tuple[]"
       }
     ],
     "stateMutability": "view",
@@ -358,6 +406,30 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_invoiceId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_recipient",
+        "type": "address"
+      }
+    ],
+    "name": "completeIncomingInvoice",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -420,19 +492,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "incomingConcensusTime",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "string",
@@ -471,8 +530,13 @@
           },
           {
             "internalType": "address[]",
-            "name": "verifieds",
+            "name": "validators",
             "type": "address[]"
+          },
+          {
+            "internalType": "bool[]",
+            "name": "confirmations",
+            "type": "bool[]"
           },
           {
             "internalType": "uint256",
@@ -555,19 +619,6 @@
     "name": "initialize",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "outgoingConcensusTime",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -754,30 +805,6 @@
         "type": "uint256"
       },
       {
-        "internalType": "address",
-        "name": "_recipient",
-        "type": "address"
-      }
-    ],
-    "name": "processIncomingInvoice",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_invoiceId",
-        "type": "uint256"
-      },
-      {
         "internalType": "uint256",
         "name": "_amount",
         "type": "uint256"
@@ -941,32 +968,6 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "_incomingConcensusTime",
-        "type": "uint256"
-      }
-    ],
-    "name": "updateIncomingConcensusTime",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_outgoingConcensusTime",
-        "type": "uint256"
-      }
-    ],
-    "name": "updateOutgoingConcensusTime",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address",
         "name": "_proposer",
         "type": "address"
@@ -999,17 +1000,34 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "_validator",
+        "type": "address"
       }
     ],
-    "name": "validators",
+    "name": "validator",
     "outputs": [
       {
-        "internalType": "address",
+        "components": [
+          {
+            "internalType": "address",
+            "name": "validator",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "nextIncomingInvoice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "nextOutgoingInvoice",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IGateway.ValidatorInfo",
         "name": "",
-        "type": "address"
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",
@@ -1036,6 +1054,11 @@
         "internalType": "address",
         "name": "_recipient",
         "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isVerified",
+        "type": "bool"
       }
     ],
     "name": "verifyIncomingInvoice",

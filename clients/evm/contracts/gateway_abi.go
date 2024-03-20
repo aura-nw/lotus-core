@@ -31,14 +31,15 @@ var (
 
 // IGatewayIncomingInvoiceResponse is an auto generated low-level Go binding around an user-defined struct.
 type IGatewayIncomingInvoiceResponse struct {
-	InvoiceId  *big.Int
-	Utxo       string
-	Amount     *big.Int
-	Recipient  common.Address
-	Status     uint8
-	Verifieds  []common.Address
-	CreatedAt  *big.Int
-	UtxoRefund string
+	InvoiceId     *big.Int
+	Utxo          string
+	Amount        *big.Int
+	Recipient     common.Address
+	Status        uint8
+	Validators    []common.Address
+	Confirmations []bool
+	CreatedAt     *big.Int
+	UtxoRefund    string
 }
 
 // IGatewayOutgoingInvoiceResponse is an auto generated low-level Go binding around an user-defined struct.
@@ -56,9 +57,16 @@ type IGatewayOutgoingInvoiceResponse struct {
 	TxHash       string
 }
 
+// IGatewayValidatorInfo is an auto generated low-level Go binding around an user-defined struct.
+type IGatewayValidatorInfo struct {
+	Validator           common.Address
+	NextIncomingInvoice *big.Int
+	NextOutgoingInvoice *big.Int
+}
+
 // GatewayMetaData contains all meta data concerning the Gateway contract.
 var GatewayMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"name\":\"EnforcedPause\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ExpectedPause\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidInitialization\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotInitializing\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"OwnableInvalidOwner\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"OwnableUnauthorizedAccount\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"ProposerUnauthorizedAccount\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"ValidatorUnauthorizedAccount\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"utxo\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"}],\"name\":\"IncomingInvoiceCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"executor\",\"type\":\"address\"}],\"name\":\"IncomingInvoiceProcessed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"utxo_refund\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"executor\",\"type\":\"address\"}],\"name\":\"IncomingInvoiceRefunded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"validator\",\"type\":\"address\"}],\"name\":\"IncomingInvoiceVerified\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"version\",\"type\":\"uint64\"}],\"name\":\"Initialized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"recipient\",\"type\":\"string\"}],\"name\":\"OutgoingInvoiceCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"txHash\",\"type\":\"string\"}],\"name\":\"OutgoingInvoiceProcessed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"txContent\",\"type\":\"string\"}],\"name\":\"OutgoingInvoiceSubmitted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"validator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"signature\",\"type\":\"string\"}],\"name\":\"OutgoingInvoiceVerified\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"Paused\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"Unpaused\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_validator\",\"type\":\"address\"}],\"name\":\"addValidator\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"allValidators\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"btcAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"concensusThreshold\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_utxo\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_recipient\",\"type\":\"address\"}],\"name\":\"createIncomingInvoice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"recipient\",\"type\":\"string\"}],\"name\":\"createOutgoingInvoice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"incomingConcensusTime\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_utxo\",\"type\":\"string\"}],\"name\":\"incomingInvoice\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"utxo\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"address[]\",\"name\":\"verifieds\",\"type\":\"address[]\"},{\"internalType\":\"uint256\",\"name\":\"createdAt\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"utxo_refund\",\"type\":\"string\"}],\"internalType\":\"structIGateway.IncomingInvoiceResponse\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"incomingInvoices\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"utxo\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"createdAt\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"utxo_refund\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"incomingInvoicesCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"outgoingConcensusTime\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"}],\"name\":\"outgoingInvoice\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"recipient\",\"type\":\"string\"},{\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"address[]\",\"name\":\"validators\",\"type\":\"address[]\"},{\"internalType\":\"string[]\",\"name\":\"signatures\",\"type\":\"string[]\"},{\"internalType\":\"string\",\"name\":\"txContent\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"createdAt\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"txPreparedAt\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"txHash\",\"type\":\"string\"}],\"internalType\":\"structIGateway.OutgoingInvoiceResponse\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"outgoingInvoices\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"recipient\",\"type\":\"string\"},{\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"txContent\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"createdAt\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"txPreparedAt\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"txHash\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"outgoingInvoicesCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"pause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"paused\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_recipient\",\"type\":\"address\"}],\"name\":\"processIncomingInvoice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_recipient\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_txHash\",\"type\":\"string\"}],\"name\":\"processOutgoingInvoice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"proposer\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_utxo\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_recipient\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"_utxo_refund\",\"type\":\"string\"}],\"name\":\"refundIncomingInvoice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_validator\",\"type\":\"address\"}],\"name\":\"removeValidator\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_recipient\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_txContent\",\"type\":\"string\"}],\"name\":\"submitTxContent\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"unpause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_btcAddress\",\"type\":\"address\"}],\"name\":\"updateBtcAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_concensusThreshold\",\"type\":\"uint256\"}],\"name\":\"updateConcensusThreshold\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_incomingConcensusTime\",\"type\":\"uint256\"}],\"name\":\"updateIncomingConcensusTime\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_outgoingConcensusTime\",\"type\":\"uint256\"}],\"name\":\"updateOutgoingConcensusTime\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_proposer\",\"type\":\"address\"}],\"name\":\"updateProposer\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"name\":\"utxos\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"validators\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_utxo\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_recipient\",\"type\":\"address\"}],\"name\":\"verifyIncomingInvoice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_recipient\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_signature\",\"type\":\"string\"}],\"name\":\"verifyOutgoingInvoice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[],\"name\":\"EnforcedPause\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ExpectedPause\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidInitialization\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotInitializing\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"OwnableInvalidOwner\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"OwnableUnauthorizedAccount\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"ProposerUnauthorizedAccount\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"ValidatorUnauthorizedAccount\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"executor\",\"type\":\"address\"}],\"name\":\"IncomingInvoiceCompleted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"utxo\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"}],\"name\":\"IncomingInvoiceCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"utxo_refund\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"executor\",\"type\":\"address\"}],\"name\":\"IncomingInvoiceRefunded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"executor\",\"type\":\"address\"}],\"name\":\"IncomingInvoiceRejected\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"validator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"verified\",\"type\":\"bool\"}],\"name\":\"IncomingInvoiceVerified\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"version\",\"type\":\"uint64\"}],\"name\":\"Initialized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"recipient\",\"type\":\"string\"}],\"name\":\"OutgoingInvoiceCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"txHash\",\"type\":\"string\"}],\"name\":\"OutgoingInvoiceProcessed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"txContent\",\"type\":\"string\"}],\"name\":\"OutgoingInvoiceSubmitted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"validator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"signature\",\"type\":\"string\"}],\"name\":\"OutgoingInvoiceVerified\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"Paused\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"Unpaused\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_validator\",\"type\":\"address\"}],\"name\":\"addValidator\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"allValidators\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"validator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"nextIncomingInvoice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nextOutgoingInvoice\",\"type\":\"uint256\"}],\"internalType\":\"structIGateway.ValidatorInfo[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"btcAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_recipient\",\"type\":\"address\"}],\"name\":\"completeIncomingInvoice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"concensusThreshold\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_utxo\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_recipient\",\"type\":\"address\"}],\"name\":\"createIncomingInvoice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"recipient\",\"type\":\"string\"}],\"name\":\"createOutgoingInvoice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_utxo\",\"type\":\"string\"}],\"name\":\"incomingInvoice\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"utxo\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"address[]\",\"name\":\"validators\",\"type\":\"address[]\"},{\"internalType\":\"bool[]\",\"name\":\"confirmations\",\"type\":\"bool[]\"},{\"internalType\":\"uint256\",\"name\":\"createdAt\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"utxo_refund\",\"type\":\"string\"}],\"internalType\":\"structIGateway.IncomingInvoiceResponse\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"incomingInvoices\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"utxo\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"createdAt\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"utxo_refund\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"incomingInvoicesCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"}],\"name\":\"outgoingInvoice\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"recipient\",\"type\":\"string\"},{\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"address[]\",\"name\":\"validators\",\"type\":\"address[]\"},{\"internalType\":\"string[]\",\"name\":\"signatures\",\"type\":\"string[]\"},{\"internalType\":\"string\",\"name\":\"txContent\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"createdAt\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"txPreparedAt\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"txHash\",\"type\":\"string\"}],\"internalType\":\"structIGateway.OutgoingInvoiceResponse\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"outgoingInvoices\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"recipient\",\"type\":\"string\"},{\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"txContent\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"createdAt\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"txPreparedAt\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"txHash\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"outgoingInvoicesCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"pause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"paused\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_recipient\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_txHash\",\"type\":\"string\"}],\"name\":\"processOutgoingInvoice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"proposer\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_utxo\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_recipient\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"_utxo_refund\",\"type\":\"string\"}],\"name\":\"refundIncomingInvoice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_validator\",\"type\":\"address\"}],\"name\":\"removeValidator\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_recipient\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_txContent\",\"type\":\"string\"}],\"name\":\"submitTxContent\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"unpause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_btcAddress\",\"type\":\"address\"}],\"name\":\"updateBtcAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_concensusThreshold\",\"type\":\"uint256\"}],\"name\":\"updateConcensusThreshold\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_proposer\",\"type\":\"address\"}],\"name\":\"updateProposer\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"name\":\"utxos\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_validator\",\"type\":\"address\"}],\"name\":\"validator\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"validator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"nextIncomingInvoice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nextOutgoingInvoice\",\"type\":\"uint256\"}],\"internalType\":\"structIGateway.ValidatorInfo\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_utxo\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_recipient\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"_isVerified\",\"type\":\"bool\"}],\"name\":\"verifyIncomingInvoice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_recipient\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_signature\",\"type\":\"string\"}],\"name\":\"verifyOutgoingInvoice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // GatewayABI is the input ABI used to generate the binding from.
@@ -209,16 +217,16 @@ func (_Gateway *GatewayTransactorRaw) Transact(opts *bind.TransactOpts, method s
 
 // AllValidators is a free data retrieval call binding the contract method 0xf30589c3.
 //
-// Solidity: function allValidators() view returns(address[])
-func (_Gateway *GatewayCaller) AllValidators(opts *bind.CallOpts) ([]common.Address, error) {
+// Solidity: function allValidators() view returns((address,uint256,uint256)[])
+func (_Gateway *GatewayCaller) AllValidators(opts *bind.CallOpts) ([]IGatewayValidatorInfo, error) {
 	var out []interface{}
 	err := _Gateway.contract.Call(opts, &out, "allValidators")
 
 	if err != nil {
-		return *new([]common.Address), err
+		return *new([]IGatewayValidatorInfo), err
 	}
 
-	out0 := *abi.ConvertType(out[0], new([]common.Address)).(*[]common.Address)
+	out0 := *abi.ConvertType(out[0], new([]IGatewayValidatorInfo)).(*[]IGatewayValidatorInfo)
 
 	return out0, err
 
@@ -226,15 +234,15 @@ func (_Gateway *GatewayCaller) AllValidators(opts *bind.CallOpts) ([]common.Addr
 
 // AllValidators is a free data retrieval call binding the contract method 0xf30589c3.
 //
-// Solidity: function allValidators() view returns(address[])
-func (_Gateway *GatewaySession) AllValidators() ([]common.Address, error) {
+// Solidity: function allValidators() view returns((address,uint256,uint256)[])
+func (_Gateway *GatewaySession) AllValidators() ([]IGatewayValidatorInfo, error) {
 	return _Gateway.Contract.AllValidators(&_Gateway.CallOpts)
 }
 
 // AllValidators is a free data retrieval call binding the contract method 0xf30589c3.
 //
-// Solidity: function allValidators() view returns(address[])
-func (_Gateway *GatewayCallerSession) AllValidators() ([]common.Address, error) {
+// Solidity: function allValidators() view returns((address,uint256,uint256)[])
+func (_Gateway *GatewayCallerSession) AllValidators() ([]IGatewayValidatorInfo, error) {
 	return _Gateway.Contract.AllValidators(&_Gateway.CallOpts)
 }
 
@@ -300,40 +308,9 @@ func (_Gateway *GatewayCallerSession) ConcensusThreshold() (*big.Int, error) {
 	return _Gateway.Contract.ConcensusThreshold(&_Gateway.CallOpts)
 }
 
-// IncomingConcensusTime is a free data retrieval call binding the contract method 0x6a0dacd4.
-//
-// Solidity: function incomingConcensusTime() view returns(uint256)
-func (_Gateway *GatewayCaller) IncomingConcensusTime(opts *bind.CallOpts) (*big.Int, error) {
-	var out []interface{}
-	err := _Gateway.contract.Call(opts, &out, "incomingConcensusTime")
-
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-
-}
-
-// IncomingConcensusTime is a free data retrieval call binding the contract method 0x6a0dacd4.
-//
-// Solidity: function incomingConcensusTime() view returns(uint256)
-func (_Gateway *GatewaySession) IncomingConcensusTime() (*big.Int, error) {
-	return _Gateway.Contract.IncomingConcensusTime(&_Gateway.CallOpts)
-}
-
-// IncomingConcensusTime is a free data retrieval call binding the contract method 0x6a0dacd4.
-//
-// Solidity: function incomingConcensusTime() view returns(uint256)
-func (_Gateway *GatewayCallerSession) IncomingConcensusTime() (*big.Int, error) {
-	return _Gateway.Contract.IncomingConcensusTime(&_Gateway.CallOpts)
-}
-
 // IncomingInvoice is a free data retrieval call binding the contract method 0xe7c777eb.
 //
-// Solidity: function incomingInvoice(string _utxo) view returns((uint256,string,uint256,address,uint8,address[],uint256,string))
+// Solidity: function incomingInvoice(string _utxo) view returns((uint256,string,uint256,address,uint8,address[],bool[],uint256,string))
 func (_Gateway *GatewayCaller) IncomingInvoice(opts *bind.CallOpts, _utxo string) (IGatewayIncomingInvoiceResponse, error) {
 	var out []interface{}
 	err := _Gateway.contract.Call(opts, &out, "incomingInvoice", _utxo)
@@ -350,14 +327,14 @@ func (_Gateway *GatewayCaller) IncomingInvoice(opts *bind.CallOpts, _utxo string
 
 // IncomingInvoice is a free data retrieval call binding the contract method 0xe7c777eb.
 //
-// Solidity: function incomingInvoice(string _utxo) view returns((uint256,string,uint256,address,uint8,address[],uint256,string))
+// Solidity: function incomingInvoice(string _utxo) view returns((uint256,string,uint256,address,uint8,address[],bool[],uint256,string))
 func (_Gateway *GatewaySession) IncomingInvoice(_utxo string) (IGatewayIncomingInvoiceResponse, error) {
 	return _Gateway.Contract.IncomingInvoice(&_Gateway.CallOpts, _utxo)
 }
 
 // IncomingInvoice is a free data retrieval call binding the contract method 0xe7c777eb.
 //
-// Solidity: function incomingInvoice(string _utxo) view returns((uint256,string,uint256,address,uint8,address[],uint256,string))
+// Solidity: function incomingInvoice(string _utxo) view returns((uint256,string,uint256,address,uint8,address[],bool[],uint256,string))
 func (_Gateway *GatewayCallerSession) IncomingInvoice(_utxo string) (IGatewayIncomingInvoiceResponse, error) {
 	return _Gateway.Contract.IncomingInvoice(&_Gateway.CallOpts, _utxo)
 }
@@ -456,37 +433,6 @@ func (_Gateway *GatewaySession) IncomingInvoicesCount() (*big.Int, error) {
 // Solidity: function incomingInvoicesCount() view returns(uint256)
 func (_Gateway *GatewayCallerSession) IncomingInvoicesCount() (*big.Int, error) {
 	return _Gateway.Contract.IncomingInvoicesCount(&_Gateway.CallOpts)
-}
-
-// OutgoingConcensusTime is a free data retrieval call binding the contract method 0xf7b03ac5.
-//
-// Solidity: function outgoingConcensusTime() view returns(uint256)
-func (_Gateway *GatewayCaller) OutgoingConcensusTime(opts *bind.CallOpts) (*big.Int, error) {
-	var out []interface{}
-	err := _Gateway.contract.Call(opts, &out, "outgoingConcensusTime")
-
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-
-}
-
-// OutgoingConcensusTime is a free data retrieval call binding the contract method 0xf7b03ac5.
-//
-// Solidity: function outgoingConcensusTime() view returns(uint256)
-func (_Gateway *GatewaySession) OutgoingConcensusTime() (*big.Int, error) {
-	return _Gateway.Contract.OutgoingConcensusTime(&_Gateway.CallOpts)
-}
-
-// OutgoingConcensusTime is a free data retrieval call binding the contract method 0xf7b03ac5.
-//
-// Solidity: function outgoingConcensusTime() view returns(uint256)
-func (_Gateway *GatewayCallerSession) OutgoingConcensusTime() (*big.Int, error) {
-	return _Gateway.Contract.OutgoingConcensusTime(&_Gateway.CallOpts)
 }
 
 // OutgoingInvoice is a free data retrieval call binding the contract method 0x455578b3.
@@ -750,35 +696,35 @@ func (_Gateway *GatewayCallerSession) Utxos(arg0 string) (*big.Int, error) {
 	return _Gateway.Contract.Utxos(&_Gateway.CallOpts, arg0)
 }
 
-// Validators is a free data retrieval call binding the contract method 0x35aa2e44.
+// Validator is a free data retrieval call binding the contract method 0x223b3b7a.
 //
-// Solidity: function validators(uint256 ) view returns(address)
-func (_Gateway *GatewayCaller) Validators(opts *bind.CallOpts, arg0 *big.Int) (common.Address, error) {
+// Solidity: function validator(address _validator) view returns((address,uint256,uint256))
+func (_Gateway *GatewayCaller) Validator(opts *bind.CallOpts, _validator common.Address) (IGatewayValidatorInfo, error) {
 	var out []interface{}
-	err := _Gateway.contract.Call(opts, &out, "validators", arg0)
+	err := _Gateway.contract.Call(opts, &out, "validator", _validator)
 
 	if err != nil {
-		return *new(common.Address), err
+		return *new(IGatewayValidatorInfo), err
 	}
 
-	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+	out0 := *abi.ConvertType(out[0], new(IGatewayValidatorInfo)).(*IGatewayValidatorInfo)
 
 	return out0, err
 
 }
 
-// Validators is a free data retrieval call binding the contract method 0x35aa2e44.
+// Validator is a free data retrieval call binding the contract method 0x223b3b7a.
 //
-// Solidity: function validators(uint256 ) view returns(address)
-func (_Gateway *GatewaySession) Validators(arg0 *big.Int) (common.Address, error) {
-	return _Gateway.Contract.Validators(&_Gateway.CallOpts, arg0)
+// Solidity: function validator(address _validator) view returns((address,uint256,uint256))
+func (_Gateway *GatewaySession) Validator(_validator common.Address) (IGatewayValidatorInfo, error) {
+	return _Gateway.Contract.Validator(&_Gateway.CallOpts, _validator)
 }
 
-// Validators is a free data retrieval call binding the contract method 0x35aa2e44.
+// Validator is a free data retrieval call binding the contract method 0x223b3b7a.
 //
-// Solidity: function validators(uint256 ) view returns(address)
-func (_Gateway *GatewayCallerSession) Validators(arg0 *big.Int) (common.Address, error) {
-	return _Gateway.Contract.Validators(&_Gateway.CallOpts, arg0)
+// Solidity: function validator(address _validator) view returns((address,uint256,uint256))
+func (_Gateway *GatewayCallerSession) Validator(_validator common.Address) (IGatewayValidatorInfo, error) {
+	return _Gateway.Contract.Validator(&_Gateway.CallOpts, _validator)
 }
 
 // AddValidator is a paid mutator transaction binding the contract method 0x4d238c8e.
@@ -800,6 +746,27 @@ func (_Gateway *GatewaySession) AddValidator(_validator common.Address) (*types.
 // Solidity: function addValidator(address _validator) returns()
 func (_Gateway *GatewayTransactorSession) AddValidator(_validator common.Address) (*types.Transaction, error) {
 	return _Gateway.Contract.AddValidator(&_Gateway.TransactOpts, _validator)
+}
+
+// CompleteIncomingInvoice is a paid mutator transaction binding the contract method 0xa0522b9d.
+//
+// Solidity: function completeIncomingInvoice(uint256 _invoiceId, address _recipient) returns(uint256)
+func (_Gateway *GatewayTransactor) CompleteIncomingInvoice(opts *bind.TransactOpts, _invoiceId *big.Int, _recipient common.Address) (*types.Transaction, error) {
+	return _Gateway.contract.Transact(opts, "completeIncomingInvoice", _invoiceId, _recipient)
+}
+
+// CompleteIncomingInvoice is a paid mutator transaction binding the contract method 0xa0522b9d.
+//
+// Solidity: function completeIncomingInvoice(uint256 _invoiceId, address _recipient) returns(uint256)
+func (_Gateway *GatewaySession) CompleteIncomingInvoice(_invoiceId *big.Int, _recipient common.Address) (*types.Transaction, error) {
+	return _Gateway.Contract.CompleteIncomingInvoice(&_Gateway.TransactOpts, _invoiceId, _recipient)
+}
+
+// CompleteIncomingInvoice is a paid mutator transaction binding the contract method 0xa0522b9d.
+//
+// Solidity: function completeIncomingInvoice(uint256 _invoiceId, address _recipient) returns(uint256)
+func (_Gateway *GatewayTransactorSession) CompleteIncomingInvoice(_invoiceId *big.Int, _recipient common.Address) (*types.Transaction, error) {
+	return _Gateway.Contract.CompleteIncomingInvoice(&_Gateway.TransactOpts, _invoiceId, _recipient)
 }
 
 // CreateIncomingInvoice is a paid mutator transaction binding the contract method 0x6d5d6daf.
@@ -884,27 +851,6 @@ func (_Gateway *GatewaySession) Pause() (*types.Transaction, error) {
 // Solidity: function pause() returns()
 func (_Gateway *GatewayTransactorSession) Pause() (*types.Transaction, error) {
 	return _Gateway.Contract.Pause(&_Gateway.TransactOpts)
-}
-
-// ProcessIncomingInvoice is a paid mutator transaction binding the contract method 0x48a40f43.
-//
-// Solidity: function processIncomingInvoice(uint256 _invoiceId, address _recipient) returns(uint256)
-func (_Gateway *GatewayTransactor) ProcessIncomingInvoice(opts *bind.TransactOpts, _invoiceId *big.Int, _recipient common.Address) (*types.Transaction, error) {
-	return _Gateway.contract.Transact(opts, "processIncomingInvoice", _invoiceId, _recipient)
-}
-
-// ProcessIncomingInvoice is a paid mutator transaction binding the contract method 0x48a40f43.
-//
-// Solidity: function processIncomingInvoice(uint256 _invoiceId, address _recipient) returns(uint256)
-func (_Gateway *GatewaySession) ProcessIncomingInvoice(_invoiceId *big.Int, _recipient common.Address) (*types.Transaction, error) {
-	return _Gateway.Contract.ProcessIncomingInvoice(&_Gateway.TransactOpts, _invoiceId, _recipient)
-}
-
-// ProcessIncomingInvoice is a paid mutator transaction binding the contract method 0x48a40f43.
-//
-// Solidity: function processIncomingInvoice(uint256 _invoiceId, address _recipient) returns(uint256)
-func (_Gateway *GatewayTransactorSession) ProcessIncomingInvoice(_invoiceId *big.Int, _recipient common.Address) (*types.Transaction, error) {
-	return _Gateway.Contract.ProcessIncomingInvoice(&_Gateway.TransactOpts, _invoiceId, _recipient)
 }
 
 // ProcessOutgoingInvoice is a paid mutator transaction binding the contract method 0x0fad96d3.
@@ -1096,48 +1042,6 @@ func (_Gateway *GatewayTransactorSession) UpdateConcensusThreshold(_concensusThr
 	return _Gateway.Contract.UpdateConcensusThreshold(&_Gateway.TransactOpts, _concensusThreshold)
 }
 
-// UpdateIncomingConcensusTime is a paid mutator transaction binding the contract method 0x2b40e804.
-//
-// Solidity: function updateIncomingConcensusTime(uint256 _incomingConcensusTime) returns()
-func (_Gateway *GatewayTransactor) UpdateIncomingConcensusTime(opts *bind.TransactOpts, _incomingConcensusTime *big.Int) (*types.Transaction, error) {
-	return _Gateway.contract.Transact(opts, "updateIncomingConcensusTime", _incomingConcensusTime)
-}
-
-// UpdateIncomingConcensusTime is a paid mutator transaction binding the contract method 0x2b40e804.
-//
-// Solidity: function updateIncomingConcensusTime(uint256 _incomingConcensusTime) returns()
-func (_Gateway *GatewaySession) UpdateIncomingConcensusTime(_incomingConcensusTime *big.Int) (*types.Transaction, error) {
-	return _Gateway.Contract.UpdateIncomingConcensusTime(&_Gateway.TransactOpts, _incomingConcensusTime)
-}
-
-// UpdateIncomingConcensusTime is a paid mutator transaction binding the contract method 0x2b40e804.
-//
-// Solidity: function updateIncomingConcensusTime(uint256 _incomingConcensusTime) returns()
-func (_Gateway *GatewayTransactorSession) UpdateIncomingConcensusTime(_incomingConcensusTime *big.Int) (*types.Transaction, error) {
-	return _Gateway.Contract.UpdateIncomingConcensusTime(&_Gateway.TransactOpts, _incomingConcensusTime)
-}
-
-// UpdateOutgoingConcensusTime is a paid mutator transaction binding the contract method 0x79a74320.
-//
-// Solidity: function updateOutgoingConcensusTime(uint256 _outgoingConcensusTime) returns()
-func (_Gateway *GatewayTransactor) UpdateOutgoingConcensusTime(opts *bind.TransactOpts, _outgoingConcensusTime *big.Int) (*types.Transaction, error) {
-	return _Gateway.contract.Transact(opts, "updateOutgoingConcensusTime", _outgoingConcensusTime)
-}
-
-// UpdateOutgoingConcensusTime is a paid mutator transaction binding the contract method 0x79a74320.
-//
-// Solidity: function updateOutgoingConcensusTime(uint256 _outgoingConcensusTime) returns()
-func (_Gateway *GatewaySession) UpdateOutgoingConcensusTime(_outgoingConcensusTime *big.Int) (*types.Transaction, error) {
-	return _Gateway.Contract.UpdateOutgoingConcensusTime(&_Gateway.TransactOpts, _outgoingConcensusTime)
-}
-
-// UpdateOutgoingConcensusTime is a paid mutator transaction binding the contract method 0x79a74320.
-//
-// Solidity: function updateOutgoingConcensusTime(uint256 _outgoingConcensusTime) returns()
-func (_Gateway *GatewayTransactorSession) UpdateOutgoingConcensusTime(_outgoingConcensusTime *big.Int) (*types.Transaction, error) {
-	return _Gateway.Contract.UpdateOutgoingConcensusTime(&_Gateway.TransactOpts, _outgoingConcensusTime)
-}
-
 // UpdateProposer is a paid mutator transaction binding the contract method 0xddf9f09f.
 //
 // Solidity: function updateProposer(address _proposer) returns()
@@ -1159,25 +1063,25 @@ func (_Gateway *GatewayTransactorSession) UpdateProposer(_proposer common.Addres
 	return _Gateway.Contract.UpdateProposer(&_Gateway.TransactOpts, _proposer)
 }
 
-// VerifyIncomingInvoice is a paid mutator transaction binding the contract method 0xd6b0b2f5.
+// VerifyIncomingInvoice is a paid mutator transaction binding the contract method 0x2b7a2c7a.
 //
-// Solidity: function verifyIncomingInvoice(uint256 _invoiceId, string _utxo, uint256 _amount, address _recipient) returns()
-func (_Gateway *GatewayTransactor) VerifyIncomingInvoice(opts *bind.TransactOpts, _invoiceId *big.Int, _utxo string, _amount *big.Int, _recipient common.Address) (*types.Transaction, error) {
-	return _Gateway.contract.Transact(opts, "verifyIncomingInvoice", _invoiceId, _utxo, _amount, _recipient)
+// Solidity: function verifyIncomingInvoice(uint256 _invoiceId, string _utxo, uint256 _amount, address _recipient, bool _isVerified) returns()
+func (_Gateway *GatewayTransactor) VerifyIncomingInvoice(opts *bind.TransactOpts, _invoiceId *big.Int, _utxo string, _amount *big.Int, _recipient common.Address, _isVerified bool) (*types.Transaction, error) {
+	return _Gateway.contract.Transact(opts, "verifyIncomingInvoice", _invoiceId, _utxo, _amount, _recipient, _isVerified)
 }
 
-// VerifyIncomingInvoice is a paid mutator transaction binding the contract method 0xd6b0b2f5.
+// VerifyIncomingInvoice is a paid mutator transaction binding the contract method 0x2b7a2c7a.
 //
-// Solidity: function verifyIncomingInvoice(uint256 _invoiceId, string _utxo, uint256 _amount, address _recipient) returns()
-func (_Gateway *GatewaySession) VerifyIncomingInvoice(_invoiceId *big.Int, _utxo string, _amount *big.Int, _recipient common.Address) (*types.Transaction, error) {
-	return _Gateway.Contract.VerifyIncomingInvoice(&_Gateway.TransactOpts, _invoiceId, _utxo, _amount, _recipient)
+// Solidity: function verifyIncomingInvoice(uint256 _invoiceId, string _utxo, uint256 _amount, address _recipient, bool _isVerified) returns()
+func (_Gateway *GatewaySession) VerifyIncomingInvoice(_invoiceId *big.Int, _utxo string, _amount *big.Int, _recipient common.Address, _isVerified bool) (*types.Transaction, error) {
+	return _Gateway.Contract.VerifyIncomingInvoice(&_Gateway.TransactOpts, _invoiceId, _utxo, _amount, _recipient, _isVerified)
 }
 
-// VerifyIncomingInvoice is a paid mutator transaction binding the contract method 0xd6b0b2f5.
+// VerifyIncomingInvoice is a paid mutator transaction binding the contract method 0x2b7a2c7a.
 //
-// Solidity: function verifyIncomingInvoice(uint256 _invoiceId, string _utxo, uint256 _amount, address _recipient) returns()
-func (_Gateway *GatewayTransactorSession) VerifyIncomingInvoice(_invoiceId *big.Int, _utxo string, _amount *big.Int, _recipient common.Address) (*types.Transaction, error) {
-	return _Gateway.Contract.VerifyIncomingInvoice(&_Gateway.TransactOpts, _invoiceId, _utxo, _amount, _recipient)
+// Solidity: function verifyIncomingInvoice(uint256 _invoiceId, string _utxo, uint256 _amount, address _recipient, bool _isVerified) returns()
+func (_Gateway *GatewayTransactorSession) VerifyIncomingInvoice(_invoiceId *big.Int, _utxo string, _amount *big.Int, _recipient common.Address, _isVerified bool) (*types.Transaction, error) {
+	return _Gateway.Contract.VerifyIncomingInvoice(&_Gateway.TransactOpts, _invoiceId, _utxo, _amount, _recipient, _isVerified)
 }
 
 // VerifyOutgoingInvoice is a paid mutator transaction binding the contract method 0x23f50928.
@@ -1220,6 +1124,152 @@ func (_Gateway *GatewaySession) Withdraw() (*types.Transaction, error) {
 // Solidity: function withdraw() returns()
 func (_Gateway *GatewayTransactorSession) Withdraw() (*types.Transaction, error) {
 	return _Gateway.Contract.Withdraw(&_Gateway.TransactOpts)
+}
+
+// GatewayIncomingInvoiceCompletedIterator is returned from FilterIncomingInvoiceCompleted and is used to iterate over the raw logs and unpacked data for IncomingInvoiceCompleted events raised by the Gateway contract.
+type GatewayIncomingInvoiceCompletedIterator struct {
+	Event *GatewayIncomingInvoiceCompleted // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *GatewayIncomingInvoiceCompletedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(GatewayIncomingInvoiceCompleted)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(GatewayIncomingInvoiceCompleted)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *GatewayIncomingInvoiceCompletedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *GatewayIncomingInvoiceCompletedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// GatewayIncomingInvoiceCompleted represents a IncomingInvoiceCompleted event raised by the Gateway contract.
+type GatewayIncomingInvoiceCompleted struct {
+	InvoiceId *big.Int
+	Status    uint8
+	Executor  common.Address
+	Raw       types.Log // Blockchain specific contextual infos
+}
+
+// FilterIncomingInvoiceCompleted is a free log retrieval operation binding the contract event 0x0040b1b3943ee0be2d706b8aaa4143a310c038463192e0d26b446e7edff7f80f.
+//
+// Solidity: event IncomingInvoiceCompleted(uint256 indexed invoiceId, uint8 status, address executor)
+func (_Gateway *GatewayFilterer) FilterIncomingInvoiceCompleted(opts *bind.FilterOpts, invoiceId []*big.Int) (*GatewayIncomingInvoiceCompletedIterator, error) {
+
+	var invoiceIdRule []interface{}
+	for _, invoiceIdItem := range invoiceId {
+		invoiceIdRule = append(invoiceIdRule, invoiceIdItem)
+	}
+
+	logs, sub, err := _Gateway.contract.FilterLogs(opts, "IncomingInvoiceCompleted", invoiceIdRule)
+	if err != nil {
+		return nil, err
+	}
+	return &GatewayIncomingInvoiceCompletedIterator{contract: _Gateway.contract, event: "IncomingInvoiceCompleted", logs: logs, sub: sub}, nil
+}
+
+// WatchIncomingInvoiceCompleted is a free log subscription operation binding the contract event 0x0040b1b3943ee0be2d706b8aaa4143a310c038463192e0d26b446e7edff7f80f.
+//
+// Solidity: event IncomingInvoiceCompleted(uint256 indexed invoiceId, uint8 status, address executor)
+func (_Gateway *GatewayFilterer) WatchIncomingInvoiceCompleted(opts *bind.WatchOpts, sink chan<- *GatewayIncomingInvoiceCompleted, invoiceId []*big.Int) (event.Subscription, error) {
+
+	var invoiceIdRule []interface{}
+	for _, invoiceIdItem := range invoiceId {
+		invoiceIdRule = append(invoiceIdRule, invoiceIdItem)
+	}
+
+	logs, sub, err := _Gateway.contract.WatchLogs(opts, "IncomingInvoiceCompleted", invoiceIdRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(GatewayIncomingInvoiceCompleted)
+				if err := _Gateway.contract.UnpackLog(event, "IncomingInvoiceCompleted", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseIncomingInvoiceCompleted is a log parse operation binding the contract event 0x0040b1b3943ee0be2d706b8aaa4143a310c038463192e0d26b446e7edff7f80f.
+//
+// Solidity: event IncomingInvoiceCompleted(uint256 indexed invoiceId, uint8 status, address executor)
+func (_Gateway *GatewayFilterer) ParseIncomingInvoiceCompleted(log types.Log) (*GatewayIncomingInvoiceCompleted, error) {
+	event := new(GatewayIncomingInvoiceCompleted)
+	if err := _Gateway.contract.UnpackLog(event, "IncomingInvoiceCompleted", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
 }
 
 // GatewayIncomingInvoiceCreatedIterator is returned from FilterIncomingInvoiceCreated and is used to iterate over the raw logs and unpacked data for IncomingInvoiceCreated events raised by the Gateway contract.
@@ -1363,152 +1413,6 @@ func (_Gateway *GatewayFilterer) WatchIncomingInvoiceCreated(opts *bind.WatchOpt
 func (_Gateway *GatewayFilterer) ParseIncomingInvoiceCreated(log types.Log) (*GatewayIncomingInvoiceCreated, error) {
 	event := new(GatewayIncomingInvoiceCreated)
 	if err := _Gateway.contract.UnpackLog(event, "IncomingInvoiceCreated", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
-// GatewayIncomingInvoiceProcessedIterator is returned from FilterIncomingInvoiceProcessed and is used to iterate over the raw logs and unpacked data for IncomingInvoiceProcessed events raised by the Gateway contract.
-type GatewayIncomingInvoiceProcessedIterator struct {
-	Event *GatewayIncomingInvoiceProcessed // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *GatewayIncomingInvoiceProcessedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(GatewayIncomingInvoiceProcessed)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(GatewayIncomingInvoiceProcessed)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *GatewayIncomingInvoiceProcessedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *GatewayIncomingInvoiceProcessedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// GatewayIncomingInvoiceProcessed represents a IncomingInvoiceProcessed event raised by the Gateway contract.
-type GatewayIncomingInvoiceProcessed struct {
-	InvoiceId *big.Int
-	Status    uint8
-	Executor  common.Address
-	Raw       types.Log // Blockchain specific contextual infos
-}
-
-// FilterIncomingInvoiceProcessed is a free log retrieval operation binding the contract event 0xbb7077ce3c9751b2159679848cc30ee0e846b99fdf513525d3908baccbb13b2c.
-//
-// Solidity: event IncomingInvoiceProcessed(uint256 indexed invoiceId, uint8 status, address executor)
-func (_Gateway *GatewayFilterer) FilterIncomingInvoiceProcessed(opts *bind.FilterOpts, invoiceId []*big.Int) (*GatewayIncomingInvoiceProcessedIterator, error) {
-
-	var invoiceIdRule []interface{}
-	for _, invoiceIdItem := range invoiceId {
-		invoiceIdRule = append(invoiceIdRule, invoiceIdItem)
-	}
-
-	logs, sub, err := _Gateway.contract.FilterLogs(opts, "IncomingInvoiceProcessed", invoiceIdRule)
-	if err != nil {
-		return nil, err
-	}
-	return &GatewayIncomingInvoiceProcessedIterator{contract: _Gateway.contract, event: "IncomingInvoiceProcessed", logs: logs, sub: sub}, nil
-}
-
-// WatchIncomingInvoiceProcessed is a free log subscription operation binding the contract event 0xbb7077ce3c9751b2159679848cc30ee0e846b99fdf513525d3908baccbb13b2c.
-//
-// Solidity: event IncomingInvoiceProcessed(uint256 indexed invoiceId, uint8 status, address executor)
-func (_Gateway *GatewayFilterer) WatchIncomingInvoiceProcessed(opts *bind.WatchOpts, sink chan<- *GatewayIncomingInvoiceProcessed, invoiceId []*big.Int) (event.Subscription, error) {
-
-	var invoiceIdRule []interface{}
-	for _, invoiceIdItem := range invoiceId {
-		invoiceIdRule = append(invoiceIdRule, invoiceIdItem)
-	}
-
-	logs, sub, err := _Gateway.contract.WatchLogs(opts, "IncomingInvoiceProcessed", invoiceIdRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(GatewayIncomingInvoiceProcessed)
-				if err := _Gateway.contract.UnpackLog(event, "IncomingInvoiceProcessed", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseIncomingInvoiceProcessed is a log parse operation binding the contract event 0xbb7077ce3c9751b2159679848cc30ee0e846b99fdf513525d3908baccbb13b2c.
-//
-// Solidity: event IncomingInvoiceProcessed(uint256 indexed invoiceId, uint8 status, address executor)
-func (_Gateway *GatewayFilterer) ParseIncomingInvoiceProcessed(log types.Log) (*GatewayIncomingInvoiceProcessed, error) {
-	event := new(GatewayIncomingInvoiceProcessed)
-	if err := _Gateway.contract.UnpackLog(event, "IncomingInvoiceProcessed", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log
@@ -1661,6 +1565,152 @@ func (_Gateway *GatewayFilterer) ParseIncomingInvoiceRefunded(log types.Log) (*G
 	return event, nil
 }
 
+// GatewayIncomingInvoiceRejectedIterator is returned from FilterIncomingInvoiceRejected and is used to iterate over the raw logs and unpacked data for IncomingInvoiceRejected events raised by the Gateway contract.
+type GatewayIncomingInvoiceRejectedIterator struct {
+	Event *GatewayIncomingInvoiceRejected // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *GatewayIncomingInvoiceRejectedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(GatewayIncomingInvoiceRejected)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(GatewayIncomingInvoiceRejected)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *GatewayIncomingInvoiceRejectedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *GatewayIncomingInvoiceRejectedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// GatewayIncomingInvoiceRejected represents a IncomingInvoiceRejected event raised by the Gateway contract.
+type GatewayIncomingInvoiceRejected struct {
+	InvoiceId *big.Int
+	Status    uint8
+	Executor  common.Address
+	Raw       types.Log // Blockchain specific contextual infos
+}
+
+// FilterIncomingInvoiceRejected is a free log retrieval operation binding the contract event 0x7da96e6608f6e569e80aaef406ea92a86644ee8234e16f847c93880a0d8c16ff.
+//
+// Solidity: event IncomingInvoiceRejected(uint256 indexed invoiceId, uint8 status, address executor)
+func (_Gateway *GatewayFilterer) FilterIncomingInvoiceRejected(opts *bind.FilterOpts, invoiceId []*big.Int) (*GatewayIncomingInvoiceRejectedIterator, error) {
+
+	var invoiceIdRule []interface{}
+	for _, invoiceIdItem := range invoiceId {
+		invoiceIdRule = append(invoiceIdRule, invoiceIdItem)
+	}
+
+	logs, sub, err := _Gateway.contract.FilterLogs(opts, "IncomingInvoiceRejected", invoiceIdRule)
+	if err != nil {
+		return nil, err
+	}
+	return &GatewayIncomingInvoiceRejectedIterator{contract: _Gateway.contract, event: "IncomingInvoiceRejected", logs: logs, sub: sub}, nil
+}
+
+// WatchIncomingInvoiceRejected is a free log subscription operation binding the contract event 0x7da96e6608f6e569e80aaef406ea92a86644ee8234e16f847c93880a0d8c16ff.
+//
+// Solidity: event IncomingInvoiceRejected(uint256 indexed invoiceId, uint8 status, address executor)
+func (_Gateway *GatewayFilterer) WatchIncomingInvoiceRejected(opts *bind.WatchOpts, sink chan<- *GatewayIncomingInvoiceRejected, invoiceId []*big.Int) (event.Subscription, error) {
+
+	var invoiceIdRule []interface{}
+	for _, invoiceIdItem := range invoiceId {
+		invoiceIdRule = append(invoiceIdRule, invoiceIdItem)
+	}
+
+	logs, sub, err := _Gateway.contract.WatchLogs(opts, "IncomingInvoiceRejected", invoiceIdRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(GatewayIncomingInvoiceRejected)
+				if err := _Gateway.contract.UnpackLog(event, "IncomingInvoiceRejected", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseIncomingInvoiceRejected is a log parse operation binding the contract event 0x7da96e6608f6e569e80aaef406ea92a86644ee8234e16f847c93880a0d8c16ff.
+//
+// Solidity: event IncomingInvoiceRejected(uint256 indexed invoiceId, uint8 status, address executor)
+func (_Gateway *GatewayFilterer) ParseIncomingInvoiceRejected(log types.Log) (*GatewayIncomingInvoiceRejected, error) {
+	event := new(GatewayIncomingInvoiceRejected)
+	if err := _Gateway.contract.UnpackLog(event, "IncomingInvoiceRejected", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
 // GatewayIncomingInvoiceVerifiedIterator is returned from FilterIncomingInvoiceVerified and is used to iterate over the raw logs and unpacked data for IncomingInvoiceVerified events raised by the Gateway contract.
 type GatewayIncomingInvoiceVerifiedIterator struct {
 	Event *GatewayIncomingInvoiceVerified // Event containing the contract specifics and raw log
@@ -1732,12 +1782,13 @@ func (it *GatewayIncomingInvoiceVerifiedIterator) Close() error {
 type GatewayIncomingInvoiceVerified struct {
 	InvoiceId *big.Int
 	Validator common.Address
+	Verified  bool
 	Raw       types.Log // Blockchain specific contextual infos
 }
 
-// FilterIncomingInvoiceVerified is a free log retrieval operation binding the contract event 0x4332a91cb6a30c7e70ad6f710121f41b0c28b16a461db34a4c91d441bc0ca0e5.
+// FilterIncomingInvoiceVerified is a free log retrieval operation binding the contract event 0x2d88fccf7a5b293b2b7dee2f4671af10b2df68f488bc92af96fea710ce36a756.
 //
-// Solidity: event IncomingInvoiceVerified(uint256 indexed invoiceId, address validator)
+// Solidity: event IncomingInvoiceVerified(uint256 indexed invoiceId, address validator, bool verified)
 func (_Gateway *GatewayFilterer) FilterIncomingInvoiceVerified(opts *bind.FilterOpts, invoiceId []*big.Int) (*GatewayIncomingInvoiceVerifiedIterator, error) {
 
 	var invoiceIdRule []interface{}
@@ -1752,9 +1803,9 @@ func (_Gateway *GatewayFilterer) FilterIncomingInvoiceVerified(opts *bind.Filter
 	return &GatewayIncomingInvoiceVerifiedIterator{contract: _Gateway.contract, event: "IncomingInvoiceVerified", logs: logs, sub: sub}, nil
 }
 
-// WatchIncomingInvoiceVerified is a free log subscription operation binding the contract event 0x4332a91cb6a30c7e70ad6f710121f41b0c28b16a461db34a4c91d441bc0ca0e5.
+// WatchIncomingInvoiceVerified is a free log subscription operation binding the contract event 0x2d88fccf7a5b293b2b7dee2f4671af10b2df68f488bc92af96fea710ce36a756.
 //
-// Solidity: event IncomingInvoiceVerified(uint256 indexed invoiceId, address validator)
+// Solidity: event IncomingInvoiceVerified(uint256 indexed invoiceId, address validator, bool verified)
 func (_Gateway *GatewayFilterer) WatchIncomingInvoiceVerified(opts *bind.WatchOpts, sink chan<- *GatewayIncomingInvoiceVerified, invoiceId []*big.Int) (event.Subscription, error) {
 
 	var invoiceIdRule []interface{}
@@ -1794,9 +1845,9 @@ func (_Gateway *GatewayFilterer) WatchIncomingInvoiceVerified(opts *bind.WatchOp
 	}), nil
 }
 
-// ParseIncomingInvoiceVerified is a log parse operation binding the contract event 0x4332a91cb6a30c7e70ad6f710121f41b0c28b16a461db34a4c91d441bc0ca0e5.
+// ParseIncomingInvoiceVerified is a log parse operation binding the contract event 0x2d88fccf7a5b293b2b7dee2f4671af10b2df68f488bc92af96fea710ce36a756.
 //
-// Solidity: event IncomingInvoiceVerified(uint256 indexed invoiceId, address validator)
+// Solidity: event IncomingInvoiceVerified(uint256 indexed invoiceId, address validator, bool verified)
 func (_Gateway *GatewayFilterer) ParseIncomingInvoiceVerified(log types.Log) (*GatewayIncomingInvoiceVerified, error) {
 	event := new(GatewayIncomingInvoiceVerified)
 	if err := _Gateway.contract.UnpackLog(event, "IncomingInvoiceVerified", log); err != nil {
