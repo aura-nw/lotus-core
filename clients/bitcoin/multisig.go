@@ -1,6 +1,7 @@
 package bitcoin
 
 import (
+	"encoding/hex"
 	"errors"
 	"github.com/aura-nw/btc-bridge-core/types"
 	"github.com/btcsuite/btcd/btcec/v2"
@@ -25,13 +26,25 @@ type multiSigClient struct {
 	minFee       btcutil.Amount
 }
 
-func NewMultiSigClient(l *slog.Logger, c Client, redeem []byte, privKey *btcec.PrivateKey) MultiSigClient {
+func NewMultiSigClient(l *slog.Logger, c Client, redeem string, privKey string) (MultiSigClient, error) {
+	// redeem script
+	redeemScript, err := hex.DecodeString(redeem)
+	if err != nil {
+		return nil, err
+	}
+
+	// private key
+	privateKey, err := btcutil.DecodeWIF(privKey)
+	if err != nil {
+		return nil, err
+	}
+
 	return &multiSigClient{
 		l:            l,
 		c:            c,
-		redeemScript: redeem,
-		privateKey:   privKey,
-	}
+		redeemScript: redeemScript,
+		privateKey:   privateKey.PrivKey,
+	}, nil
 }
 
 func (m *multiSigClient) CreateBTCRawTx(withdrawOutput []types.Output) (*wire.MsgTx, error) {

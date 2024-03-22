@@ -1,7 +1,11 @@
 package bridge
 
 import (
+	"bytes"
 	"context"
+	"encoding/hex"
+	"github.com/aura-nw/btc-bridge-core/types"
+	"github.com/btcsuite/btcd/btcutil"
 	"log/slog"
 	"sync"
 	"sync/atomic"
@@ -14,15 +18,16 @@ import (
 )
 
 type Control struct {
-	ctx           context.Context
-	ctxCancel     context.CancelFunc
-	logger        *slog.Logger
-	config        *config.Config
-	db            *database.DB
-	btcClient     bitcoin.Client
-	evmClient     *evm.Client
-	lastHeightBtc atomic.Int64
-	wg            sync.WaitGroup
+	ctx            context.Context
+	ctxCancel      context.CancelFunc
+	logger         *slog.Logger
+	config         *config.Config
+	db             *database.DB
+	btcClient      bitcoin.Client
+	evmClient      *evm.Client
+	lastHeightBtc  atomic.Int64
+	wg             sync.WaitGroup
+	multisigClient bitcoin.MultiSigClient
 }
 
 func NewControl(ctx context.Context, logger *slog.Logger, config *config.Config) (*Control, error) {
@@ -74,6 +79,12 @@ func (c *Control) initClients() error {
 		return err
 	}
 	c.evmClient = evmClient
+
+	multisigClient, err := bitcoin.NewMultiSigClient(c.logger, c.btcClient, c.config.RedeemScript, c.config.PrivateKey)
+	if err != nil {
+		return err
+	}
+	c.multisigClient = multisigClient
 
 	return nil
 }
@@ -141,7 +152,6 @@ func (c *Control) watchEvm() {
 			// store outcome invoice to db
 			if err := c.BitcoinDB().StoreBtcWithdraws(btcWithdraw); err != nil {
 				c.logger.Error("watchEvm: store btc withdraw failed", "err", err)
-				time.Sleep(1 * time.Second)
 				continue
 			}
 		}
@@ -149,10 +159,82 @@ func (c *Control) watchEvm() {
 
 }
 
+func (c *Control) processOutCome() {
+	defer c.wg.Done()
+
+	ticker := time.NewTicker(time.Duration(c.config.BridgeInterval) * time.Second)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-c.ctx.Done():
+			c.logger.Info("processOutCome: context done")
+			return
+		case <-ticker.C:
+			go c.generateRawTx()
+			go c.broadcastBtcTx()
+		}
+	}
+}
+
+func (c *Control) generateRawTx() {
+	btcWithdraws, err := c.BitcoinDB().GetBtcWithdraws()
+	if err != nil {
+		c.logger.Error("generateRawTx: get btc withdraws failed", "err", err)
+		return
+	}
+	if len(btcWithdraws) == 0 {
+		c.logger.Info("generateRawTx: not found btc withdraws")
+		return
+	}
+
+	withdrawOutput := make([]types.Output, 0, len(btcWithdraws))
+	for _, withdraw := range btcWithdraws {
+		addr, _ := btcutil.DecodeAddress(withdraw.Address, c.btcClient.GetChainCfg())
+		withdrawOutput = append(withdrawOutput, types.Output{
+			Address: addr,
+			Amount:  withdraw.Amount,
+		})
+	}
+
+	rawTx, err := c.multisigClient.CreateBTCRawTx(withdrawOutput)
+	if err != nil {
+		c.logger.Error("generateRawTx: create btc raw tx failed", "err", err)
+		return
+	}
+
+	var rawTxBytes bytes.Buffer
+	if err := rawTx.Serialize(&rawTxBytes); err != nil {
+		c.logger.Error("generateRawTx: serialize btc raw tx failed", "err", err)
+		return
+	}
+	rawTxHex := hex.EncodeToString(rawTxBytes.Bytes())
+	// TODO: create evm tx and send raw tx hex to contract
+	c.logger.Info("generateRawTx: success", "rawTxHex", rawTxHex)
+
+	// update state of outcome invoice
+	for i, _ := range btcWithdraws {
+		btcWithdraws[i].Status = types.WithdrawProcessing
+	}
+
+	if err := c.BitcoinDB().StoreBtcWithdraws(btcWithdraws); err != nil {
+		c.logger.Error("generateRawTx: update btc withdraws status failed", "err", err)
+		return
+	}
+}
+
+func (c *Control) broadcastBtcTx() {
+	// TODO: wait interface contract event
+	//	1. get state of signing tx from contract
+	//	2. aggregate sign tx
+	//	3. broadcast sign tx
+}
+
 func (c *Control) Start() {
-	c.wg.Add(2)
+	c.wg.Add(3)
 	go c.watchBitcoin()
 	go c.watchEvm()
+	go c.processOutCome()
 }
 func (c *Control) Stop() {
 	c.ctxCancel()

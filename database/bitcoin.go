@@ -26,6 +26,8 @@ type BitcoinDB interface {
 	StoreBtcWithdraw(withdrawal types.BtcWithdraw) error
 	// StoreBtcWithdraws stores BTC withdraws in EVM database.
 	StoreBtcWithdraws(withdrawals []types.BtcWithdraw) error
+	// GetBtcWithdraws returns BTC withdraws from EVM database.
+	GetBtcWithdraws() ([]types.BtcWithdraw, error)
 
 	// For incriptions transfer
 	StoreInscriptionDeposits([]types.InscriptionDeposit) error
@@ -67,6 +69,13 @@ func (b *bitcoinDBImpl) StoreBtcWithdraws(withdrawals []types.BtcWithdraw) error
 	}
 
 	return result.Error
+}
+
+// GetBtcWithdraws implements BitcoinDB.
+func (b *bitcoinDBImpl) GetBtcWithdraws() ([]types.BtcWithdraw, error) {
+	var withdrawals []types.BtcWithdraw
+	result := b.db.Where(types.BtcWithdraw{Status: types.WithdrawNew}).Find(&withdrawals).Limit(defaultBatchSize)
+	return withdrawals, result.Error
 }
 
 // StoreInscriptionDeposits implements BitcoinDB.

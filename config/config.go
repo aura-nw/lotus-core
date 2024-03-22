@@ -8,6 +8,9 @@ type Config struct {
 	Operators []OperatorInfo `toml:"operators"`
 	// Address of bitcoin multsig wallet
 	BitcoinMultisig string `toml:"bitcoin-multisig"`
+	BridgeInterval  int64  `toml:"bridge-interval"`
+	RedeemScript    string `toml:"redeem-script"`
+	PrivateKey      string `toml:"private-key"`
 }
 
 type OperatorInfo struct {

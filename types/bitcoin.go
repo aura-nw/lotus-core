@@ -1,6 +1,7 @@
 package types
 
 import (
+	"github.com/btcsuite/btcd/btcutil"
 	"gorm.io/gorm"
 	"math/big"
 )
@@ -15,10 +16,10 @@ const (
 type WithdrawStatus string
 
 const (
-	WithdrawNew     WithdrawStatus = "new"
-	WithdrawPending WithdrawStatus = "pending"
-	WithdrawSuccess WithdrawStatus = "success"
-	WithdrawFailed  WithdrawStatus = "failed"
+	WithdrawNew        WithdrawStatus = "new"
+	WithdrawProcessing WithdrawStatus = "processing"
+	WithdrawSuccess    WithdrawStatus = "success"
+	WithdrawFailed     WithdrawStatus = "failed"
 )
 
 type BtcDeposit struct {
@@ -60,7 +61,7 @@ type BtcWithdraw struct {
 
 	// Receiver is account address of receiver in counterparty chain
 	Address string         `json:"address" gorm:"not null"`
-	Amount  string         `json:"amount" gorm:"not null"`
+	Amount  btcutil.Amount `json:"amount" gorm:"not null"`
 	Status  WithdrawStatus `json:"status" gorm:"not null;default:'new';index"`
 }
 
