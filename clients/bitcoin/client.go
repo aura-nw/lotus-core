@@ -3,6 +3,10 @@ package bitcoin
 import (
 	"encoding/hex"
 	"fmt"
+	"github.com/btcsuite/btcd/btcutil"
+	"github.com/btcsuite/btcd/chaincfg"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
+	"github.com/btcsuite/btcd/wire"
 	"log/slog"
 	"strings"
 
@@ -17,12 +21,17 @@ import (
 type Client interface {
 	GetBtcDeposits(height int64, filterAddr string, minConfirms int64) ([]types.BtcDeposit, error)
 	GetTokenDeposits(height int64, filterAddr string, minConfirms int64) ([]types.InscriptionDeposit, error)
+	ListUnspent() ([]btcjson.ListUnspentResult, error)
+	GetChainCfg() *chaincfg.Params
+	CreateRawTransaction(inputs []btcjson.TransactionInput, outputs map[btcutil.Address]btcutil.Amount) (*wire.MsgTx, error)
+	SendRawTransaction(tx *wire.MsgTx) (*chainhash.Hash, error)
 }
 
 type clientImpl struct {
 	info      config.BitcoinInfo
 	logger    *slog.Logger
 	rpcClient *rpcclient.Client
+	cfgChain  *chaincfg.Params
 }
 
 var _ Client = &clientImpl{}
@@ -39,11 +48,35 @@ func NewClient(logger *slog.Logger, info config.BitcoinInfo) (Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &clientImpl{
+	c := &clientImpl{
 		info:      info,
 		logger:    logger,
 		rpcClient: rpcClient,
-	}, nil
+	}
+	if info.Network == "mainnet" {
+		c.cfgChain = &chaincfg.MainNetParams
+	} else {
+		c.cfgChain = &chaincfg.TestNet3Params
+	}
+
+	return c, nil
+}
+
+func (c *clientImpl) ListUnspent() ([]btcjson.ListUnspentResult, error) {
+	return c.rpcClient.ListUnspent()
+}
+
+func (c *clientImpl) GetChainCfg() *chaincfg.Params {
+	return c.cfgChain
+}
+
+func (c *clientImpl) CreateRawTransaction(inputs []btcjson.TransactionInput,
+	outputs map[btcutil.Address]btcutil.Amount) (*wire.MsgTx, error) {
+	return c.rpcClient.CreateRawTransaction(inputs, outputs, nil)
+}
+
+func (c *clientImpl) SendRawTransaction(tx *wire.MsgTx) (*chainhash.Hash, error) {
+	return c.rpcClient.SendRawTransaction(tx, true)
 }
 
 func (c *clientImpl) GetBtcDeposits(height int64, filterAddr string, minConfirms int64) ([]types.BtcDeposit, error) {
