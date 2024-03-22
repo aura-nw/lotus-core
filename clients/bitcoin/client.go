@@ -72,6 +72,7 @@ func (c *clientImpl) GetBtcDeposits(height int64, filterAddr string, minConfirms
 					Sender:         "",
 					MultisigWallet: filterAddr,
 					Amount:         fmt.Sprintf("%f", vout.Value),
+					Idx:            vout.N,
 				})
 			}
 		}

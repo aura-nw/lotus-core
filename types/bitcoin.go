@@ -1,7 +1,28 @@
 package types
 
+import (
+	"gorm.io/gorm"
+	"math/big"
+)
+
+type UTXOStatus string
+
+const (
+	Used   UTXOStatus = "used"
+	UnUsed UTXOStatus = "unused"
+)
+
+type WithdrawStatus string
+
+const (
+	WithdrawNew     WithdrawStatus = "new"
+	WithdrawPending WithdrawStatus = "pending"
+	WithdrawSuccess WithdrawStatus = "success"
+	WithdrawFailed  WithdrawStatus = "failed"
+)
+
 type BtcDeposit struct {
-	TxHash string `json:"txHash" gorm:"primary_key:true;not null"`
+	TxHash string `json:"txHash" gorm:"primary_key:true;not null;index"`
 	Height int64  `json:"height" gorm:"index;not null"`
 	Memo   string `json:"memo"`
 	// Receiver is account address of receiver in counterparty chain
@@ -10,7 +31,9 @@ type BtcDeposit struct {
 	Sender         string `json:"sender" gorm:"not null"`
 	MultisigWallet string `json:"multisig_wallet" gorm:"not null"`
 	// Amount is bitcoin amount was send
-	Amount string `json:"amount" gorm:"not null"`
+	Amount string     `json:"amount" gorm:"not null"`
+	Idx    uint32     `json:"idx" gorm:"not null;index"`
+	Status UTXOStatus `json:"status" gorm:"not null; default:'unused';index"`
 }
 
 func (BtcDeposit) TableName() string {
@@ -28,10 +51,20 @@ func (InscriptionDeposit) TableName() string {
 	return "inscription_deposits"
 }
 
-type BtcWithdrawal struct {
+type BtcWithdraw struct {
+	gorm.Model
+
+	TxHash    string   `json:"txHash" gorm:"primary_key:true;not null;index"`
+	Height    int64    `json:"height" gorm:"index;not null"`
+	InvoiceId *big.Int `json:"invoiceId" gorm:"not null"`
+
+	// Receiver is account address of receiver in counterparty chain
+	Address string         `json:"address" gorm:"not null"`
+	Amount  string         `json:"amount" gorm:"not null"`
+	Status  WithdrawStatus `json:"status" gorm:"not null;default:'new';index"`
 }
 
-func (BtcWithdrawal) TableName() string {
+func (BtcWithdraw) TableName() string {
 	return "btc_withdrawals"
 }
 

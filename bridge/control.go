@@ -119,6 +119,34 @@ func (c *Control) watchBitcoin() {
 
 func (c *Control) watchEvm() {
 	defer c.wg.Done()
+
+	ticker := time.NewTicker(time.Duration(c.config.Evm.Interval) * time.Second)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-c.ctx.Done():
+			c.logger.Info("watchEvm: context done")
+			return
+		case <-ticker.C:
+			btcWithdraw, err := c.evmClient.FilterOutgoingInvoice()
+			if err != nil {
+				c.logger.Error("watchEvm: filter outgoing invoice failed", "err", err)
+				time.Sleep(1 * time.Second)
+				continue
+			}
+
+			c.logger.Info("watchEvm: found btc withdraw", "len", len(btcWithdraw))
+
+			// store outcome invoice to db
+			if err := c.BitcoinDB().StoreBtcWithdraws(btcWithdraw); err != nil {
+				c.logger.Error("watchEvm: store btc withdraw failed", "err", err)
+				time.Sleep(1 * time.Second)
+				continue
+			}
+		}
+	}
+
 }
 
 func (c *Control) Start() {

@@ -22,7 +22,10 @@ type BitcoinDB interface {
 
 	// For BTC transfer
 	StoreBtcDeposits([]types.BtcDeposit) error
-	StoreBtcWithdrawals([]types.BtcWithdrawal) error
+	// StoreBtcWithdraw stores BTC withdraw in EVM database.
+	StoreBtcWithdraw(withdrawal types.BtcWithdraw) error
+	// StoreBtcWithdraws stores BTC withdraws in EVM database.
+	StoreBtcWithdraws(withdrawals []types.BtcWithdraw) error
 
 	// For incriptions transfer
 	StoreInscriptionDeposits([]types.InscriptionDeposit) error
@@ -55,8 +58,8 @@ func (b *bitcoinDBImpl) StoreBtcDeposits(deposits []types.BtcDeposit) error {
 	return result.Error
 }
 
-// StoreBtcWithdrawals implements BitcoinDB.
-func (b *bitcoinDBImpl) StoreBtcWithdrawals(withdrawals []types.BtcWithdrawal) error {
+// StoreBtcWithdraws implements BitcoinDB.
+func (b *bitcoinDBImpl) StoreBtcWithdraws(withdrawals []types.BtcWithdraw) error {
 	deduped := b.db.Clauses(clause.OnConflict{Columns: []clause.Column{{Name: "tx_hash"}}, DoNothing: true})
 	result := deduped.CreateInBatches(&withdrawals, defaultBatchSize)
 	if result.Error == nil && int(result.RowsAffected) < len(withdrawals) {
@@ -86,6 +89,11 @@ func (b *bitcoinDBImpl) StoreInscriptionWithdrawals(withdrawals []types.Inscript
 	}
 
 	return result.Error
+}
+
+// StoreBtcWithdraw implements BitcoinDB.
+func (b *bitcoinDBImpl) StoreBtcWithdraw(withdrawal types.BtcWithdraw) error {
+	return b.db.Create(&withdrawal).Error
 }
 
 func newBitcoinDBImpl(logger *slog.Logger, db *gorm.DB) BitcoinDB {
