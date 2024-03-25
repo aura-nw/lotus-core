@@ -67,7 +67,7 @@ func NewDB(ctx context.Context, logger *slog.Logger, dbConfig config.DBInfo) (*D
 func autoMigrate(gormDB *gorm.DB) error {
 	return gormDB.AutoMigrate(
 		&types.BtcDeposit{},
-		&types.BtcWithdrawal{},
+		&types.BtcWithdraw{},
 		&types.InscriptionDeposit{},
 		&types.InscriptionWithdrawal{},
 	)

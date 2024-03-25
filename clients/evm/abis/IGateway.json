@@ -32,6 +32,31 @@
       },
       {
         "indexed": false,
+        "internalType": "enum IGateway.InvoiceStatus",
+        "name": "status",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "executor",
+        "type": "address"
+      }
+    ],
+    "name": "IncomingInvoiceCompleted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "invoiceId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "string",
         "name": "utxo",
         "type": "string"
@@ -50,31 +75,6 @@
       }
     ],
     "name": "IncomingInvoiceCreated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "invoiceId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "enum IGateway.InvoiceStatus",
-        "name": "status",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "executor",
-        "type": "address"
-      }
-    ],
-    "name": "IncomingInvoiceProcessed",
     "type": "event"
   },
   {
@@ -113,9 +113,40 @@
       },
       {
         "indexed": false,
+        "internalType": "enum IGateway.InvoiceStatus",
+        "name": "status",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "executor",
+        "type": "address"
+      }
+    ],
+    "name": "IncomingInvoiceRejected",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "invoiceId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "address",
         "name": "validator",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "verified",
+        "type": "bool"
       }
     ],
     "name": "IncomingInvoiceVerified",
@@ -163,31 +194,6 @@
       },
       {
         "indexed": false,
-        "internalType": "enum IGateway.InvoiceStatus",
-        "name": "status",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "txHash",
-        "type": "string"
-      }
-    ],
-    "name": "OutgoingInvoiceProcessed",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "invoiceId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
         "internalType": "string",
         "name": "txContent",
         "type": "string"
@@ -202,7 +208,32 @@
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "invoiceId",
+        "name": "txId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum IGateway.TxStatus",
+        "name": "status",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "txHash",
+        "type": "string"
+      }
+    ],
+    "name": "OutgoingTxProcessed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "txId",
         "type": "uint256"
       },
       {
@@ -213,12 +244,18 @@
       },
       {
         "indexed": false,
+        "internalType": "bool",
+        "name": "verified",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
         "internalType": "string",
         "name": "signature",
         "type": "string"
       }
     ],
-    "name": "OutgoingInvoiceVerified",
+    "name": "OutgoingTxVerified",
     "type": "event"
   },
   {
@@ -239,12 +276,53 @@
     "name": "allValidators",
     "outputs": [
       {
-        "internalType": "address[]",
+        "components": [
+          {
+            "internalType": "address",
+            "name": "validator",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "nextIncomingInvoice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "nextOutgoingInvoice",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IGateway.ValidatorInfo[]",
         "name": "",
-        "type": "address[]"
+        "type": "tuple[]"
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_invoiceId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_recipient",
+        "type": "address"
+      }
+    ],
+    "name": "completeIncomingInvoice",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -266,29 +344,6 @@
       }
     ],
     "name": "createIncomingInvoice",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "from",
-        "type": "address"
-      },
-      {
-        "internalType": "string",
-        "name": "recipient",
-        "type": "string"
-      }
-    ],
-    "name": "createOutgoingInvoice",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -332,13 +387,13 @@
           },
           {
             "internalType": "address[]",
-            "name": "verifieds",
+            "name": "validators",
             "type": "address[]"
           },
           {
-            "internalType": "uint256",
-            "name": "createdAt",
-            "type": "uint256"
+            "internalType": "bool[]",
+            "name": "confirmations",
+            "type": "bool[]"
           },
           {
             "internalType": "string",
@@ -347,6 +402,62 @@
           }
         ],
         "internalType": "struct IGateway.IncomingInvoiceResponse",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_txId",
+        "type": "uint256"
+      }
+    ],
+    "name": "outgoingTx",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "txId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "invoiceIds",
+            "type": "uint256[]"
+          },
+          {
+            "internalType": "string",
+            "name": "txContent",
+            "type": "string"
+          },
+          {
+            "internalType": "address[]",
+            "name": "validators",
+            "type": "address[]"
+          },
+          {
+            "internalType": "string[]",
+            "name": "signatures",
+            "type": "string[]"
+          },
+          {
+            "internalType": "enum IGateway.TxStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "string",
+            "name": "txHash",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct IGateway.OutgoingTxInfo",
         "name": "",
         "type": "tuple"
       }
@@ -365,42 +476,8 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_invoiceId",
+        "name": "_txId",
         "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "_recipient",
-        "type": "address"
-      }
-    ],
-    "name": "processIncomingInvoice",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_invoiceId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "_recipient",
-        "type": "string"
       },
       {
         "internalType": "string",
@@ -408,7 +485,7 @@
         "type": "string"
       }
     ],
-    "name": "processOutgoingInvoice",
+    "name": "processOutgoingTx",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -462,19 +539,26 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "_invoiceId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "_recipient",
-        "type": "string"
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "invoiceId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "recipient",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct IGateway.OutgoingInvoiceBasicInfo[]",
+        "name": "_invoices",
+        "type": "tuple[]"
       },
       {
         "internalType": "string",
@@ -523,32 +607,6 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "_incomingConcensusTime",
-        "type": "uint256"
-      }
-    ],
-    "name": "updateIncomingConcensusTime",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_outgoingConcensusTime",
-        "type": "uint256"
-      }
-    ],
-    "name": "updateOutgoingConcensusTime",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address",
         "name": "_proposer",
         "type": "address"
@@ -557,6 +615,42 @@
     "name": "updateProposer",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_validator",
+        "type": "address"
+      }
+    ],
+    "name": "validator",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "validator",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "nextIncomingInvoice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "nextOutgoingInvoice",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IGateway.ValidatorInfo",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -580,6 +674,11 @@
         "internalType": "address",
         "name": "_recipient",
         "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isVerified",
+        "type": "bool"
       }
     ],
     "name": "verifyIncomingInvoice",
@@ -591,18 +690,13 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_invoiceId",
+        "name": "_txId",
         "type": "uint256"
       },
       {
-        "internalType": "uint256",
-        "name": "_amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "_recipient",
-        "type": "string"
+        "internalType": "bool",
+        "name": "_isVerified",
+        "type": "bool"
       },
       {
         "internalType": "string",
@@ -610,7 +704,7 @@
         "type": "string"
       }
     ],
-    "name": "verifyOutgoingInvoice",
+    "name": "verifyOutgoingTx",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -618,6 +712,24 @@
   {
     "inputs": [],
     "name": "withdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "recipient",
+        "type": "string"
+      }
+    ],
+    "name": "withdrawToken",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
