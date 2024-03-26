@@ -3,13 +3,14 @@ package bitcoin
 import (
 	"encoding/hex"
 	"errors"
+	"log/slog"
+
 	"github.com/aura-nw/btc-bridge-core/types"
 	"github.com/btcsuite/btcd/btcec/v2"
 	"github.com/btcsuite/btcd/btcjson"
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/txscript"
 	"github.com/btcsuite/btcd/wire"
-	"log/slog"
 )
 
 type MultiSigClient interface {

@@ -3,24 +3,24 @@ package bitcoin
 import (
 	"encoding/hex"
 	"fmt"
-	"github.com/btcsuite/btcd/btcutil"
-	"github.com/btcsuite/btcd/chaincfg"
-	"github.com/btcsuite/btcd/chaincfg/chainhash"
-	"github.com/btcsuite/btcd/wire"
 	"log/slog"
 	"strings"
 
 	"github.com/aura-nw/btc-bridge-core/config"
 	"github.com/aura-nw/btc-bridge-core/types"
 	"github.com/btcsuite/btcd/btcjson"
+	"github.com/btcsuite/btcd/btcutil"
+	"github.com/btcsuite/btcd/chaincfg"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/btcsuite/btcd/txscript"
+	"github.com/btcsuite/btcd/wire"
 )
 
 // Client defines Bitcoin client.
 type Client interface {
 	GetBtcDeposits(height int64, filterAddr string, minConfirms int64) ([]types.BtcDeposit, error)
-	GetTokenDeposits(height int64, filterAddr string, minConfirms int64) ([]types.InscriptionDeposit, error)
+	GetInscriptionDeposits(height int64, filterAddr string, minConfirms int64) ([]types.InscriptionDeposit, error)
 	ListUnspent() ([]btcjson.ListUnspentResult, error)
 	GetChainCfg() *chaincfg.Params
 	CreateRawTransaction(inputs []btcjson.TransactionInput, outputs map[btcutil.Address]btcutil.Amount) (*wire.MsgTx, error)
@@ -116,7 +116,7 @@ func (c *clientImpl) GetBtcDeposits(height int64, filterAddr string, minConfirms
 	return results, nil
 }
 
-func (c *clientImpl) GetTokenDeposits(height int64, filterAddr string, minConfirms int64) ([]types.InscriptionDeposit, error) {
+func (c *clientImpl) GetInscriptionDeposits(height int64, filterAddr string, minConfirms int64) ([]types.InscriptionDeposit, error) {
 	var results []types.InscriptionDeposit
 	return results, nil
 }
