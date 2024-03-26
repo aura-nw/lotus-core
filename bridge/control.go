@@ -4,30 +4,32 @@ import (
 	"bytes"
 	"context"
 	"encoding/hex"
-	"github.com/aura-nw/btc-bridge-core/types"
-	"github.com/btcsuite/btcd/btcutil"
 	"log/slog"
 	"sync"
-	"sync/atomic"
 	"time"
 
 	"github.com/aura-nw/btc-bridge-core/clients/bitcoin"
 	"github.com/aura-nw/btc-bridge-core/clients/evm"
 	"github.com/aura-nw/btc-bridge-core/config"
 	"github.com/aura-nw/btc-bridge-core/database"
+	"github.com/aura-nw/btc-bridge-core/types"
+	"github.com/btcsuite/btcd/btcutil"
 )
 
 type Control struct {
-	ctx            context.Context
-	ctxCancel      context.CancelFunc
-	logger         *slog.Logger
-	config         *config.Config
-	db             *database.DB
+	ctx       context.Context
+	ctxCancel context.CancelFunc
+
+	logger *slog.Logger
+	config *config.Config
+	db     *database.DB
+
 	btcClient      bitcoin.Client
-	evmClient      *evm.Client
-	lastHeightBtc  atomic.Int64
-	wg             sync.WaitGroup
+	evmClient      evm.Client
+	lastHeightBtc  int64
 	multisigClient bitcoin.MultiSigClient
+
+	wg sync.WaitGroup
 }
 
 func NewControl(ctx context.Context, logger *slog.Logger, config *config.Config) (*Control, error) {
@@ -47,13 +49,6 @@ func NewControl(ctx context.Context, logger *slog.Logger, config *config.Config)
 		logger.Error("init DB failed", "err", err)
 		return nil, err
 	}
-
-	lastHeightBtc, err := c.BitcoinDB().GetLastSeenHeight()
-	if err != nil {
-		logger.Error("get last seen height from bitcoin db failed", "err", err)
-		return nil, err
-	}
-	c.lastHeightBtc.Store(lastHeightBtc)
 
 	return c, nil
 }
@@ -92,7 +87,7 @@ func (c *Control) initClients() error {
 func (c *Control) watchBitcoin() {
 	defer c.wg.Done()
 
-	ticker := time.NewTicker(time.Duration(c.config.Bitcoin.Interval) * time.Second)
+	ticker := time.NewTicker(time.Duration(c.config.Bitcoin.QueryInterval) * time.Second)
 	defer ticker.Stop()
 
 	for {
@@ -101,7 +96,7 @@ func (c *Control) watchBitcoin() {
 			c.logger.Info("watchBitcoin: context done")
 			return
 		case <-ticker.C:
-			height := c.lastHeightBtc.Load()
+			height := c.lastHeightBtc
 			c.logger.Info("watchBitcoin: get btc deposits", "height", height)
 			btcDeposits, err := c.btcClient.GetBtcDeposits(height, c.config.BitcoinMultisig, c.config.Bitcoin.MinConfirms)
 			if err != nil {
@@ -121,7 +116,7 @@ func (c *Control) watchBitcoin() {
 				continue
 			}
 
-			c.lastHeightBtc.Add(1)
+			c.lastHeightBtc++
 
 			// build create invoice tx and send throught eth client
 		}
@@ -131,7 +126,7 @@ func (c *Control) watchBitcoin() {
 func (c *Control) watchEvm() {
 	defer c.wg.Done()
 
-	ticker := time.NewTicker(time.Duration(c.config.Evm.Interval) * time.Second)
+	ticker := time.NewTicker(time.Duration(c.config.Evm.QueryInterval) * time.Second)
 	defer ticker.Stop()
 
 	for {
