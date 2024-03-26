@@ -208,7 +208,7 @@ func (c *Control) generateRawTx() {
 	c.logger.Info("generateRawTx: success", "rawTxHex", rawTxHex)
 
 	// update state of outcome invoice
-	for i, _ := range btcWithdraws {
+	for i := range btcWithdraws {
 		btcWithdraws[i].Status = types.WithdrawProcessing
 	}
 
