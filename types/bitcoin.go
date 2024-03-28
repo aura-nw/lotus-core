@@ -1,9 +1,10 @@
 package types
 
 import (
+	"math/big"
+
 	"github.com/btcsuite/btcd/btcutil"
 	"gorm.io/gorm"
-	"math/big"
 )
 
 type UTXOStatus string
@@ -13,13 +14,13 @@ const (
 	UnUsed UTXOStatus = "unused"
 )
 
-type WithdrawStatus string
+type InvoiceStatus string
 
 const (
-	WithdrawNew        WithdrawStatus = "new"
-	WithdrawProcessing WithdrawStatus = "processing"
-	WithdrawSuccess    WithdrawStatus = "success"
-	WithdrawFailed     WithdrawStatus = "failed"
+	InvoiceNew        InvoiceStatus = "new"
+	InvoiceProcessing InvoiceStatus = "processing"
+	InvoiceSuccessed  InvoiceStatus = "successed"
+	InvoiceFailed     InvoiceStatus = "failed"
 )
 
 type BtcDeposit struct {
@@ -32,9 +33,10 @@ type BtcDeposit struct {
 	Sender         string `json:"sender" gorm:"not null"`
 	MultisigWallet string `json:"multisig_wallet" gorm:"not null"`
 	// Amount is bitcoin amount was send
-	Amount string     `json:"amount" gorm:"not null"`
-	Idx    uint32     `json:"idx" gorm:"not null;index"`
-	Status UTXOStatus `json:"status" gorm:"not null; default:'unused';index"`
+	Amount     string        `json:"amount" gorm:"not null"`
+	Idx        uint32        `json:"idx" gorm:"not null;index"`
+	UtxoStatus UTXOStatus    `json:"utxo_status" gorm:"not null; default:'unused';index"`
+	Status     InvoiceStatus `json:"status" gorm:"not null; default:'new';index"`
 }
 
 func (BtcDeposit) TableName() string {
@@ -62,7 +64,7 @@ type BtcWithdraw struct {
 	// Receiver is account address of receiver in counterparty chain
 	Address string         `json:"address" gorm:"not null"`
 	Amount  btcutil.Amount `json:"amount" gorm:"not null"`
-	Status  WithdrawStatus `json:"status" gorm:"not null;default:'new';index"`
+	Status  InvoiceStatus  `json:"status" gorm:"not null;default:'new';index"`
 }
 
 func (BtcWithdraw) TableName() string {

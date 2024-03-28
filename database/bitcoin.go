@@ -1,6 +1,7 @@
 package database
 
 import (
+	"errors"
 	"log/slog"
 
 	"github.com/aura-nw/btc-bridge-core/types"
@@ -14,6 +15,7 @@ const (
 
 type ChainView interface {
 	GetLastSeenHeight() (int64, error)
+	GetDepositsByStatus(status []types.InvoiceStatus) ([]*types.BtcDeposit, error)
 }
 
 type BitcoinDB interface {
@@ -22,6 +24,7 @@ type BitcoinDB interface {
 
 	// For BTC transfer
 	StoreBtcDeposits([]types.BtcDeposit) error
+	UpdateBtcDeposit(*types.BtcDeposit) error
 	// StoreBtcWithdraw stores BTC withdraw in EVM database.
 	StoreBtcWithdraw(withdrawal types.BtcWithdraw) error
 	// StoreBtcWithdraws stores BTC withdraws in EVM database.
@@ -49,6 +52,23 @@ func (b *bitcoinDBImpl) GetLastSeenHeight() (int64, error) {
 	return 2579303, nil // for testing
 }
 
+// UpdateBtcDeposit implements BitcoinDB.
+func (b *bitcoinDBImpl) UpdateBtcDeposit(depsosit *types.BtcDeposit) error {
+	return b.db.Save(depsosit).Error
+}
+
+// GetDepositsByStatus implements BitcoinDB.
+func (b *bitcoinDBImpl) GetDepositsByStatus(status []types.InvoiceStatus) ([]*types.BtcDeposit, error) {
+	var results []*types.BtcDeposit
+	err := b.db.Where("status IN (?)", status).Find(&results).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return []*types.BtcDeposit{}, nil
+		}
+	}
+	return results, err
+}
+
 // StoreBtcDeposits implements BitcoinDB.
 func (b *bitcoinDBImpl) StoreBtcDeposits(deposits []types.BtcDeposit) error {
 	deduped := b.db.Clauses(clause.OnConflict{Columns: []clause.Column{{Name: "tx_hash"}}, DoNothing: true})
@@ -74,7 +94,7 @@ func (b *bitcoinDBImpl) StoreBtcWithdraws(withdrawals []types.BtcWithdraw) error
 // GetBtcWithdraws implements BitcoinDB.
 func (b *bitcoinDBImpl) GetBtcWithdraws() ([]types.BtcWithdraw, error) {
 	var withdrawals []types.BtcWithdraw
-	result := b.db.Where(types.BtcWithdraw{Status: types.WithdrawNew}).Find(&withdrawals).Limit(defaultBatchSize)
+	result := b.db.Where(types.BtcWithdraw{Status: types.InvoiceNew}).Find(&withdrawals).Limit(defaultBatchSize)
 	return withdrawals, result.Error
 }
 

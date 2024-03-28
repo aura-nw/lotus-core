@@ -84,7 +84,7 @@ func (c *Control) initClients() error {
 	return nil
 }
 
-func (c *Control) watchBitcoin() {
+func (c *Control) watchBitcoinDeposits() {
 	defer c.wg.Done()
 
 	ticker := time.NewTicker(time.Duration(c.config.Bitcoin.QueryInterval) * time.Second)
@@ -100,7 +100,7 @@ func (c *Control) watchBitcoin() {
 			c.logger.Info("watchBitcoin: get btc deposits", "height", height)
 			btcDeposits, err := c.btcClient.GetBtcDeposits(height, c.config.BitcoinMultisig, c.config.Bitcoin.MinConfirms)
 			if err != nil {
-				c.logger.Error("watchBitcoin: get btc deposits from btc client failed", "err", err)
+				c.logger.Error("watchBitcoin: get btc deposits from btc client error", "err", err)
 				time.Sleep(1 * time.Second)
 				continue
 			}
@@ -111,15 +111,56 @@ func (c *Control) watchBitcoin() {
 			}
 			c.logger.Info("watchBitcoin: found btc deposits", "height", height, "len", len(btcDeposits))
 			if err := c.BitcoinDB().StoreBtcDeposits(btcDeposits); err != nil {
-				c.logger.Error("watchBitcoin: store btc deposits failed", "err", err)
+				c.logger.Error("watchBitcoin: store btc deposits error", "err", err)
 				time.Sleep(1 * time.Second)
 				continue
 			}
-
 			c.lastHeightBtc++
-
-			// build create invoice tx and send throught eth client
 		}
+	}
+}
+
+func (c *Control) processDeposits() {
+	c.logger.Info("starting processing deposit events", "multisig", c.config.BitcoinMultisig)
+	defer c.wg.Done()
+
+	for {
+		pendingDeposits, err := c.BitcoinDB().GetDepositsByStatus([]types.InvoiceStatus{
+			types.InvoiceNew,
+			types.InvoiceFailed,
+		})
+		if err != nil {
+			c.logger.Error("get pending deposits error", "err", err)
+			time.Sleep(3 * time.Second)
+			continue
+		}
+		if len(pendingDeposits) == 0 {
+			c.logger.Info("no pending deposits")
+			time.Sleep(3 * time.Second)
+			continue
+		}
+		for _, deposit := range pendingDeposits {
+			deposit.Status = types.InvoiceProcessing
+			if err := c.db.BitcoinDB.UpdateBtcDeposit(deposit); err != nil {
+				c.logger.Error("update btc deposit status error", "err", err, "status", types.InvoiceProcessing)
+				continue
+			}
+			if err := c.evmClient.CreateIncomingInvoice(deposit); err != nil {
+				c.logger.Error("create incoming invoice error", "err", err)
+				deposit.Status = types.InvoiceFailed
+				if err := c.db.BitcoinDB.UpdateBtcDeposit(deposit); err != nil {
+					c.logger.Error("update btc deposit status error", "err", err, "status", types.InvoiceFailed)
+					continue
+				}
+				continue
+			}
+			deposit.Status = types.InvoiceSuccessed
+			if err := c.db.BitcoinDB.UpdateBtcDeposit(deposit); err != nil {
+				c.logger.Error("update btc deposit status error", "err", err, "status", types.InvoiceSuccessed)
+				continue
+			}
+		}
+		time.Sleep(3 * time.Second)
 	}
 }
 
@@ -209,7 +250,7 @@ func (c *Control) generateRawTx() {
 
 	// update state of outcome invoice
 	for i := range btcWithdraws {
-		btcWithdraws[i].Status = types.WithdrawProcessing
+		btcWithdraws[i].Status = types.InvoiceProcessing
 	}
 
 	if err := c.BitcoinDB().StoreBtcWithdraws(btcWithdraws); err != nil {
@@ -226,8 +267,9 @@ func (c *Control) broadcastBtcTx() {
 }
 
 func (c *Control) Start() {
-	c.wg.Add(3)
-	go c.watchBitcoin()
+	c.wg.Add(4)
+	go c.watchBitcoinDeposits()
+	go c.processDeposits()
 	go c.watchEvm()
 	go c.processOutCome()
 }
