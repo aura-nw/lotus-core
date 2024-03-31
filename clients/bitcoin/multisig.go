@@ -1,6 +1,7 @@
 package bitcoin
 
 import (
+	"bytes"
 	"encoding/hex"
 	"errors"
 	"log/slog"
@@ -17,6 +18,8 @@ type MultiSigClient interface {
 	CreateBTCRawTx(withdrawOutput []types.Output) (*wire.MsgTx, error)
 	SignTx(rawTx *wire.MsgTx) ([]byte, error)
 	AggregateSigs(sigs [][]byte) ([]byte, error)
+	BuildSignedTx(txHex string, signature []byte) (*wire.MsgTx, error)
+	BroadcastTx(tx *wire.MsgTx) (string, error)
 }
 
 type multiSigClient struct {
@@ -95,6 +98,38 @@ func (m *multiSigClient) AggregateSigs(sigs [][]byte) ([]byte, error) {
 	}
 
 	return signatureScript, nil
+}
+
+func (m *multiSigClient) BroadcastTx(tx *wire.MsgTx) (string, error) {
+	txHash, err := m.c.SendRawTransaction(tx)
+	if err != nil {
+		m.l.Error("[multiSigClient] BroadcastTx", "err", err)
+		return "", err
+	}
+
+	return txHash.String(), nil
+
+}
+
+func (m *multiSigClient) BuildSignedTx(txHex string, signature []byte) (*wire.MsgTx, error) {
+	txBytes, err := hex.DecodeString(txHex)
+	if err != nil {
+		m.l.Error("[multiSigClient] BuildSignedTx", "err", err)
+		return nil, err
+	}
+
+	tx := wire.NewMsgTx(wire.TxVersion)
+	err = tx.Deserialize(bytes.NewReader(txBytes))
+	if err != nil {
+		m.l.Error("[multiSigClient] BuildSignedTx", "err", err)
+		return nil, err
+	}
+
+	for i, _ := range tx.TxIn {
+		tx.TxIn[i].SignatureScript = signature
+	}
+
+	return tx, nil
 }
 
 func (m *multiSigClient) sumWithdrawOutput(withdrawOutput []types.Output) btcutil.Amount {

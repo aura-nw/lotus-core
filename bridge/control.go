@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/hex"
 	"log/slog"
+	"math/big"
 	"sync"
 	"time"
 
@@ -248,6 +249,11 @@ func (c *Control) generateRawTx() {
 	// TODO: create evm tx and send raw tx hex to contract
 	c.logger.Info("generateRawTx: success", "rawTxHex", rawTxHex)
 
+	if err := c.evmClient.SubmitTXContent(btcWithdraws, rawTxHex); err != nil {
+		c.logger.Error("generateRawTx: submit tx content failed", "err", err)
+		return
+	}
+
 	// update state of outcome invoice
 	for i := range btcWithdraws {
 		btcWithdraws[i].Status = types.InvoiceProcessing
@@ -260,10 +266,56 @@ func (c *Control) generateRawTx() {
 }
 
 func (c *Control) broadcastBtcTx() {
-	// TODO: wait interface contract event
 	//	1. get state of signing tx from contract
-	//	2. aggregate sign tx
-	//	3. broadcast sign tx
+	outgoingTxCount, err := c.evmClient.GetOutgoingTxCount()
+	if err != nil {
+		c.logger.Error("broadcastBtcTx: get outgoing invoice count failed", "err", err)
+		return
+	}
+
+	if outgoingTxCount.Cmp(big.NewInt(0)) == 0 {
+		c.logger.Info("broadcastBtcTx: not found outgoing invoice")
+		return
+	}
+
+	outgoingTx, err := c.evmClient.GetOutgoingTx(outgoingTxCount.Uint64())
+	if err != nil {
+		c.logger.Error("broadcastBtcTx: get outgoing invoice failed", "err", err)
+		return
+	}
+	c.logger.Info("broadcastBtcTx: found outgoing invoice", "status", outgoingTx.Status)
+
+	//	2. aggregate signed tx and broadcast
+	if len(outgoingTx.Signatures) >= 2 {
+		var sigs [][]byte
+		for _, signature := range outgoingTx.Signatures {
+			sigBytes, err := hex.DecodeString(signature)
+			if err != nil {
+				c.logger.Error("broadcastBtcTx: decode signature failed", "err", err)
+				return
+			}
+			sigs = append(sigs, sigBytes)
+		}
+		aggregateSignedTx, err := c.multisigClient.AggregateSigs(sigs)
+		if err != nil {
+			c.logger.Error("broadcastBtcTx: aggregate signature failed", "err", err)
+			return
+		}
+
+		signedTx, err := c.multisigClient.BuildSignedTx(outgoingTx.TxContent, aggregateSignedTx)
+		if err != nil {
+			c.logger.Error("broadcastBtcTx: build signed tx failed", "err", err)
+			return
+		}
+
+		txHash, err := c.multisigClient.BroadcastTx(signedTx)
+		if err != nil {
+			c.logger.Error("broadcastBtcTx: broadcast tx failed", "err", err)
+			return
+		}
+		c.logger.Info("broadcastBtcTx: broadcast tx success", "txHash", txHash)
+		// TODO: update state of outcome invoice
+	}
 }
 
 func (c *Control) Start() {

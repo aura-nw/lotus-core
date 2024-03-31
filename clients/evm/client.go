@@ -23,6 +23,11 @@ type Client interface {
 	CreateIncomingInvoice(deposit *types.BtcDeposit) error
 
 	FilterOutgoingInvoice() ([]types.BtcWithdraw, error)
+	SubmitTXContent(btcWithdraws []types.BtcWithdraw, txHex string) error
+	//GetOutgoingInvoiceCount() (*big.Int, error)
+	//GetOutgoingInvoice(id uint64) (contracts.IGatewayOutgoingInvoiceResponse, error)
+	GetOutgoingTxCount() (*big.Int, error)
+	GetOutgoingTx(id uint64) (contracts.IGatewayOutgoingTxInfo, error)
 }
 
 type clientImpl struct {
@@ -74,6 +79,46 @@ func (c *clientImpl) FilterOutgoingInvoice() ([]types.BtcWithdraw, error) {
 	// TODO: implement
 	return nil, nil
 }
+
+// SubmitTXContent implements Client.
+func (c *clientImpl) SubmitTXContent(btcWithdraws []types.BtcWithdraw, txHex string) error {
+	invoices := make([]contracts.IGatewayOutgoingInvoiceBasicInfo, 0, len(btcWithdraws))
+	for _, btcWithdraw := range btcWithdraws {
+		amountBig := new(big.Int).SetInt64(int64(btcWithdraw.Amount))
+		invoice := contracts.IGatewayOutgoingInvoiceBasicInfo{
+			Recipient: btcWithdraw.Address,
+			Amount:    amountBig,
+			InvoiceId: btcWithdraw.InvoiceId,
+		}
+		invoices = append(invoices, invoice)
+	}
+	_, err := c.gatewayContract.SubmitTxContent(&bind.TransactOpts{}, invoices, txHex)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+//// GetOutgoingInvoiceCount implements Client.
+//func (c *clientImpl) GetOutgoingInvoiceCount() (*big.Int, error) {
+//	return c.gatewayContract.OutgoingInvoicesCount(&bind.CallOpts{})
+//}
+
+// GetOutgoingTxCount implements Client.
+func (c *clientImpl) GetOutgoingTxCount() (*big.Int, error) {
+	return c.gatewayContract.OutgoingTxCount(&bind.CallOpts{})
+
+}
+
+// GetOutgoingTx implements Client.
+func (c *clientImpl) GetOutgoingTx(id uint64) (contracts.IGatewayOutgoingTxInfo, error) {
+	return c.gatewayContract.OutgoingTx(&bind.CallOpts{}, big.NewInt(int64(id)))
+}
+
+// GetOutgoingInvoice implements Client.
+//func (c *clientImpl) GetOutgoingInvoice(id uint64) (contracts.IGatewayOutgoingInvoiceResponse, error) {
+//	return c.gatewayContract.OutgoingInvoice(&bind.CallOpts{}, big.NewInt(int64(id)))
+//}
 
 func NewClient(logger *slog.Logger, info config.EvmInfo) (Client, error) {
 	client, err := ethclient.Dial(info.Url)
