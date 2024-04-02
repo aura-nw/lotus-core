@@ -1,4 +1,4 @@
-module github.com/aura-nw/btc-bridge-core
+module github.com/aura-nw/lotus-core
 
 go 1.21.7
 

@@ -7,8 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/aura-nw/btc-bridge-core/config"
-	"github.com/aura-nw/btc-bridge-core/types"
+	"github.com/aura-nw/lotus-core/config"
+	"github.com/aura-nw/lotus-core/types"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

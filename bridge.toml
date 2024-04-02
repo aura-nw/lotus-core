@@ -17,11 +17,11 @@ query-interval = 60
 min-confirms = 3
 
 [evm]
-url = "https://evmos-testnet-jsonrpc.alkadeta.com"
-chain-id = 9000
-query-interval = 30
-min-confirms = 5
-private-key = "883d80012adf2272875981428715c56558eb388dcea4b48e030bd63ddd23c128"
+url = "https://jsonrpc.dev.aura.network/"
+chain-id = 1235
+query-interval = 6
+min-confirms = 1
+private-key = "ef716c789ee010efb4efb245bb5e5ce5d734aedb7753289ea09e146ecf30e88f"
 call-timeout = 10
 
 [evm.contracts]

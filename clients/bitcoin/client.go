@@ -6,8 +6,8 @@ import (
 	"log/slog"
 	"strings"
 
-	"github.com/aura-nw/btc-bridge-core/config"
-	"github.com/aura-nw/btc-bridge-core/types"
+	"github.com/aura-nw/lotus-core/config"
+	"github.com/aura-nw/lotus-core/types"
 	"github.com/btcsuite/btcd/btcjson"
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/chaincfg"

@@ -9,11 +9,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/aura-nw/btc-bridge-core/clients/bitcoin"
-	"github.com/aura-nw/btc-bridge-core/clients/evm"
-	"github.com/aura-nw/btc-bridge-core/config"
-	"github.com/aura-nw/btc-bridge-core/database"
-	"github.com/aura-nw/btc-bridge-core/types"
+	"github.com/aura-nw/lotus-core/clients/bitcoin"
+	"github.com/aura-nw/lotus-core/clients/evm"
+	"github.com/aura-nw/lotus-core/config"
+	"github.com/aura-nw/lotus-core/database"
+	"github.com/aura-nw/lotus-core/types"
 	"github.com/btcsuite/btcd/btcutil"
 )
 

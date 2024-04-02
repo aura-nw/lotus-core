@@ -4,8 +4,8 @@ import (
 	"log/slog"
 	"testing"
 
-	"github.com/aura-nw/btc-bridge-core/clients/bitcoin"
-	"github.com/aura-nw/btc-bridge-core/config"
+	"github.com/aura-nw/lotus-core/clients/bitcoin"
+	"github.com/aura-nw/lotus-core/config"
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/stretchr/testify/require"
 )

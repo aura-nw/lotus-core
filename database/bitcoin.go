@@ -4,7 +4,7 @@ import (
 	"errors"
 	"log/slog"
 
-	"github.com/aura-nw/btc-bridge-core/types"
+	"github.com/aura-nw/lotus-core/types"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
