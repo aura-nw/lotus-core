@@ -41,7 +41,7 @@ type clientImpl struct {
 
 // CreateIncomingInvoice implements Client.
 func (c *clientImpl) CreateIncomingInvoice(deposit *types.BtcDeposit) error {
-	utxo := deposit.TxHash
+	utxo := deposit.TxId
 	amount, err := strconv.ParseInt(deposit.Amount, 10, 64)
 	if err != nil {
 		return err

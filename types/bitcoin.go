@@ -24,7 +24,7 @@ const (
 )
 
 type BtcDeposit struct {
-	TxHash string `json:"txHash" gorm:"primary_key:true;not null;index"`
+	TxId   string `json:"tx_id" gorm:"primary_key:true;not null;index"`
 	Height int64  `json:"height" gorm:"index;not null"`
 	Memo   string `json:"memo"`
 	// Receiver is account address of receiver in counterparty chain

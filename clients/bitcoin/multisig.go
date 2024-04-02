@@ -125,7 +125,7 @@ func (m *multiSigClient) BuildSignedTx(txHex string, signature []byte) (*wire.Ms
 		return nil, err
 	}
 
-	for i, _ := range tx.TxIn {
+	for i := range tx.TxIn {
 		tx.TxIn[i].SignatureScript = signature
 	}
 
