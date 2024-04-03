@@ -1,12 +1,14 @@
+bridge-interval = 10
+
 [server]
 port = "8080"
 
 [db]
-host = "localhost"
+host = "103.154.187.179"
 post = 5432
-name = "btc-bridge"
-user = "aurauser"
-password = "aurapassword"
+name = "bitcoin"
+user = "user1"
+password = "Passw0rd"
 
 [bitcoin]
 network = "tesnet3"
@@ -31,6 +33,3 @@ call-timeout = 10
 [evm.contracts]
 wrapped-btc-addr = "0xC70b52bBFd514859FA01728FcE22DABb96cc130D"
 gateway-addr = "0x4F80aD4F4F398465EaED7b5a6Cb5f2Fe256f7239"
-
-bridge-interval = 10
-

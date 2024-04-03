@@ -1,8 +1,6 @@
 package types
 
 import (
-	"math/big"
-
 	"github.com/btcsuite/btcd/btcutil"
 )
 
@@ -54,9 +52,9 @@ func (InscriptionDeposit) TableName() string {
 }
 
 type BtcWithdraw struct {
-	TxHash    string   `json:"txHash" gorm:"primary_key:true;not null;index"`
-	Height    int64    `json:"height" gorm:"index;not null"`
-	InvoiceId *big.Int `json:"invoiceId" gorm:"not null"`
+	TxId      string `json:"tx_id" gorm:"primary_key:true;not null;index"`
+	Height    int64  `json:"height" gorm:"index;not null"`
+	InvoiceId int64  `json:"invoice_id" gorm:"not null"`
 
 	// Receiver is account address of receiver in counterparty chain
 	Address string         `json:"address" gorm:"not null"`

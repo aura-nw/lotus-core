@@ -94,19 +94,23 @@ func parseMemo(_ string) (Memo, error) {
 func (c *clientImpl) getBtcDepositsHelper(height int64, filterAddr string, tx *btcjson.TxRawResult) ([]types.BtcDeposit, error) {
 	sender, err := c.getSender(tx)
 	if err != nil {
+		c.logger.Error("get sender from btc tx error", "err", err)
 		return nil, err
 	}
 	memoStr, err := c.getMemo(tx)
 	if err != nil {
+		c.logger.Error("get memo from btc tx error", "err", err)
 		return nil, err
 	}
 	memo, err := parseMemo(memoStr)
 	if err != nil {
+		c.logger.Error("parse memo error", "err", err)
 		return nil, err
 	}
 
-	outputs, err := c.getOutput(filterAddr, tx)
+	outputs, err := c.getOutputs(filterAddr, tx)
 	if err != nil {
+		c.logger.Error("get outputs from btc tx error", "err", err)
 		return nil, err
 	}
 
@@ -128,7 +132,7 @@ func (c *clientImpl) getBtcDepositsHelper(height int64, filterAddr string, tx *b
 	return results, nil
 }
 
-func (c *clientImpl) getOutput(filterAddr string, tx *btcjson.TxRawResult) ([]btcjson.Vout, error) {
+func (c *clientImpl) getOutputs(filterAddr string, tx *btcjson.TxRawResult) ([]btcjson.Vout, error) {
 	var results []btcjson.Vout
 	for _, vout := range tx.Vout {
 		if vout.ScriptPubKey.Address == filterAddr {
@@ -159,9 +163,6 @@ func (c *clientImpl) GetBtcDeposits(height int64, filterAddr string, minConfirms
 			continue
 		}
 		results = append(results, deposits...)
-	}
-	if len(results) == 0 {
-		return nil, fmt.Errorf("no txs found for height: %d, filter addr: %s", height, filterAddr)
 	}
 	return results, nil
 }

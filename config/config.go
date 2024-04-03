@@ -5,17 +5,17 @@ type Config struct {
 	DB             DBInfo      `toml:"db"`
 	Bitcoin        BitcoinInfo `toml:"bitcoin"`
 	Evm            EvmInfo     `toml:"evm"`
-	BridgeInterval int64       `toml:"bridge-interval"`
+	BridgeInterval uint32      `toml:"bridge-interval"`
 }
 
 type EvmInfo struct {
 	Url           string       `toml:"url"`
 	ChainID       int64        `toml:"chain-id"`
-	QueryInterval int64        `toml:"query-interval"`
+	QueryInterval uint32       `toml:"query-interval"`
 	MinConfirms   int64        `toml:"min-confirms"`
 	Contracts     EvmContracts `toml:"contracts"`
 	PrivateKey    string       `toml:"private-key"`
-	CallTimeout   uint64       `toml:"call-timeout"`
+	CallTimeout   uint32       `toml:"call-timeout"`
 }
 
 type EvmContracts struct {
@@ -28,7 +28,7 @@ type BitcoinInfo struct {
 	Host            string `toml:"host"`
 	User            string `toml:"user"`
 	Password        string `toml:"password"`
-	QueryInterval   int64  `toml:"query-interval"`
+	QueryInterval   uint32 `toml:"query-interval"`
 	MinConfirms     int64  `toml:"min-confirms"`
 	BitcoinMultisig string `toml:"bitcoin-multisig"`
 	RedeemScript    string `toml:"redeem-script"`

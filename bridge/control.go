@@ -88,6 +88,13 @@ func (c *Control) initClients() error {
 func (c *Control) watchBitcoinDeposits() {
 	defer c.wg.Done()
 
+	lastHeightBtc, err := c.BitcoinDB().GetLastSeenHeight()
+	if err != nil {
+		c.logger.Error("get last seen height error", "err", err)
+		return
+	}
+	c.lastHeightBtc = lastHeightBtc
+
 	ticker := time.NewTicker(time.Duration(c.config.Bitcoin.QueryInterval) * time.Second)
 	defer ticker.Stop()
 
@@ -107,6 +114,7 @@ func (c *Control) watchBitcoinDeposits() {
 			}
 			if len(btcDeposits) == 0 {
 				c.logger.Info("watchBitcoin: not found btc deposits", "height", height)
+				c.lastHeightBtc++
 				time.Sleep(1 * time.Second)
 				continue
 			}

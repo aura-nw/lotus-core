@@ -88,7 +88,7 @@ func (c *clientImpl) SubmitTXContent(btcWithdraws []types.BtcWithdraw, txHex str
 		invoice := contracts.IGatewayOutgoingInvoiceBasicInfo{
 			Recipient: btcWithdraw.Address,
 			Amount:    amountBig,
-			InvoiceId: btcWithdraw.InvoiceId,
+			InvoiceId: big.NewInt(btcWithdraw.InvoiceId),
 		}
 		invoices = append(invoices, invoice)
 	}
