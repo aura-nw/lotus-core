@@ -45,6 +45,14 @@ type clientImpl struct {
 var _ Client = &clientImpl{}
 
 func NewClient(logger *slog.Logger, info config.BitcoinInfo) (Client, error) {
+	var cfgChain chaincfg.Params
+	if info.Network == "mainnet" {
+		cfgChain = chaincfg.MainNetParams
+	} else if info.Network == "testnet" || info.Network == "testnet3" {
+		cfgChain = chaincfg.TestNet3Params
+	} else {
+		return nil, fmt.Errorf("unsupport bitcoin network: %s", info.Network)
+	}
 	connCfg := &rpcclient.ConnConfig{
 		Host:         info.Host,
 		User:         info.User,
@@ -60,11 +68,7 @@ func NewClient(logger *slog.Logger, info config.BitcoinInfo) (Client, error) {
 		info:      info,
 		logger:    logger,
 		rpcClient: rpcClient,
-	}
-	if info.Network == "mainnet" {
-		c.cfgChain = &chaincfg.MainNetParams
-	} else {
-		c.cfgChain = &chaincfg.TestNet3Params
+		cfgChain:  &cfgChain,
 	}
 
 	return c, nil
