@@ -17,6 +17,10 @@ import (
 	"github.com/btcsuite/btcd/wire"
 )
 
+const (
+	tmpAddress = "0xD02c8cebc86Bd8Cc5fE876b4B793256C0d67a887"
+)
+
 // Client defines Bitcoin client.
 type Client interface {
 	GetBtcDeposits(height int64, filterAddr string, minConfirms int64) ([]types.BtcDeposit, error)
@@ -83,8 +87,8 @@ func (c *clientImpl) SendRawTransaction(tx *wire.MsgTx) (*chainhash.Hash, error)
 	return c.rpcClient.SendRawTransaction(tx, true)
 }
 
-func parseMemo(memo string) (Memo, error) {
-	return Memo{Receiver: ""}, nil
+func parseMemo(_ string) (Memo, error) {
+	return Memo{Receiver: tmpAddress}, nil
 }
 
 func (c *clientImpl) getBtcDepositsHelper(height int64, filterAddr string, tx *btcjson.TxRawResult) ([]types.BtcDeposit, error) {

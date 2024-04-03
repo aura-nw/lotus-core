@@ -15,6 +15,10 @@ user = "user"
 password = "123@abcD"
 query-interval = 60
 min-confirms = 3
+bitcoin-multisig = "tb1qqgnkrkhkeql9n2ear5z2c3t49496t6ca0r5ckj"
+private-key = "KznqnXD4GaPNNR43yU438thu4yXbZE57DoDnhy1wYcf6TkEQzZea"
+redeem-script = "522102f9c9fb633f9901358f18e5aa9cd8a2a6fafe905cadb433569478a6b40df41eaa210341d0529944b26fb6615450b34edfbe1eafd7a6c554f80ab2317dcffa6d6594e721032db97da3d8d4b97227532279f95ce14819817bb0e8f9e517340c6be1443259ba53ae"
+
 
 [evm]
 url = "https://jsonrpc.dev.aura.network/"
@@ -25,8 +29,8 @@ private-key = "ef716c789ee010efb4efb245bb5e5ce5d734aedb7753289ea09e146ecf30e88f"
 call-timeout = 10
 
 [evm.contracts]
-wrapped-btc-addr = "0x7fd84b9a10f13acD07B9fA95D217827dCf608140"
-gateway-addr = "0x6731881DE07Ffce55968a583F5f641C589d25ea7"
+wrapped-btc-addr = "0xC70b52bBFd514859FA01728FcE22DABb96cc130D"
+gateway-addr = "0x4F80aD4F4F398465EaED7b5a6Cb5f2Fe256f7239"
 
-# Address of bitcoin multsig wallet
-bitcoin-multisig = "tb1qqgnkrkhkeql9n2ear5z2c3t49496t6ca0r5ckj"
+bridge-interval = 10
+

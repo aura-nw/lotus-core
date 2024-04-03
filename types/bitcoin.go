@@ -4,7 +4,6 @@ import (
 	"math/big"
 
 	"github.com/btcsuite/btcd/btcutil"
-	"gorm.io/gorm"
 )
 
 type UTXOStatus string
@@ -55,8 +54,6 @@ func (InscriptionDeposit) TableName() string {
 }
 
 type BtcWithdraw struct {
-	gorm.Model
-
 	TxHash    string   `json:"txHash" gorm:"primary_key:true;not null;index"`
 	Height    int64    `json:"height" gorm:"index;not null"`
 	InvoiceId *big.Int `json:"invoiceId" gorm:"not null"`

@@ -1,15 +1,11 @@
 package config
 
 type Config struct {
-	Server  ServerInfo  `toml:"server"`
-	DB      DBInfo      `toml:"db"`
-	Bitcoin BitcoinInfo `toml:"bitcoin"`
-	Evm     EvmInfo     `toml:"evm"`
-	// Address of bitcoin multsig wallet
-	BitcoinMultisig string `toml:"bitcoin-multisig"`
-	BridgeInterval  int64  `toml:"bridge-interval"`
-	RedeemScript    string `toml:"redeem-script"`
-	PrivateKey      string `toml:"private-key"`
+	Server         ServerInfo  `toml:"server"`
+	DB             DBInfo      `toml:"db"`
+	Bitcoin        BitcoinInfo `toml:"bitcoin"`
+	Evm            EvmInfo     `toml:"evm"`
+	BridgeInterval int64       `toml:"bridge-interval"`
 }
 
 type EvmInfo struct {
@@ -28,12 +24,15 @@ type EvmContracts struct {
 }
 
 type BitcoinInfo struct {
-	Network       string `toml:"network"`
-	Host          string `toml:"host"`
-	User          string `toml:"user"`
-	Password      string `toml:"password"`
-	QueryInterval int64  `toml:"query-interval"`
-	MinConfirms   int64  `toml:"min-confirms"`
+	Network         string `toml:"network"`
+	Host            string `toml:"host"`
+	User            string `toml:"user"`
+	Password        string `toml:"password"`
+	QueryInterval   int64  `toml:"query-interval"`
+	MinConfirms     int64  `toml:"min-confirms"`
+	BitcoinMultisig string `toml:"bitcoin-multisig"`
+	RedeemScript    string `toml:"redeem-script"`
+	PrivateKey      string `toml:"private-key"`
 }
 type ServerInfo struct {
 	Port string `toml:"port"`

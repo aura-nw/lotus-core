@@ -76,7 +76,7 @@ func (c *Control) initClients() error {
 	}
 	c.evmClient = evmClient
 
-	multisigClient, err := bitcoin.NewMultiSigClient(c.logger, c.btcClient, c.config.RedeemScript, c.config.PrivateKey)
+	multisigClient, err := bitcoin.NewMultiSigClient(c.logger, c.btcClient, c.config.Bitcoin.RedeemScript, c.config.Bitcoin.PrivateKey)
 	if err != nil {
 		return err
 	}
@@ -99,7 +99,7 @@ func (c *Control) watchBitcoinDeposits() {
 		case <-ticker.C:
 			height := c.lastHeightBtc
 			c.logger.Info("watchBitcoin: get btc deposits", "height", height)
-			btcDeposits, err := c.btcClient.GetBtcDeposits(height, c.config.BitcoinMultisig, c.config.Bitcoin.MinConfirms)
+			btcDeposits, err := c.btcClient.GetBtcDeposits(height, c.config.Bitcoin.BitcoinMultisig, c.config.Bitcoin.MinConfirms)
 			if err != nil {
 				c.logger.Error("watchBitcoin: get btc deposits from btc client error", "err", err)
 				time.Sleep(1 * time.Second)
@@ -122,7 +122,7 @@ func (c *Control) watchBitcoinDeposits() {
 }
 
 func (c *Control) processDeposits() {
-	c.logger.Info("starting processing deposit events", "multisig", c.config.BitcoinMultisig)
+	c.logger.Info("starting processing deposit events", "multisig", c.config.Bitcoin.BitcoinMultisig)
 	defer c.wg.Done()
 
 	for {
