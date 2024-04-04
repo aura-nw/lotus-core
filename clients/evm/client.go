@@ -4,7 +4,6 @@ import (
 	"context"
 	"log/slog"
 	"math/big"
-	"strconv"
 	"time"
 
 	"github.com/aura-nw/lotus-core/clients/evm/contracts"
@@ -42,12 +41,16 @@ type clientImpl struct {
 // CreateIncomingInvoice implements Client.
 func (c *clientImpl) CreateIncomingInvoice(deposit *types.BtcDeposit) error {
 	utxo := deposit.TxId
-	amount, err := strconv.ParseInt(deposit.Amount, 10, 64)
+
+	gas, err := c.client.SuggestGasPrice(context.Background())
 	if err != nil {
+		c.logger.Error("suggest gas price error", "err", err)
 		return err
 	}
-	amountInt := big.NewInt(amount)
-	tx, err := c.gatewayContract.CreateIncomingInvoice(c.auth, utxo, amountInt, common.HexToAddress(deposit.Receiver))
+	c.logger.Info("suggest gas price", "gas", gas.Uint64())
+	c.auth.GasPrice = gas
+	amount := big.NewInt(int64(deposit.Amount))
+	tx, err := c.gatewayContract.CreateIncomingInvoice(c.auth, utxo, amount, common.HexToAddress(deposit.Receiver))
 	if err != nil {
 		c.logger.Error("call CreateIncomingInvoice error", "err", err)
 		return err

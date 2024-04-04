@@ -96,11 +96,11 @@ func parseMemo(_ string) (Memo, error) {
 }
 
 func (c *clientImpl) getBtcDepositsHelper(height int64, filterAddr string, tx *btcjson.TxRawResult) ([]types.BtcDeposit, error) {
-	sender, err := c.getSender(tx)
-	if err != nil {
-		c.logger.Error("get sender from btc tx error", "err", err)
-		return nil, err
-	}
+	// sender, err := c.getSender(tx)
+	// if err != nil {
+	// 	c.logger.Error("get sender from btc tx error", "err", err)
+	// 	return nil, err
+	// }
 	memoStr, err := c.getMemo(tx)
 	if err != nil {
 		c.logger.Error("get memo from btc tx error", "err", err)
@@ -120,14 +120,19 @@ func (c *clientImpl) getBtcDepositsHelper(height int64, filterAddr string, tx *b
 
 	var results []types.BtcDeposit
 	for _, out := range outputs {
+		amount, err := btcutil.NewAmount(out.Value)
+		if err != nil {
+			c.logger.Error("amount not valid", "value", out.Value)
+			continue
+		}
 		deposit := types.BtcDeposit{
 			TxId:           tx.Txid,
 			Height:         height,
-			Memo:           memoStr,
+			Memo:           "",
 			Receiver:       memo.Receiver,
-			Sender:         sender,
+			Sender:         "",
 			MultisigWallet: filterAddr,
-			Amount:         fmt.Sprintf("%f", out.Value),
+			Amount:         amount,
 			Idx:            0,
 		}
 		results = append(results, deposit)

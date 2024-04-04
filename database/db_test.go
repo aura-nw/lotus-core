@@ -8,6 +8,7 @@ import (
 	"github.com/aura-nw/lotus-core/config"
 	"github.com/aura-nw/lotus-core/database"
 	"github.com/aura-nw/lotus-core/types"
+	"github.com/btcsuite/btcd/btcutil"
 	"github.com/stretchr/testify/require"
 )
 
@@ -24,6 +25,9 @@ func TestSaveDeposits(t *testing.T) {
 	require.NoError(t, err)
 	t.Cleanup(func() { db.Close() })
 
+	amount, err := btcutil.NewAmount(0.1)
+	require.NoError(t, err)
+
 	d1 := types.BtcDeposit{
 		TxId:           "0b6517f49f02631b5122366d59e16913a7b9994ef14720e26b78642ebcd23fe8",
 		Height:         199,
@@ -31,7 +35,7 @@ func TestSaveDeposits(t *testing.T) {
 		Receiver:       "tb1qdrjd6r3rd9vuxxcftxyss9wlept7tvfmafmlnq",
 		Sender:         "tb1p9mzeflasu7nlqz009wkyx97hyh0ra74alv4xlyc9ncj52njve2vqwp4q3e",
 		MultisigWallet: "tb1p9mzeflasu7nlqz009wkyx97hyh0ra74alv4xlyc9ncj52njve2vqwp4q3e",
-		Amount:         "0.4",
+		Amount:         amount,
 	}
 
 	d2 := types.BtcDeposit{
@@ -41,7 +45,7 @@ func TestSaveDeposits(t *testing.T) {
 		Receiver:       "tb1p9mzeflasu7nlqz009wkyx97hyh0ra74alv4xlyc9ncj52njve2vqwp4q3e",
 		Sender:         "tb1qdrjd6r3rd9vuxxcftxyss9wlept7tvfmafmlnq",
 		MultisigWallet: "tb1p9mzeflasu7nlqz009wkyx97hyh0ra74alv4xlyc9ncj52njve2vqwp4q3e",
-		Amount:         "1.1",
+		Amount:         amount,
 	}
 
 	deposits := []types.BtcDeposit{d1, d2}

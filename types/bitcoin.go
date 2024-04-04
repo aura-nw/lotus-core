@@ -23,17 +23,17 @@ const (
 type BtcDeposit struct {
 	TxId   string `json:"tx_id" gorm:"primary_key:true;not null;index"`
 	Height int64  `json:"height" gorm:"index;not null"`
-	Memo   string `json:"memo"`
+	Memo   string `json:"memo" gorm:"type:text"`
 	// Receiver is account address of receiver in counterparty chain
 	// Extract from memo of bitcoin tracsaction, maybe null
 	Receiver       string `json:"receiver"`
 	Sender         string `json:"sender" gorm:"not null"`
 	MultisigWallet string `json:"multisig_wallet" gorm:"not null"`
-	// Amount is bitcoin amount was send
-	Amount     string        `json:"amount" gorm:"not null"`
-	Idx        uint32        `json:"idx" gorm:"not null;index"`
-	UtxoStatus UTXOStatus    `json:"utxo_status" gorm:"not null; default:'unused';index"`
-	Status     InvoiceStatus `json:"status" gorm:"not null; default:'new';index"`
+	// Amount is btc amount was send
+	Amount     btcutil.Amount `json:"amount" gorm:"not null"`
+	Idx        uint32         `json:"idx" gorm:"not null;index"`
+	UtxoStatus UTXOStatus     `json:"utxo_status" gorm:"not null; default:'unused';index"`
+	Status     InvoiceStatus  `json:"status" gorm:"not null; default:'new';index"`
 }
 
 func (BtcDeposit) TableName() string {
@@ -41,9 +41,9 @@ func (BtcDeposit) TableName() string {
 }
 
 type InscriptionDeposit struct {
-	TxHash    string `json:"txHash" gorm:"primary_key:true;not null"`
+	TxHash    string `json:"tx_id" gorm:"primary_key:true;not null"`
 	Height    int64  `json:"height" gorm:"not null"`
-	Memo      string `json:"memo"`
+	Memo      string `json:"memo" gorm:"type:text"`
 	TokenType string `json:"token_type"`
 }
 

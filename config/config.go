@@ -49,6 +49,21 @@ func GetBitcoinInfoTestnet() BitcoinInfo {
 	}
 }
 
+func GetEvmInfoForTest() EvmInfo {
+	return EvmInfo{
+		Url:           "https://jsonrpc.dev.aura.network",
+		ChainID:       1235,
+		QueryInterval: 6,
+		MinConfirms:   1,
+		Contracts: EvmContracts{
+			WrappedBtcAddr: "0xC70b52bBFd514859FA01728FcE22DABb96cc130D",
+			GatewayAddr:    "0x4F80aD4F4F398465EaED7b5a6Cb5f2Fe256f7239",
+		},
+		PrivateKey:  "7cf06d80baec389b7c63daff9eccfae043a2068a2c37a3d1e8be8976eec8928b",
+		CallTimeout: 10,
+	}
+}
+
 // DBInfo configures the postgres database
 type DBInfo struct {
 	Host     string `toml:"host"`
