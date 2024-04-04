@@ -5,8 +5,8 @@ LDFLAGSSTRING +=-X main.GitCommit=$(GITCOMMIT)
 LDFLAGSSTRING +=-X main.GitDate=$(GITDATE)
 LDFLAGS := -ldflags "$(LDFLAGSSTRING)"
 
-bridge:
-	env GO111MODULE=on go build -v $(LDFLAGS) ./cmd/bridge
+run:
+	env GO111MODULE=on go run ./cmd/bridge/main.go
 
 test:
 	go test -v ./...
