@@ -4,13 +4,12 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
-	"os"
-	"path/filepath"
 
 	"github.com/aura-nw/lotus-core/config"
 	"github.com/aura-nw/lotus-core/types"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	gormlogger "gorm.io/gorm/logger"
 )
 
 type DB struct {
@@ -42,6 +41,8 @@ func NewDB(ctx context.Context, logger *slog.Logger, dbConfig config.DBInfo) (*D
 		// we'll utilize a batch size of 3k for inserts, well below the limit as long as
 		// the number of columns < 20.
 		CreateBatchSize: 3_000,
+
+		Logger: gormlogger.Default.LogMode(gormlogger.Silent),
 	}
 
 	gormDB, err := gorm.Open(postgres.Open(dsn), &gormConfig)
@@ -71,39 +72,6 @@ func autoMigrate(gormDB *gorm.DB) error {
 		&types.InscriptionDeposit{},
 		&types.InscriptionWithdrawal{},
 	)
-}
-
-func (db *DB) ExecuteSQLMigration(migrationsFolder string) error {
-	err := filepath.Walk(migrationsFolder, func(path string, info os.FileInfo, err error) error {
-		// Check for any walking error
-		if err != nil {
-			return fmt.Errorf("failed to process migration file: %s", path)
-		}
-
-		// Skip directories
-		if info.IsDir() {
-			return nil
-		}
-
-		// Read the migration file content
-		db.logger.Info("reading sql file", "path", path)
-		fileContent, readErr := os.ReadFile(path)
-		if readErr != nil {
-			return fmt.Errorf("error reading SQL file: %s", path)
-		}
-
-		// Execute the migration
-		db.logger.Info("executing sql file", "path", path)
-		execErr := db.gormDB.Exec(string(fileContent)).Error
-		if execErr != nil {
-			return fmt.Errorf("error executing SQL script: %s", path)
-		}
-
-		return nil
-	})
-
-	db.logger.Info("finished migrations")
-	return err
 }
 
 func (db *DB) Close() error {

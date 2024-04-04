@@ -129,7 +129,7 @@ func (c *Control) watchBitcoinDeposits() {
 	}
 }
 
-func (c *Control) processDeposits() {
+func (c *Control) processNewDeposits() {
 	c.logger.Info("starting processing deposit events", "multisig", c.config.Bitcoin.BitcoinMultisig)
 	defer c.wg.Done()
 
@@ -329,13 +329,14 @@ func (c *Control) broadcastBtcTx() {
 func (c *Control) Start() {
 	c.wg.Add(4)
 	go c.watchBitcoinDeposits()
-	go c.processDeposits()
+	go c.processNewDeposits()
 	go c.watchEvm()
 	go c.processOutCome()
 }
 func (c *Control) Stop() {
 	c.ctxCancel()
 	c.wg.Wait()
+	c.db.Close()
 }
 
 func (c *Control) BitcoinDB() database.BitcoinDB {
