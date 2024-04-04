@@ -42,13 +42,10 @@ type clientImpl struct {
 func (c *clientImpl) CreateIncomingInvoice(deposit *types.BtcDeposit) error {
 	utxo := deposit.TxId
 
-	gas, err := c.client.SuggestGasPrice(context.Background())
-	if err != nil {
-		c.logger.Error("suggest gas price error", "err", err)
+	if err := c.updateGasPrice(); err != nil {
 		return err
 	}
-	c.logger.Info("suggest gas price", "gas", gas.Uint64())
-	c.auth.GasPrice = gas
+
 	amount := big.NewInt(int64(deposit.Amount))
 	tx, err := c.gatewayContract.CreateIncomingInvoice(c.auth, utxo, amount, common.HexToAddress(deposit.Receiver))
 	if err != nil {
@@ -154,3 +151,17 @@ func NewClient(logger *slog.Logger, info config.EvmInfo) (Client, error) {
 }
 
 var _ Client = &clientImpl{}
+
+func (c *clientImpl) updateGasPrice() error {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(c.info.CallTimeout)*time.Second)
+	defer cancel()
+
+	gasPrice, err := c.client.SuggestGasPrice(ctx)
+	if err != nil {
+		c.logger.Error("suggest gas price error", "err", err)
+		return err
+	}
+	c.logger.Info("suggest gas price", "gas", gasPrice)
+	c.auth.GasPrice = gasPrice
+	return nil
+}
