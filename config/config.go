@@ -33,6 +33,8 @@ type BitcoinInfo struct {
 	BitcoinMultisig string `toml:"bitcoin-multisig"`
 	RedeemScript    string `toml:"redeem-script"`
 	PrivateKey      string `toml:"private-key"`
+	OrdHost         string `toml:"ord-host"`
+	ContentHost     string `toml:"content-host"`
 }
 type ServerInfo struct {
 	Port string `toml:"port"`

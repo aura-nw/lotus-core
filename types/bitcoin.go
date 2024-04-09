@@ -2,6 +2,7 @@ package types
 
 import (
 	"github.com/btcsuite/btcd/btcutil"
+	"time"
 )
 
 type UTXOStatus string
@@ -41,10 +42,21 @@ func (BtcDeposit) TableName() string {
 }
 
 type InscriptionDeposit struct {
-	TxHash    string `json:"tx_id" gorm:"primary_key:true;not null"`
-	Height    int64  `json:"height" gorm:"not null"`
-	Memo      string `json:"memo" gorm:"type:text"`
-	TokenType string `json:"token_type"`
+	TxHash         string      `json:"txHash" gorm:"primary_key:true;not null"`
+	Height         int64       `json:"height" gorm:"not null"`
+	Id             string      `json:"id"`
+	Number         int64       `json:"number"`
+	From           string      `json:"from"`
+	To             string      `json:"to"`
+	Action         string      `json:"action"`
+	DateTime       time.Time   `json:"date_time"`
+	Token          string      `json:"token"`
+	Amount         string      `json:"amount"`
+	TokenType      string      `json:"token_type"`
+	Content        interface{} `json:"content"`
+	ContentType    string      `json:"content_type"`
+	ContentPreview string      `json:"content_preview"`
+	Memo           string      `json:"memo"`
 }
 
 func (InscriptionDeposit) TableName() string {

@@ -4,11 +4,11 @@ bridge-interval = 30
 port = "8080"
 
 [db]
-host = "103.154.187.179"
-post = 5432
-name = "bitcoin"
-user = "user1"
-password = "Passw0rd"
+host = "127.0.0.1"
+port = 5432
+name = "btc_bridge"
+user = "aurauser"
+password = "aurapassword"
 
 [bitcoin]
 network = "testnet3"
@@ -20,7 +20,8 @@ min-confirms = 3
 bitcoin-multisig = "tb1qrvjce6589p2x9zupd8p0dnkq46s8lsh3rau7v5"
 private-key = "KznqnXD4GaPNNR43yU438thu4yXbZE57DoDnhy1wYcf6TkEQzZea"
 redeem-script = "522102f9c9fb633f9901358f18e5aa9cd8a2a6fafe905cadb433569478a6b40df41eaa210341d0529944b26fb6615450b34edfbe1eafd7a6c554f80ab2317dcffa6d6594e721032db97da3d8d4b97227532279f95ce14819817bb0e8f9e517340c6be1443259ba53ae"
-
+ord-host = "http://103.154.187.179"
+content-host = "https://testnet.ordinals.com"
 
 [evm]
 url = "https://jsonrpc.dev.aura.network"

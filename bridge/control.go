@@ -326,6 +326,10 @@ func (c *Control) broadcastBtcTx() {
 	}
 }
 
+func (c *Control) ProcessInscription() ([]*types.InscriptionDeposit, error) {
+	return c.btcClient.GetInscriptionDeposits(2585594, c.config.Bitcoin.BitcoinMultisig, c.config.Bitcoin.MinConfirms)
+}
+
 func (c *Control) Start() {
 	c.wg.Add(4)
 	go c.watchBitcoinDeposits()

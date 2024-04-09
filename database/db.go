@@ -21,17 +21,8 @@ type DB struct {
 }
 
 func NewDB(ctx context.Context, logger *slog.Logger, dbConfig config.DBInfo) (*DB, error) {
-	dsn := fmt.Sprintf("host=%s dbname=%s sslmode=disable", dbConfig.Host, dbConfig.Name)
-	if dbConfig.Port != 0 {
-		dsn += fmt.Sprintf(" port=%d", dbConfig.Port)
-	}
-	if dbConfig.User != "" {
-		dsn += fmt.Sprintf(" user=%s", dbConfig.User)
-	}
-	if dbConfig.Password != "" {
-		dsn += fmt.Sprintf(" password=%s", dbConfig.Password)
-	}
-
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable TimeZone=Asia/Shanghai",
+		dbConfig.Host, dbConfig.User, dbConfig.Password, dbConfig.Name, dbConfig.Port)
 	gormConfig := gorm.Config{
 		// The indexer will explicitly manage the transactions
 		SkipDefaultTransaction: true,

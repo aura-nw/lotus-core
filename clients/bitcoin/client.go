@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"log/slog"
 	"strings"
+	"time"
 
+	"github.com/aura-nw/lotus-core/adaptors"
 	"github.com/aura-nw/lotus-core/config"
 	"github.com/aura-nw/lotus-core/types"
 	"github.com/btcsuite/btcd/btcjson"
@@ -24,7 +26,7 @@ const (
 // Client defines Bitcoin client.
 type Client interface {
 	GetBtcDeposits(height int64, filterAddr string, minConfirms int64) ([]types.BtcDeposit, error)
-	GetInscriptionDeposits(height int64, filterAddr string, minConfirms int64) ([]types.InscriptionDeposit, error)
+	GetInscriptionDeposits(height int64, filterAddr string, minConfirms int64) ([]*types.InscriptionDeposit, error)
 	ListUnspent() ([]btcjson.ListUnspentResult, error)
 	GetChainCfg() *chaincfg.Params
 	CreateRawTransaction(inputs []btcjson.TransactionInput, outputs map[btcutil.Address]btcutil.Amount) (*wire.MsgTx, error)
@@ -36,10 +38,11 @@ type Memo struct {
 }
 
 type clientImpl struct {
-	info      config.BitcoinInfo
-	logger    *slog.Logger
-	rpcClient *rpcclient.Client
-	cfgChain  *chaincfg.Params
+	info       config.BitcoinInfo
+	logger     *slog.Logger
+	rpcClient  *rpcclient.Client
+	cfgChain   *chaincfg.Params
+	ordAdapter adaptors.IOrdAdapter
 }
 
 var _ Client = &clientImpl{}
@@ -64,11 +67,18 @@ func NewClient(logger *slog.Logger, info config.BitcoinInfo) (Client, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	ordAdapter, err := adaptors.NewOrdAdapter(info.OrdHost)
+	if err != nil {
+		return nil, err
+	}
+
 	c := &clientImpl{
-		info:      info,
-		logger:    logger,
-		rpcClient: rpcClient,
-		cfgChain:  &cfgChain,
+		info:       info,
+		logger:     logger,
+		rpcClient:  rpcClient,
+		cfgChain:   &cfgChain,
+		ordAdapter: ordAdapter,
 	}
 
 	return c, nil
@@ -176,9 +186,103 @@ func (c *clientImpl) GetBtcDeposits(height int64, filterAddr string, minConfirms
 	return results, nil
 }
 
-func (c *clientImpl) GetInscriptionDeposits(height int64, filterAddr string, minConfirms int64) ([]types.InscriptionDeposit, error) {
-	var results []types.InscriptionDeposit
+func (c *clientImpl) GetInscriptionDeposits(height int64, filterAddr string, minConfirms int64) ([]*types.InscriptionDeposit, error) {
+	var results []*types.InscriptionDeposit
+	blockHash, err := c.rpcClient.GetBlockHash(height)
+	if err != nil {
+		return nil, err
+	}
+	block, err := c.rpcClient.GetBlockVerboseTx(blockHash)
+	if err != nil {
+		return nil, err
+	}
+	// Check confirmations
+	if block.Confirmations < minConfirms {
+		return nil, fmt.Errorf("block not enough confirmations, got: %d, min_confirms: %d", block.Confirmations, minConfirms)
+	}
+
+	inscriptionIds, err := c.ordAdapter.GetInscriptionIdsByBlock(height)
+	if err != nil {
+		c.logger.Error("[GetInscriptionDeposits] GetInscriptionIdsByBlock error: ", err)
+		return nil, err
+	}
+
+	for _, inscriptionId := range inscriptionIds {
+		inscriptionDeposit, err := c.getInscriptionData(inscriptionId, filterAddr, height)
+		if err != nil || inscriptionDeposit == nil {
+			continue
+		}
+
+		results = append(results, inscriptionDeposit)
+	}
+
 	return results, nil
+}
+
+func (c *clientImpl) getInscriptionData(inscriptionId, filterAddr string, height int64) (*types.InscriptionDeposit, error) {
+	inscription, err := c.ordAdapter.GetInscription(inscriptionId)
+	if err != nil {
+		c.logger.Error("[getInscriptionData] Get inscription error: ", err)
+		return nil, err
+	}
+
+	output0Id := inscriptionId[:len(inscriptionId)-2] + ":0"
+	output, err := c.ordAdapter.GetOutput(output0Id)
+	if err != nil {
+		c.logger.Error("[getInscriptionData] Get Output error: ", err)
+		return nil, err
+	}
+
+	if inscription.Address != filterAddr {
+		return nil, nil
+	}
+
+	transactionHash := inscription.Id[:len(inscription.Id)-2]
+	inscriptionDeposit := &types.InscriptionDeposit{
+		TxHash:      transactionHash,
+		Height:      height,
+		Number:      inscription.Number,
+		Id:          inscriptionId,
+		From:        output.Address,
+		To:          inscription.Address,
+		ContentType: inscription.ContentType,
+		DateTime:    time.Now(),
+	}
+
+	err = c.parseContent(inscription, inscriptionDeposit)
+	if err != nil {
+		c.logger.Error("[getInscriptionData] Parse content error: ", err)
+		return nil, err
+	}
+
+	return inscriptionDeposit, nil
+}
+
+func (c *clientImpl) parseContent(inscription *adaptors.GetInscriptionResponse, inscriptionDeposit *types.InscriptionDeposit) error {
+	if strings.Contains(inscription.ContentType, "image") {
+		inscriptionDeposit.ContentPreview = c.info.ContentHost + "/content/" + inscription.Id
+		inscriptionDeposit.Action = "mint"
+		inscriptionDeposit.TokenType = "orc-20"
+		inscriptionDeposit.Amount = "1"
+	} else if strings.Contains(inscription.ContentType, "text") {
+		//content can be an image or json data
+		content, err := c.ordAdapter.GetContent(inscription.Id)
+		if err != nil {
+			c.logger.Error("[getInscriptionData] Get content error: ", err)
+			return err
+		}
+
+		inscriptionDeposit.Content = content
+		inscriptionDeposit.Action = content.Action
+		inscriptionDeposit.Token = content.Tick
+		inscriptionDeposit.TokenType = content.Protocol
+		inscriptionDeposit.Amount = content.Amount
+	} else if inscription.ContentType == "" {
+		inscriptionDeposit.ContentPreview = c.info.ContentHost + "/content/" + inscription.Id
+		inscriptionDeposit.Amount = "1"
+	}
+
+	return nil
 }
 
 // getMemo returns memo for a btc tx, using vout OP_RETURN
