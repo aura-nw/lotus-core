@@ -1,5 +1,7 @@
 # Lotus Core
 
+*Work in progress!*
+
 Bridge bitcoin, ordinals, brc-20,... to Aura Network.
 
 Lotus-core is a bridge designed to seamlessly connect various blockchain assets with the Aura Network. This opens a world of possibilities for users who want to leverage the scalability, agility, and user-friendliness of Aura network for their Bitcoin (including Ordinals), BRC-20 tokens, and potentially more in the future.
