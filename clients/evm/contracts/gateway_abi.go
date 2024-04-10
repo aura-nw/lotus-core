@@ -60,25 +60,26 @@ type IGatewayOutgoingInvoiceResponse struct {
 
 // IGatewayOutgoingTxInfo is an auto generated low-level Go binding around an user-defined struct.
 type IGatewayOutgoingTxInfo struct {
-	TxId       *big.Int
-	InvoiceIds []*big.Int
-	TxContent  string
-	Validators []common.Address
-	Signatures []string
-	Status     uint8
-	TxHash     string
+	TxId        *big.Int
+	TotalAmount *big.Int
+	InvoiceIds  []*big.Int
+	TxContent   string
+	Validators  []common.Address
+	Signatures  []string
+	Status      uint8
+	TxHash      string
 }
 
 // IGatewayValidatorInfo is an auto generated low-level Go binding around an user-defined struct.
 type IGatewayValidatorInfo struct {
 	Validator           common.Address
 	NextIncomingInvoice *big.Int
-	NextOutgoingInvoice *big.Int
+	NextOutgoingTx      *big.Int
 }
 
 // GatewayMetaData contains all meta data concerning the Gateway contract.
 var GatewayMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"name\":\"EnforcedPause\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ExpectedPause\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidInitialization\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotInitializing\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"OwnableInvalidOwner\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"OwnableUnauthorizedAccount\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"ProposerUnauthorizedAccount\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"ValidatorUnauthorizedAccount\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"executor\",\"type\":\"address\"}],\"name\":\"IncomingInvoiceCompleted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"utxo\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"}],\"name\":\"IncomingInvoiceCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"utxo_refund\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"executor\",\"type\":\"address\"}],\"name\":\"IncomingInvoiceRefunded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"executor\",\"type\":\"address\"}],\"name\":\"IncomingInvoiceRejected\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"validator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"verified\",\"type\":\"bool\"}],\"name\":\"IncomingInvoiceVerified\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"version\",\"type\":\"uint64\"}],\"name\":\"Initialized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"recipient\",\"type\":\"string\"}],\"name\":\"OutgoingInvoiceCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"txContent\",\"type\":\"string\"}],\"name\":\"OutgoingInvoiceSubmitted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"txId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"enumIGateway.TxStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"txHash\",\"type\":\"string\"}],\"name\":\"OutgoingTxProcessed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"txId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"validator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"verified\",\"type\":\"bool\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"signature\",\"type\":\"string\"}],\"name\":\"OutgoingTxVerified\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"Paused\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"Unpaused\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_validator\",\"type\":\"address\"}],\"name\":\"addValidator\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"allValidators\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"validator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"nextIncomingInvoice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nextOutgoingInvoice\",\"type\":\"uint256\"}],\"internalType\":\"structIGateway.ValidatorInfo[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"btcAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_recipient\",\"type\":\"address\"}],\"name\":\"completeIncomingInvoice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"concensusThreshold\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_utxo\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_recipient\",\"type\":\"address\"}],\"name\":\"createIncomingInvoice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_utxo\",\"type\":\"string\"}],\"name\":\"incomingInvoice\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"utxo\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"address[]\",\"name\":\"validators\",\"type\":\"address[]\"},{\"internalType\":\"bool[]\",\"name\":\"confirmations\",\"type\":\"bool[]\"},{\"internalType\":\"string\",\"name\":\"utxo_refund\",\"type\":\"string\"}],\"internalType\":\"structIGateway.IncomingInvoiceResponse\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"incomingInvoices\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"utxo\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"utxo_refund\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"incomingInvoicesCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"}],\"name\":\"outgoingInvoice\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"recipient\",\"type\":\"string\"},{\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"txId\",\"type\":\"uint256\"}],\"internalType\":\"structIGateway.OutgoingInvoiceResponse\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"outgoingInvoices\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"recipient\",\"type\":\"string\"},{\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"txContent\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"txId\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"outgoingInvoicesCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_txId\",\"type\":\"uint256\"}],\"name\":\"outgoingTx\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"txId\",\"type\":\"uint256\"},{\"internalType\":\"uint256[]\",\"name\":\"invoiceIds\",\"type\":\"uint256[]\"},{\"internalType\":\"string\",\"name\":\"txContent\",\"type\":\"string\"},{\"internalType\":\"address[]\",\"name\":\"validators\",\"type\":\"address[]\"},{\"internalType\":\"string[]\",\"name\":\"signatures\",\"type\":\"string[]\"},{\"internalType\":\"enumIGateway.TxStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"txHash\",\"type\":\"string\"}],\"internalType\":\"structIGateway.OutgoingTxInfo\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"outgoingTxCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"pause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"paused\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_txId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_txHash\",\"type\":\"string\"}],\"name\":\"processOutgoingTx\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"proposer\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_utxo\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_recipient\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"_utxo_refund\",\"type\":\"string\"}],\"name\":\"refundIncomingInvoice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_validator\",\"type\":\"address\"}],\"name\":\"removeValidator\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"recipient\",\"type\":\"string\"}],\"internalType\":\"structIGateway.OutgoingInvoiceBasicInfo[]\",\"name\":\"_invoices\",\"type\":\"tuple[]\"},{\"internalType\":\"string\",\"name\":\"_txContent\",\"type\":\"string\"}],\"name\":\"submitTxContent\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"unpause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_btcAddress\",\"type\":\"address\"}],\"name\":\"updateBtcAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_concensusThreshold\",\"type\":\"uint256\"}],\"name\":\"updateConcensusThreshold\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_proposer\",\"type\":\"address\"}],\"name\":\"updateProposer\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"name\":\"utxos\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_validator\",\"type\":\"address\"}],\"name\":\"validator\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"validator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"nextIncomingInvoice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nextOutgoingInvoice\",\"type\":\"uint256\"}],\"internalType\":\"structIGateway.ValidatorInfo\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_utxo\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_recipient\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"_isVerified\",\"type\":\"bool\"}],\"name\":\"verifyIncomingInvoice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_txId\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"_isVerified\",\"type\":\"bool\"},{\"internalType\":\"string\",\"name\":\"_signature\",\"type\":\"string\"}],\"name\":\"verifyOutgoingTx\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"recipient\",\"type\":\"string\"}],\"name\":\"withdrawToken\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[],\"name\":\"EnforcedPause\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ExpectedPause\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidInitialization\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotInitializing\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"OwnableInvalidOwner\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"OwnableUnauthorizedAccount\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"ProposerUnauthorizedAccount\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"ValidatorUnauthorizedAccount\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"executor\",\"type\":\"address\"}],\"name\":\"IncomingInvoiceCompleted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"utxo\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"}],\"name\":\"IncomingInvoiceCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"utxo_refund\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"executor\",\"type\":\"address\"}],\"name\":\"IncomingInvoiceRefunded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"executor\",\"type\":\"address\"}],\"name\":\"IncomingInvoiceRejected\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"validator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"verified\",\"type\":\"bool\"}],\"name\":\"IncomingInvoiceVerified\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"version\",\"type\":\"uint64\"}],\"name\":\"Initialized\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"recipient\",\"type\":\"string\"}],\"name\":\"OutgoingInvoiceCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"txId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"enumIGateway.TxStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"txHash\",\"type\":\"string\"}],\"name\":\"OutgoingTxProcessed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"txId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"txContent\",\"type\":\"string\"}],\"name\":\"OutgoingTxSubmitted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"txId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"validator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"verified\",\"type\":\"bool\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"signature\",\"type\":\"string\"}],\"name\":\"OutgoingTxVerified\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"Paused\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"Unpaused\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_validator\",\"type\":\"address\"}],\"name\":\"addValidator\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"allValidators\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"validator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"nextIncomingInvoice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nextOutgoingTx\",\"type\":\"uint256\"}],\"internalType\":\"structIGateway.ValidatorInfo[]\",\"name\":\"\",\"type\":\"tuple[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"btcAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_recipient\",\"type\":\"address\"}],\"name\":\"completeIncomingInvoice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"concensusThreshold\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_utxo\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_recipient\",\"type\":\"address\"}],\"name\":\"createIncomingInvoice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_utxo\",\"type\":\"string\"}],\"name\":\"incomingInvoice\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"utxo\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"address[]\",\"name\":\"validators\",\"type\":\"address[]\"},{\"internalType\":\"bool[]\",\"name\":\"confirmations\",\"type\":\"bool[]\"},{\"internalType\":\"string\",\"name\":\"utxo_refund\",\"type\":\"string\"}],\"internalType\":\"structIGateway.IncomingInvoiceResponse\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"incomingInvoices\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"utxo\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"recipient\",\"type\":\"address\"},{\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"utxo_refund\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"incomingInvoicesCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"initialize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"}],\"name\":\"outgoingInvoice\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"recipient\",\"type\":\"string\"},{\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"txId\",\"type\":\"uint256\"}],\"internalType\":\"structIGateway.OutgoingInvoiceResponse\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"outgoingInvoices\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"recipient\",\"type\":\"string\"},{\"internalType\":\"enumIGateway.InvoiceStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"txContent\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"txId\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"outgoingInvoicesCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_txId\",\"type\":\"uint256\"}],\"name\":\"outgoingTx\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"txId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"totalAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256[]\",\"name\":\"invoiceIds\",\"type\":\"uint256[]\"},{\"internalType\":\"string\",\"name\":\"txContent\",\"type\":\"string\"},{\"internalType\":\"address[]\",\"name\":\"validators\",\"type\":\"address[]\"},{\"internalType\":\"string[]\",\"name\":\"signatures\",\"type\":\"string[]\"},{\"internalType\":\"enumIGateway.TxStatus\",\"name\":\"status\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"txHash\",\"type\":\"string\"}],\"internalType\":\"structIGateway.OutgoingTxInfo\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"outgoingTxCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"pause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"paused\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_txId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_txHash\",\"type\":\"string\"}],\"name\":\"processOutgoingTx\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"proposer\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_utxo\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_recipient\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"_utxo_refund\",\"type\":\"string\"}],\"name\":\"refundIncomingInvoice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_validator\",\"type\":\"address\"}],\"name\":\"removeValidator\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"recipient\",\"type\":\"string\"}],\"internalType\":\"structIGateway.OutgoingInvoiceBasicInfo[]\",\"name\":\"_invoices\",\"type\":\"tuple[]\"},{\"internalType\":\"string\",\"name\":\"_txContent\",\"type\":\"string\"}],\"name\":\"submitTxContent\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"unpause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_btcAddress\",\"type\":\"address\"}],\"name\":\"updateBtcAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_concensusThreshold\",\"type\":\"uint256\"}],\"name\":\"updateConcensusThreshold\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_proposer\",\"type\":\"address\"}],\"name\":\"updateProposer\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"name\":\"utxos\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_validator\",\"type\":\"address\"}],\"name\":\"validator\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"validator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"nextIncomingInvoice\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"nextOutgoingTx\",\"type\":\"uint256\"}],\"internalType\":\"structIGateway.ValidatorInfo\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_invoiceId\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"_utxo\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_recipient\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"_isVerified\",\"type\":\"bool\"}],\"name\":\"verifyIncomingInvoice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_txId\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"_isVerified\",\"type\":\"bool\"},{\"internalType\":\"string\",\"name\":\"_signature\",\"type\":\"string\"}],\"name\":\"verifyOutgoingTx\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"recipient\",\"type\":\"string\"}],\"name\":\"withdrawToken\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
 }
 
 // GatewayABI is the input ABI used to generate the binding from.
@@ -571,7 +572,7 @@ func (_Gateway *GatewayCallerSession) OutgoingInvoicesCount() (*big.Int, error) 
 
 // OutgoingTx is a free data retrieval call binding the contract method 0x2823434e.
 //
-// Solidity: function outgoingTx(uint256 _txId) view returns((uint256,uint256[],string,address[],string[],uint8,string))
+// Solidity: function outgoingTx(uint256 _txId) view returns((uint256,uint256,uint256[],string,address[],string[],uint8,string))
 func (_Gateway *GatewayCaller) OutgoingTx(opts *bind.CallOpts, _txId *big.Int) (IGatewayOutgoingTxInfo, error) {
 	var out []interface{}
 	err := _Gateway.contract.Call(opts, &out, "outgoingTx", _txId)
@@ -588,14 +589,14 @@ func (_Gateway *GatewayCaller) OutgoingTx(opts *bind.CallOpts, _txId *big.Int) (
 
 // OutgoingTx is a free data retrieval call binding the contract method 0x2823434e.
 //
-// Solidity: function outgoingTx(uint256 _txId) view returns((uint256,uint256[],string,address[],string[],uint8,string))
+// Solidity: function outgoingTx(uint256 _txId) view returns((uint256,uint256,uint256[],string,address[],string[],uint8,string))
 func (_Gateway *GatewaySession) OutgoingTx(_txId *big.Int) (IGatewayOutgoingTxInfo, error) {
 	return _Gateway.Contract.OutgoingTx(&_Gateway.CallOpts, _txId)
 }
 
 // OutgoingTx is a free data retrieval call binding the contract method 0x2823434e.
 //
-// Solidity: function outgoingTx(uint256 _txId) view returns((uint256,uint256[],string,address[],string[],uint8,string))
+// Solidity: function outgoingTx(uint256 _txId) view returns((uint256,uint256,uint256[],string,address[],string[],uint8,string))
 func (_Gateway *GatewayCallerSession) OutgoingTx(_txId *big.Int) (IGatewayOutgoingTxInfo, error) {
 	return _Gateway.Contract.OutgoingTx(&_Gateway.CallOpts, _txId)
 }
@@ -977,21 +978,21 @@ func (_Gateway *GatewayTransactorSession) RenounceOwnership() (*types.Transactio
 
 // SubmitTxContent is a paid mutator transaction binding the contract method 0xadfac6a1.
 //
-// Solidity: function submitTxContent((uint256,uint256,string)[] _invoices, string _txContent) returns()
+// Solidity: function submitTxContent((uint256,uint256,string)[] _invoices, string _txContent) returns(uint256)
 func (_Gateway *GatewayTransactor) SubmitTxContent(opts *bind.TransactOpts, _invoices []IGatewayOutgoingInvoiceBasicInfo, _txContent string) (*types.Transaction, error) {
 	return _Gateway.contract.Transact(opts, "submitTxContent", _invoices, _txContent)
 }
 
 // SubmitTxContent is a paid mutator transaction binding the contract method 0xadfac6a1.
 //
-// Solidity: function submitTxContent((uint256,uint256,string)[] _invoices, string _txContent) returns()
+// Solidity: function submitTxContent((uint256,uint256,string)[] _invoices, string _txContent) returns(uint256)
 func (_Gateway *GatewaySession) SubmitTxContent(_invoices []IGatewayOutgoingInvoiceBasicInfo, _txContent string) (*types.Transaction, error) {
 	return _Gateway.Contract.SubmitTxContent(&_Gateway.TransactOpts, _invoices, _txContent)
 }
 
 // SubmitTxContent is a paid mutator transaction binding the contract method 0xadfac6a1.
 //
-// Solidity: function submitTxContent((uint256,uint256,string)[] _invoices, string _txContent) returns()
+// Solidity: function submitTxContent((uint256,uint256,string)[] _invoices, string _txContent) returns(uint256)
 func (_Gateway *GatewayTransactorSession) SubmitTxContent(_invoices []IGatewayOutgoingInvoiceBasicInfo, _txContent string) (*types.Transaction, error) {
 	return _Gateway.Contract.SubmitTxContent(&_Gateway.TransactOpts, _invoices, _txContent)
 }
@@ -2197,151 +2198,6 @@ func (_Gateway *GatewayFilterer) ParseOutgoingInvoiceCreated(log types.Log) (*Ga
 	return event, nil
 }
 
-// GatewayOutgoingInvoiceSubmittedIterator is returned from FilterOutgoingInvoiceSubmitted and is used to iterate over the raw logs and unpacked data for OutgoingInvoiceSubmitted events raised by the Gateway contract.
-type GatewayOutgoingInvoiceSubmittedIterator struct {
-	Event *GatewayOutgoingInvoiceSubmitted // Event containing the contract specifics and raw log
-
-	contract *bind.BoundContract // Generic contract to use for unpacking event data
-	event    string              // Event name to use for unpacking event data
-
-	logs chan types.Log        // Log channel receiving the found contract events
-	sub  ethereum.Subscription // Subscription for errors, completion and termination
-	done bool                  // Whether the subscription completed delivering logs
-	fail error                 // Occurred error to stop iteration
-}
-
-// Next advances the iterator to the subsequent event, returning whether there
-// are any more events found. In case of a retrieval or parsing error, false is
-// returned and Error() can be queried for the exact failure.
-func (it *GatewayOutgoingInvoiceSubmittedIterator) Next() bool {
-	// If the iterator failed, stop iterating
-	if it.fail != nil {
-		return false
-	}
-	// If the iterator completed, deliver directly whatever's available
-	if it.done {
-		select {
-		case log := <-it.logs:
-			it.Event = new(GatewayOutgoingInvoiceSubmitted)
-			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-				it.fail = err
-				return false
-			}
-			it.Event.Raw = log
-			return true
-
-		default:
-			return false
-		}
-	}
-	// Iterator still in progress, wait for either a data or an error event
-	select {
-	case log := <-it.logs:
-		it.Event = new(GatewayOutgoingInvoiceSubmitted)
-		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
-			it.fail = err
-			return false
-		}
-		it.Event.Raw = log
-		return true
-
-	case err := <-it.sub.Err():
-		it.done = true
-		it.fail = err
-		return it.Next()
-	}
-}
-
-// Error returns any retrieval or parsing error occurred during filtering.
-func (it *GatewayOutgoingInvoiceSubmittedIterator) Error() error {
-	return it.fail
-}
-
-// Close terminates the iteration process, releasing any pending underlying
-// resources.
-func (it *GatewayOutgoingInvoiceSubmittedIterator) Close() error {
-	it.sub.Unsubscribe()
-	return nil
-}
-
-// GatewayOutgoingInvoiceSubmitted represents a OutgoingInvoiceSubmitted event raised by the Gateway contract.
-type GatewayOutgoingInvoiceSubmitted struct {
-	InvoiceId *big.Int
-	TxContent string
-	Raw       types.Log // Blockchain specific contextual infos
-}
-
-// FilterOutgoingInvoiceSubmitted is a free log retrieval operation binding the contract event 0xe9c72d77b31256d984951f58e65386e05d69f158abc376166e2824dc715a7b12.
-//
-// Solidity: event OutgoingInvoiceSubmitted(uint256 indexed invoiceId, string txContent)
-func (_Gateway *GatewayFilterer) FilterOutgoingInvoiceSubmitted(opts *bind.FilterOpts, invoiceId []*big.Int) (*GatewayOutgoingInvoiceSubmittedIterator, error) {
-
-	var invoiceIdRule []interface{}
-	for _, invoiceIdItem := range invoiceId {
-		invoiceIdRule = append(invoiceIdRule, invoiceIdItem)
-	}
-
-	logs, sub, err := _Gateway.contract.FilterLogs(opts, "OutgoingInvoiceSubmitted", invoiceIdRule)
-	if err != nil {
-		return nil, err
-	}
-	return &GatewayOutgoingInvoiceSubmittedIterator{contract: _Gateway.contract, event: "OutgoingInvoiceSubmitted", logs: logs, sub: sub}, nil
-}
-
-// WatchOutgoingInvoiceSubmitted is a free log subscription operation binding the contract event 0xe9c72d77b31256d984951f58e65386e05d69f158abc376166e2824dc715a7b12.
-//
-// Solidity: event OutgoingInvoiceSubmitted(uint256 indexed invoiceId, string txContent)
-func (_Gateway *GatewayFilterer) WatchOutgoingInvoiceSubmitted(opts *bind.WatchOpts, sink chan<- *GatewayOutgoingInvoiceSubmitted, invoiceId []*big.Int) (event.Subscription, error) {
-
-	var invoiceIdRule []interface{}
-	for _, invoiceIdItem := range invoiceId {
-		invoiceIdRule = append(invoiceIdRule, invoiceIdItem)
-	}
-
-	logs, sub, err := _Gateway.contract.WatchLogs(opts, "OutgoingInvoiceSubmitted", invoiceIdRule)
-	if err != nil {
-		return nil, err
-	}
-	return event.NewSubscription(func(quit <-chan struct{}) error {
-		defer sub.Unsubscribe()
-		for {
-			select {
-			case log := <-logs:
-				// New log arrived, parse the event and forward to the user
-				event := new(GatewayOutgoingInvoiceSubmitted)
-				if err := _Gateway.contract.UnpackLog(event, "OutgoingInvoiceSubmitted", log); err != nil {
-					return err
-				}
-				event.Raw = log
-
-				select {
-				case sink <- event:
-				case err := <-sub.Err():
-					return err
-				case <-quit:
-					return nil
-				}
-			case err := <-sub.Err():
-				return err
-			case <-quit:
-				return nil
-			}
-		}
-	}), nil
-}
-
-// ParseOutgoingInvoiceSubmitted is a log parse operation binding the contract event 0xe9c72d77b31256d984951f58e65386e05d69f158abc376166e2824dc715a7b12.
-//
-// Solidity: event OutgoingInvoiceSubmitted(uint256 indexed invoiceId, string txContent)
-func (_Gateway *GatewayFilterer) ParseOutgoingInvoiceSubmitted(log types.Log) (*GatewayOutgoingInvoiceSubmitted, error) {
-	event := new(GatewayOutgoingInvoiceSubmitted)
-	if err := _Gateway.contract.UnpackLog(event, "OutgoingInvoiceSubmitted", log); err != nil {
-		return nil, err
-	}
-	event.Raw = log
-	return event, nil
-}
-
 // GatewayOutgoingTxProcessedIterator is returned from FilterOutgoingTxProcessed and is used to iterate over the raw logs and unpacked data for OutgoingTxProcessed events raised by the Gateway contract.
 type GatewayOutgoingTxProcessedIterator struct {
 	Event *GatewayOutgoingTxProcessed // Event containing the contract specifics and raw log
@@ -2482,6 +2338,151 @@ func (_Gateway *GatewayFilterer) WatchOutgoingTxProcessed(opts *bind.WatchOpts, 
 func (_Gateway *GatewayFilterer) ParseOutgoingTxProcessed(log types.Log) (*GatewayOutgoingTxProcessed, error) {
 	event := new(GatewayOutgoingTxProcessed)
 	if err := _Gateway.contract.UnpackLog(event, "OutgoingTxProcessed", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// GatewayOutgoingTxSubmittedIterator is returned from FilterOutgoingTxSubmitted and is used to iterate over the raw logs and unpacked data for OutgoingTxSubmitted events raised by the Gateway contract.
+type GatewayOutgoingTxSubmittedIterator struct {
+	Event *GatewayOutgoingTxSubmitted // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *GatewayOutgoingTxSubmittedIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(GatewayOutgoingTxSubmitted)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(GatewayOutgoingTxSubmitted)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *GatewayOutgoingTxSubmittedIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *GatewayOutgoingTxSubmittedIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// GatewayOutgoingTxSubmitted represents a OutgoingTxSubmitted event raised by the Gateway contract.
+type GatewayOutgoingTxSubmitted struct {
+	TxId      *big.Int
+	TxContent string
+	Raw       types.Log // Blockchain specific contextual infos
+}
+
+// FilterOutgoingTxSubmitted is a free log retrieval operation binding the contract event 0xda987441b8bab19820139d670528f4e4de7f914c8018f6ef2894e83f69e67f21.
+//
+// Solidity: event OutgoingTxSubmitted(uint256 indexed txId, string txContent)
+func (_Gateway *GatewayFilterer) FilterOutgoingTxSubmitted(opts *bind.FilterOpts, txId []*big.Int) (*GatewayOutgoingTxSubmittedIterator, error) {
+
+	var txIdRule []interface{}
+	for _, txIdItem := range txId {
+		txIdRule = append(txIdRule, txIdItem)
+	}
+
+	logs, sub, err := _Gateway.contract.FilterLogs(opts, "OutgoingTxSubmitted", txIdRule)
+	if err != nil {
+		return nil, err
+	}
+	return &GatewayOutgoingTxSubmittedIterator{contract: _Gateway.contract, event: "OutgoingTxSubmitted", logs: logs, sub: sub}, nil
+}
+
+// WatchOutgoingTxSubmitted is a free log subscription operation binding the contract event 0xda987441b8bab19820139d670528f4e4de7f914c8018f6ef2894e83f69e67f21.
+//
+// Solidity: event OutgoingTxSubmitted(uint256 indexed txId, string txContent)
+func (_Gateway *GatewayFilterer) WatchOutgoingTxSubmitted(opts *bind.WatchOpts, sink chan<- *GatewayOutgoingTxSubmitted, txId []*big.Int) (event.Subscription, error) {
+
+	var txIdRule []interface{}
+	for _, txIdItem := range txId {
+		txIdRule = append(txIdRule, txIdItem)
+	}
+
+	logs, sub, err := _Gateway.contract.WatchLogs(opts, "OutgoingTxSubmitted", txIdRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(GatewayOutgoingTxSubmitted)
+				if err := _Gateway.contract.UnpackLog(event, "OutgoingTxSubmitted", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseOutgoingTxSubmitted is a log parse operation binding the contract event 0xda987441b8bab19820139d670528f4e4de7f914c8018f6ef2894e83f69e67f21.
+//
+// Solidity: event OutgoingTxSubmitted(uint256 indexed txId, string txContent)
+func (_Gateway *GatewayFilterer) ParseOutgoingTxSubmitted(log types.Log) (*GatewayOutgoingTxSubmitted, error) {
+	event := new(GatewayOutgoingTxSubmitted)
+	if err := _Gateway.contract.UnpackLog(event, "OutgoingTxSubmitted", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log

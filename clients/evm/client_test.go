@@ -12,7 +12,7 @@ import (
 
 func TestCallCreateIncomingInvoice(t *testing.T) {
 	testDeposit := types.BtcDeposit{
-		TxId:           "0b747b5c26bc02d03ab92d9ad8984539b978271941b88e781c772370b5aaf0e6",
+		TxId:           "12747b5c26bc02d03ab92d9ad8984539b978271941b88e781c772370b5aaf0e123",
 		Height:         2574433,
 		Memo:           "",
 		Receiver:       "0xD02c8cebc86Bd8Cc5fE876b4B793256C0d67a887",
@@ -21,7 +21,7 @@ func TestCallCreateIncomingInvoice(t *testing.T) {
 		Amount:         602518,
 		Idx:            0,
 		UtxoStatus:     "unused",
-		Status:         "failed",
+		Status:         "new",
 	}
 
 	client, err := evm.NewClient(slog.Default(), config.GetEvmInfoForTest())
