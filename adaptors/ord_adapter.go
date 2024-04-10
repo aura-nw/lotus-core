@@ -13,7 +13,6 @@ type IOrdAdapter interface {
 	GetInscription(inscriptionId string) (*types.GetInscriptionResponse, error)
 	GetOutput(output string) (*types.GetOutputResponse, error)
 	GetContent(inscriptionId string) (*types.GetContentResponse, error)
-	GetMetadata(inscriptionId string) (interface{}, error)
 }
 
 type OrdAdapterImpl struct {
@@ -27,20 +26,15 @@ func NewOrdAdapter(ordHost string) (IOrdAdapter, error) {
 }
 
 func (a *OrdAdapterImpl) GetInscriptionIdsByBlock(blockHeight int64) ([]string, error) {
-	var result types.GetInscriptionIdsResponse
+	var result *types.GetInscriptionIdsResponse
 	resp, err := a.sendRequest("GET", fmt.Sprintf("%s/inscriptions/block/%d", a.host, blockHeight), nil)
 	if err != nil {
 		return nil, err
 	}
 
 	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
+	result, err = parseResponse(resp, result)
 	if err != nil {
-		return nil, err
-	}
-
-	if err := json.Unmarshal(body, &result); err != nil {
-		fmt.Println("Can not unmarshal JSON")
 		return nil, err
 	}
 
@@ -55,17 +49,7 @@ func (a *OrdAdapterImpl) GetInscription(inscriptionId string) (*types.GetInscrip
 	}
 
 	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := json.Unmarshal(body, &result); err != nil {
-		fmt.Println("Can not unmarshal JSON")
-		return nil, err
-	}
-
-	return result, nil
+	return parseResponse(resp, result)
 }
 
 func (a *OrdAdapterImpl) GetOutput(output string) (*types.GetOutputResponse, error) {
@@ -76,17 +60,7 @@ func (a *OrdAdapterImpl) GetOutput(output string) (*types.GetOutputResponse, err
 	}
 
 	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := json.Unmarshal(body, &result); err != nil {
-		fmt.Println("Can not unmarshal JSON")
-		return nil, err
-	}
-
-	return result, nil
+	return parseResponse(resp, result)
 }
 
 func (a *OrdAdapterImpl) GetContent(inscriptionId string) (*types.GetContentResponse, error) {
@@ -97,38 +71,7 @@ func (a *OrdAdapterImpl) GetContent(inscriptionId string) (*types.GetContentResp
 	}
 
 	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := json.Unmarshal(body, &result); err != nil {
-		fmt.Println("Can not unmarshal JSON")
-		return nil, err
-	}
-
-	return result, nil
-}
-
-func (a *OrdAdapterImpl) GetMetadata(inscriptionId string) (interface{}, error) {
-	var result interface{}
-	resp, err := a.sendRequest("GET", fmt.Sprintf("%s/content/%s", a.host, inscriptionId), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := json.Unmarshal(body, &result); err != nil {
-		fmt.Println("Can not unmarshal JSON")
-		return nil, err
-	}
-
-	return result, nil
+	return parseResponse(resp, result)
 }
 
 func (a *OrdAdapterImpl) sendRequest(method, url string, body io.Reader) (*http.Response, error) {
@@ -136,4 +79,21 @@ func (a *OrdAdapterImpl) sendRequest(method, url string, body io.Reader) (*http.
 	req, _ := http.NewRequest(method, url, body)
 	req.Header.Set("Accept", "application/json")
 	return client.Do(req)
+}
+
+func parseResponse[T *types.GetInscriptionIdsResponse |
+	*types.GetContentResponse |
+	*types.GetOutputResponse |
+	*types.GetInscriptionResponse](resp *http.Response, result T) (T, error) {
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal(body, &result); err != nil {
+		fmt.Println("Can not unmarshal JSON")
+		return nil, err
+	}
+
+	return result, nil
 }
