@@ -14,7 +14,8 @@ const (
 )
 
 type ChainView interface {
-	GetLastSeenHeight() (int64, error)
+	GetLastSeenBtcHeight() (int64, error)
+	GetLastInscriptionHeight() (int64, error)
 	GetDepositsByStatus(status []types.InvoiceStatus) ([]*types.BtcDeposit, error)
 }
 
@@ -33,8 +34,8 @@ type BitcoinDB interface {
 	GetBtcWithdraws() ([]types.BtcWithdraw, error)
 
 	// For incriptions transfer
-	StoreInscriptionDeposits([]types.InscriptionDeposit) error
-	StoreInscriptionWithdrawals([]types.InscriptionWithdrawal) error
+	StoreInscriptionDeposits([]*types.InscriptionDeposit) error
+	StoreInscriptionWithdrawals([]*types.InscriptionWithdrawal) error
 }
 
 type bitcoinDBImpl struct {
@@ -45,9 +46,18 @@ type bitcoinDBImpl struct {
 var _ BitcoinDB = &bitcoinDBImpl{}
 
 // GetLastSeenHeight implements BitcoinDB.
-func (b *bitcoinDBImpl) GetLastSeenHeight() (int64, error) {
+func (b *bitcoinDBImpl) GetLastSeenBtcHeight() (int64, error) {
 	var lastHeight int64
 	err := b.db.Model(&types.BtcDeposit{}).Select("max(height)").Scan(&lastHeight).Error
+	if err != nil {
+		return 2574433, nil // for testing
+	}
+	return lastHeight, err
+}
+
+func (b *bitcoinDBImpl) GetLastInscriptionHeight() (int64, error) {
+	var lastHeight int64
+	err := b.db.Model(&types.InscriptionDeposit{}).Select("max(height)").Scan(&lastHeight).Error
 	if err != nil {
 		return 2574433, nil // for testing
 	}
@@ -101,8 +111,8 @@ func (b *bitcoinDBImpl) GetBtcWithdraws() ([]types.BtcWithdraw, error) {
 }
 
 // StoreInscriptionDeposits implements BitcoinDB.
-func (b *bitcoinDBImpl) StoreInscriptionDeposits(deposits []types.InscriptionDeposit) error {
-	deduped := b.db.Clauses(clause.OnConflict{Columns: []clause.Column{{Name: "tx_id"}}, DoNothing: true})
+func (b *bitcoinDBImpl) StoreInscriptionDeposits(deposits []*types.InscriptionDeposit) error {
+	deduped := b.db.Clauses(clause.OnConflict{Columns: []clause.Column{{Name: "tx_hash"}}, DoNothing: true})
 	result := deduped.CreateInBatches(&deposits, defaultBatchSize)
 	if result.Error == nil && int(result.RowsAffected) < len(deposits) {
 		b.logger.Warn("ignored inscription deposit duplicates", "duplicates", len(deposits)-int(result.RowsAffected))
@@ -112,7 +122,7 @@ func (b *bitcoinDBImpl) StoreInscriptionDeposits(deposits []types.InscriptionDep
 }
 
 // StoreInscriptionWithdrawals implements BitcoinDB.
-func (b *bitcoinDBImpl) StoreInscriptionWithdrawals(withdrawals []types.InscriptionWithdrawal) error {
+func (b *bitcoinDBImpl) StoreInscriptionWithdrawals(withdrawals []*types.InscriptionWithdrawal) error {
 	deduped := b.db.Clauses(clause.OnConflict{Columns: []clause.Column{{Name: "tx_id"}}, DoNothing: true})
 	result := deduped.CreateInBatches(&withdrawals, defaultBatchSize)
 	if result.Error == nil && int(result.RowsAffected) < len(withdrawals) {

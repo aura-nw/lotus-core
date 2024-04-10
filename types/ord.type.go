@@ -1,4 +1,4 @@
-package adaptors
+package types
 
 type GetInscriptionIdsResponse struct {
 	Ids       []string `json:"ids"`

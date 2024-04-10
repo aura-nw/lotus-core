@@ -25,10 +25,11 @@ type Control struct {
 	config *config.Config
 	db     *database.DB
 
-	btcClient      bitcoin.Client
-	evmClient      evm.Client
-	lastHeightBtc  int64
-	multisigClient bitcoin.MultiSigClient
+	btcClient             bitcoin.Client
+	evmClient             evm.Client
+	lastHeightBtc         int64
+	lastHeightInscription int64
+	multisigClient        bitcoin.MultiSigClient
 
 	wg sync.WaitGroup
 }
@@ -88,7 +89,7 @@ func (c *Control) initClients() error {
 func (c *Control) watchBitcoinDeposits() {
 	defer c.wg.Done()
 
-	lastHeightBtc, err := c.BitcoinDB().GetLastSeenHeight()
+	lastHeightBtc, err := c.BitcoinDB().GetLastSeenBtcHeight()
 	if err != nil {
 		c.logger.Error("get last seen height error", "err", err)
 		return
@@ -326,13 +327,59 @@ func (c *Control) broadcastBtcTx() {
 	}
 }
 
+func (c *Control) watchInscriptionDeposits() {
+	defer c.wg.Done()
+
+	lastHeightInscription, err := c.BitcoinDB().GetLastInscriptionHeight()
+	if err != nil {
+		c.logger.Error("get last seen height error", "err", err)
+		return
+	}
+	c.lastHeightInscription = lastHeightInscription
+
+	ticker := time.NewTicker(time.Duration(c.config.Bitcoin.QueryInterval) * time.Second)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-c.ctx.Done():
+			c.logger.Info("watchInscription: context done")
+			return
+		case <-ticker.C:
+			height := c.lastHeightInscription
+			c.logger.Info("watchInscription: get btc deposits", "height", height)
+			inscriptionDeposits, err := c.btcClient.GetInscriptionDeposits(height, c.config.Bitcoin.BitcoinMultisig, c.config.Bitcoin.MinConfirms)
+			if err != nil {
+				c.logger.Error("watchInscription: get btc deposits from btc client error", "err", err)
+				time.Sleep(1 * time.Second)
+				continue
+			}
+			if len(inscriptionDeposits) == 0 {
+				c.logger.Info("watchInscription: no inscription deposits", "height", height)
+				c.lastHeightInscription++
+				time.Sleep(1 * time.Second)
+				continue
+			}
+
+			c.logger.Info("watchInscription: found inscription deposits", "height", height, "len", len(inscriptionDeposits))
+			if err := c.BitcoinDB().StoreInscriptionDeposits(inscriptionDeposits); err != nil {
+				c.logger.Error("watchInscription: store inscription deposits error", "err", err)
+				time.Sleep(1 * time.Second)
+				continue
+			}
+			c.lastHeightInscription++
+		}
+	}
+}
+
 func (c *Control) ProcessInscription() ([]*types.InscriptionDeposit, error) {
 	return c.btcClient.GetInscriptionDeposits(2585594, c.config.Bitcoin.BitcoinMultisig, c.config.Bitcoin.MinConfirms)
 }
 
 func (c *Control) Start() {
-	c.wg.Add(4)
+	c.wg.Add(5)
 	go c.watchBitcoinDeposits()
+	go c.watchInscriptionDeposits()
 	go c.processNewDeposits()
 	go c.watchEvm()
 	go c.processOutCome()

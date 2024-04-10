@@ -3,15 +3,16 @@ package adaptors
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/aura-nw/lotus-core/types"
 	"io"
 	"net/http"
 )
 
 type IOrdAdapter interface {
 	GetInscriptionIdsByBlock(blockHeight int64) ([]string, error)
-	GetInscription(inscriptionId string) (*GetInscriptionResponse, error)
-	GetOutput(output string) (*GetOutputResponse, error)
-	GetContent(inscriptionId string) (*GetContentResponse, error)
+	GetInscription(inscriptionId string) (*types.GetInscriptionResponse, error)
+	GetOutput(output string) (*types.GetOutputResponse, error)
+	GetContent(inscriptionId string) (*types.GetContentResponse, error)
 	GetMetadata(inscriptionId string) (interface{}, error)
 }
 
@@ -26,7 +27,7 @@ func NewOrdAdapter(ordHost string) (IOrdAdapter, error) {
 }
 
 func (a *OrdAdapterImpl) GetInscriptionIdsByBlock(blockHeight int64) ([]string, error) {
-	var result GetInscriptionIdsResponse
+	var result types.GetInscriptionIdsResponse
 	resp, err := a.sendRequest("GET", fmt.Sprintf("%s/inscriptions/block/%d", a.host, blockHeight), nil)
 	if err != nil {
 		return nil, err
@@ -46,8 +47,8 @@ func (a *OrdAdapterImpl) GetInscriptionIdsByBlock(blockHeight int64) ([]string, 
 	return result.Ids, nil
 }
 
-func (a *OrdAdapterImpl) GetInscription(inscriptionId string) (*GetInscriptionResponse, error) {
-	var result *GetInscriptionResponse
+func (a *OrdAdapterImpl) GetInscription(inscriptionId string) (*types.GetInscriptionResponse, error) {
+	var result *types.GetInscriptionResponse
 	resp, err := a.sendRequest("GET", fmt.Sprintf("%s/inscription/%s", a.host, inscriptionId), nil)
 	if err != nil {
 		return nil, err
@@ -67,8 +68,8 @@ func (a *OrdAdapterImpl) GetInscription(inscriptionId string) (*GetInscriptionRe
 	return result, nil
 }
 
-func (a *OrdAdapterImpl) GetOutput(output string) (*GetOutputResponse, error) {
-	var result *GetOutputResponse
+func (a *OrdAdapterImpl) GetOutput(output string) (*types.GetOutputResponse, error) {
+	var result *types.GetOutputResponse
 	resp, err := a.sendRequest("GET", fmt.Sprintf("%s/output/%s", a.host, output), nil)
 	if err != nil {
 		return nil, err
@@ -88,8 +89,8 @@ func (a *OrdAdapterImpl) GetOutput(output string) (*GetOutputResponse, error) {
 	return result, nil
 }
 
-func (a *OrdAdapterImpl) GetContent(inscriptionId string) (*GetContentResponse, error) {
-	var result *GetContentResponse
+func (a *OrdAdapterImpl) GetContent(inscriptionId string) (*types.GetContentResponse, error) {
+	var result *types.GetContentResponse
 	resp, err := a.sendRequest("GET", fmt.Sprintf("%s/content/%s", a.host, inscriptionId), nil)
 	if err != nil {
 		return nil, err

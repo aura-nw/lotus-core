@@ -11,6 +11,7 @@ user = "aurauser"
 password = "aurapassword"
 
 [bitcoin]
+last-height = 2585166
 network = "testnet3"
 host = "103.154.187.179:18332"
 user = "user"

@@ -35,6 +35,7 @@ type BitcoinInfo struct {
 	PrivateKey      string `toml:"private-key"`
 	OrdHost         string `toml:"ord-host"`
 	ContentHost     string `toml:"content-host"`
+	LastHeight      uint64 `toml:"last-height"`
 }
 type ServerInfo struct {
 	Port string `toml:"port"`

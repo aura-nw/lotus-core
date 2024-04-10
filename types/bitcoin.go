@@ -42,21 +42,23 @@ func (BtcDeposit) TableName() string {
 }
 
 type InscriptionDeposit struct {
-	TxHash         string      `json:"txHash" gorm:"primary_key:true;not null"`
-	Height         int64       `json:"height" gorm:"not null"`
-	Id             string      `json:"id"`
-	Number         int64       `json:"number"`
-	From           string      `json:"from"`
-	To             string      `json:"to"`
-	Action         string      `json:"action"`
-	DateTime       time.Time   `json:"date_time"`
-	Token          string      `json:"token"`
-	Amount         string      `json:"amount"`
-	TokenType      string      `json:"token_type"`
-	Content        interface{} `json:"content"`
-	ContentType    string      `json:"content_type"`
-	ContentPreview string      `json:"content_preview"`
-	Memo           string      `json:"memo"`
+	Id             int64     `json:"id" gorm:"primary_key:true;not null;autoIncrement"`
+	TxHash         string    `json:"tx_hash" gorm:"unique;not null"`
+	Height         int64     `json:"height" gorm:"not null"`
+	InscriptionId  string    `json:"inscription_id"`
+	Number         int64     `json:"number"`
+	From           string    `json:"from" gorm:"index;not null"`
+	To             string    `json:"to" gorm:"not null"`
+	Action         string    `json:"action"`
+	DateTime       time.Time `json:"date_time"`
+	Token          string    `json:"token"`
+	Amount         string    `json:"amount"`
+	TokenType      string    `json:"token_type"`
+	ContentType    string    `json:"content_type"`
+	ContentPreview string    `json:"content_preview"`
+	Memo           string    `json:"memo"`
+	UpdatedAt      int64     `gorm:"autoUpdateTime"` // Use unix seconds as updating time
+	CreatedAt      int64     `gorm:"autoCreateTime"` // Use unix seconds as creating time
 }
 
 func (InscriptionDeposit) TableName() string {

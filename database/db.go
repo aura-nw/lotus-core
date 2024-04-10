@@ -61,7 +61,7 @@ func autoMigrate(gormDB *gorm.DB) error {
 		&types.BtcDeposit{},
 		&types.BtcWithdraw{},
 		&types.InscriptionDeposit{},
-		&types.InscriptionWithdrawal{},
+		//&types.InscriptionWithdrawal{},
 	)
 }
 

@@ -239,14 +239,14 @@ func (c *clientImpl) getInscriptionData(inscriptionId, filterAddr string, height
 
 	transactionHash := inscription.Id[:len(inscription.Id)-2]
 	inscriptionDeposit := &types.InscriptionDeposit{
-		TxHash:      transactionHash,
-		Height:      height,
-		Number:      inscription.Number,
-		Id:          inscriptionId,
-		From:        output.Address,
-		To:          inscription.Address,
-		ContentType: inscription.ContentType,
-		DateTime:    time.Now(),
+		TxHash:        transactionHash,
+		Height:        height,
+		Number:        inscription.Number,
+		InscriptionId: inscriptionId,
+		From:          output.Address,
+		To:            inscription.Address,
+		ContentType:   inscription.ContentType,
+		DateTime:      time.Unix(inscription.Timestamp, 0),
 	}
 
 	err = c.parseContent(inscription, inscriptionDeposit)
@@ -258,7 +258,7 @@ func (c *clientImpl) getInscriptionData(inscriptionId, filterAddr string, height
 	return inscriptionDeposit, nil
 }
 
-func (c *clientImpl) parseContent(inscription *adaptors.GetInscriptionResponse, inscriptionDeposit *types.InscriptionDeposit) error {
+func (c *clientImpl) parseContent(inscription *types.GetInscriptionResponse, inscriptionDeposit *types.InscriptionDeposit) error {
 	if strings.Contains(inscription.ContentType, "image") {
 		inscriptionDeposit.ContentPreview = c.info.ContentHost + "/content/" + inscription.Id
 		inscriptionDeposit.Action = "mint"
@@ -272,7 +272,6 @@ func (c *clientImpl) parseContent(inscription *adaptors.GetInscriptionResponse, 
 			return err
 		}
 
-		inscriptionDeposit.Content = content
 		inscriptionDeposit.Action = content.Action
 		inscriptionDeposit.Token = content.Tick
 		inscriptionDeposit.TokenType = content.Protocol
