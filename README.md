@@ -6,12 +6,12 @@ Lotus-core is a bridge designed to seamlessly connect various blockchain assets 
 
 ## 1. Modules
 
-* `bridge`
-* `config`
-* `clients`
-* `database`
-* `types`
-* `utils`
+* `bridge`: the controller of bridge service manages all action of chains.
+* `config`: contains all information config for running a bridge service.
+* `clients`: contains client function for query and execute transaction on each chain.
+* `database`: database package for persist data.
+* `types`: core types using on bridge service.
+* `utils`: the util functions.
 
 ## 2. Config
 
