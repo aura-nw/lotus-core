@@ -58,8 +58,8 @@ func GetEvmInfoForTest() EvmInfo {
 		QueryInterval: 6,
 		MinConfirms:   1,
 		Contracts: EvmContracts{
-			WrappedBtcAddr: "0xC70b52bBFd514859FA01728FcE22DABb96cc130D",
-			GatewayAddr:    "0x4F80aD4F4F398465EaED7b5a6Cb5f2Fe256f7239",
+			WrappedBtcAddr: "0xe10Ce7eAb22643a24CEeaAc30e38F89E8bfeDC8e",
+			GatewayAddr:    "0x7316e5511784EA3A2735c0Fe8a99324231E49030",
 		},
 		PrivateKey:  "7cf06d80baec389b7c63daff9eccfae043a2068a2c37a3d1e8be8976eec8928b",
 		CallTimeout: 10,

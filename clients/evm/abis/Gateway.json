@@ -244,25 +244,6 @@
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "invoiceId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "txContent",
-        "type": "string"
-      }
-    ],
-    "name": "OutgoingInvoiceSubmitted",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
         "name": "txId",
         "type": "uint256"
       },
@@ -280,6 +261,25 @@
       }
     ],
     "name": "OutgoingTxProcessed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "txId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "txContent",
+        "type": "string"
+      }
+    ],
+    "name": "OutgoingTxSubmitted",
     "type": "event"
   },
   {
@@ -389,7 +389,7 @@
           },
           {
             "internalType": "uint256",
-            "name": "nextOutgoingInvoice",
+            "name": "nextOutgoingTx",
             "type": "uint256"
           }
         ],
@@ -720,6 +720,11 @@
             "type": "uint256"
           },
           {
+            "internalType": "uint256",
+            "name": "totalAmount",
+            "type": "uint256"
+          },
+          {
             "internalType": "uint256[]",
             "name": "invoiceIds",
             "type": "uint256[]"
@@ -919,7 +924,13 @@
       }
     ],
     "name": "submitTxContent",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -1025,7 +1036,7 @@
           },
           {
             "internalType": "uint256",
-            "name": "nextOutgoingInvoice",
+            "name": "nextOutgoingTx",
             "type": "uint256"
           }
         ],
