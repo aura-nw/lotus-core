@@ -1,4 +1,4 @@
-package adaptors
+package bitcoin
 
 import (
 	"encoding/json"
@@ -81,10 +81,12 @@ func (a *OrdAdapterImpl) sendRequest(method, url string, body io.Reader) (*http.
 	return client.Do(req)
 }
 
-func parseResponse[T *types.GetInscriptionIdsResponse |
-	*types.GetContentResponse |
-	*types.GetOutputResponse |
-	*types.GetInscriptionResponse](resp *http.Response, result T) (T, error) {
+type Response interface {
+	*types.GetInscriptionIdsResponse | *types.GetContentResponse |
+		*types.GetOutputResponse | *types.GetInscriptionResponse
+}
+
+func parseResponse[T Response](resp *http.Response, result T) (T, error) {
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err

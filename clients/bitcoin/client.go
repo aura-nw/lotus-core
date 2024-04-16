@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/aura-nw/lotus-core/adaptors"
 	"github.com/aura-nw/lotus-core/config"
 	"github.com/aura-nw/lotus-core/types"
 	"github.com/btcsuite/btcd/btcjson"
@@ -42,7 +41,7 @@ type clientImpl struct {
 	logger     *slog.Logger
 	rpcClient  *rpcclient.Client
 	cfgChain   *chaincfg.Params
-	ordAdapter adaptors.IOrdAdapter
+	ordAdapter IOrdAdapter
 }
 
 var _ Client = &clientImpl{}
@@ -68,7 +67,7 @@ func NewClient(logger *slog.Logger, info config.BitcoinInfo) (Client, error) {
 		return nil, err
 	}
 
-	ordAdapter, err := adaptors.NewOrdAdapter(info.OrdHost)
+	ordAdapter, err := NewOrdAdapter(info.OrdHost)
 	if err != nil {
 		return nil, err
 	}
