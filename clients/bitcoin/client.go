@@ -2,6 +2,7 @@ package bitcoin
 
 import (
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"log/slog"
 	"strings"
@@ -236,6 +237,11 @@ func (c *clientImpl) getInscriptionData(inscriptionId, filterAddr string, height
 		return nil, nil
 	}
 
+	if output.Address != "" && inscription.Address == output.Address {
+		c.logger.Warn("[getInscriptionData] Action transfer required.", inscriptionId)
+		return nil, nil
+	}
+
 	transactionHash := inscription.Id[:len(inscription.Id)-2]
 	inscriptionDeposit := &types.InscriptionDeposit{
 		TxHash:        transactionHash,
@@ -245,10 +251,12 @@ func (c *clientImpl) getInscriptionData(inscriptionId, filterAddr string, height
 		From:          output.Address,
 		To:            inscription.Address,
 		ContentType:   inscription.ContentType,
+		Action:        "transfer",
+		Status:        types.InvoiceNew,
 		DateTime:      time.Unix(inscription.Timestamp, 0),
 	}
 
-	err = c.parseContent(inscription, inscriptionDeposit)
+	inscriptionDeposit, err = c.parseContent(inscription, inscriptionDeposit)
 	if err != nil {
 		c.logger.Error("[getInscriptionData] Parse content error: ", err)
 		return nil, err
@@ -257,18 +265,25 @@ func (c *clientImpl) getInscriptionData(inscriptionId, filterAddr string, height
 	return inscriptionDeposit, nil
 }
 
-func (c *clientImpl) parseContent(inscription *types.GetInscriptionResponse, inscriptionDeposit *types.InscriptionDeposit) error {
+func (c *clientImpl) parseContent(inscription *types.GetInscriptionResponse, inscriptionDeposit *types.InscriptionDeposit) (*types.InscriptionDeposit, error) {
 	if strings.Contains(inscription.ContentType, "image") {
 		inscriptionDeposit.ContentPreview = c.info.ContentHost + "/content/" + inscription.Id
-		inscriptionDeposit.Action = "mint"
 		inscriptionDeposit.TokenType = "orc-20"
 		inscriptionDeposit.Amount = "1"
 	} else if strings.Contains(inscription.ContentType, "text") {
 		//content can be an image or json data
 		content, err := c.ordAdapter.GetContent(inscription.Id)
-		if err != nil {
+		if err != nil || content.Action == "" {
 			c.logger.Error("[getInscriptionData] Get content error: ", err)
-			return err
+			return nil, err
+		}
+
+		if content.Action != "transfer" {
+			return nil, errors.New("[getInscriptionData] Action transfer required")
+		}
+
+		if content.Protocol != "brc-20" {
+			return nil, errors.New("[getInscriptionData] Not supported protocol: " + content.Protocol)
 		}
 
 		inscriptionDeposit.Action = content.Action
@@ -280,7 +295,7 @@ func (c *clientImpl) parseContent(inscription *types.GetInscriptionResponse, ins
 		inscriptionDeposit.Amount = "1"
 	}
 
-	return nil
+	return inscriptionDeposit, nil
 }
 
 // getMemo returns memo for a btc tx, using vout OP_RETURN

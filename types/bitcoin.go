@@ -17,7 +17,7 @@ type InvoiceStatus string
 const (
 	InvoiceNew        InvoiceStatus = "new"
 	InvoiceProcessing InvoiceStatus = "processing"
-	InvoiceSuccessed  InvoiceStatus = "successed"
+	InvoiceSuccess    InvoiceStatus = "success"
 	InvoiceFailed     InvoiceStatus = "failed"
 )
 
@@ -42,23 +42,25 @@ func (BtcDeposit) TableName() string {
 }
 
 type InscriptionDeposit struct {
-	Id             int64     `json:"id" gorm:"primary_key:true;not null;autoIncrement"`
-	TxHash         string    `json:"tx_hash" gorm:"unique;not null"`
-	Height         int64     `json:"height" gorm:"not null"`
-	InscriptionId  string    `json:"inscription_id"`
-	Number         int64     `json:"number"`
-	From           string    `json:"from" gorm:"index;not null"`
-	To             string    `json:"to" gorm:"not null"`
-	Action         string    `json:"action"`
-	DateTime       time.Time `json:"date_time"`
-	Token          string    `json:"token"`
-	Amount         string    `json:"amount"`
-	TokenType      string    `json:"token_type"`
-	ContentType    string    `json:"content_type"`
-	ContentPreview string    `json:"content_preview"`
-	Memo           string    `json:"memo"`
-	UpdatedAt      int64     `gorm:"autoUpdateTime"` // Use unix seconds as updating time
-	CreatedAt      int64     `gorm:"autoCreateTime"` // Use unix seconds as creating time
+	Id             int64         `json:"id" gorm:"primary_key:true;not null;autoIncrement"`
+	InscriptionId  string        `json:"inscription_id"`
+	Status         InvoiceStatus `json:"status" gorm:"not null; default:'new';index"`
+	Receiver       string        `json:"receiver"`
+	TxHash         string        `json:"tx_hash" gorm:"unique;not null"`
+	Height         int64         `json:"height" gorm:"not null"`
+	Number         int64         `json:"number"`
+	From           string        `json:"from" gorm:"index;not null"`
+	To             string        `json:"to" gorm:"not null"`
+	Action         string        `json:"action"`
+	DateTime       time.Time     `json:"date_time"`
+	Token          string        `json:"token"`
+	Amount         string        `json:"amount"`
+	TokenType      string        `json:"token_type"`
+	ContentType    string        `json:"content_type"`
+	ContentPreview string        `json:"content_preview"`
+	Memo           string        `json:"memo"`
+	UpdatedAt      int64         `gorm:"autoUpdateTime"` // Use unix seconds as updating time
+	CreatedAt      int64         `gorm:"autoCreateTime"` // Use unix seconds as creating time
 }
 
 func (InscriptionDeposit) TableName() string {

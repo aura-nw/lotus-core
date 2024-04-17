@@ -130,7 +130,7 @@ func (c *Control) watchBitcoinDeposits() {
 	}
 }
 
-func (c *Control) processNewDeposits() {
+func (c *Control) processNewBTCDeposits() {
 	c.logger.Info("starting processing deposit events", "multisig", c.config.Bitcoin.BitcoinMultisig)
 	defer c.wg.Done()
 
@@ -164,9 +164,9 @@ func (c *Control) processNewDeposits() {
 				}
 				continue
 			}
-			deposit.Status = types.InvoiceSuccessed
+			deposit.Status = types.InvoiceSuccess
 			if err := c.db.BitcoinDB.UpdateBtcDeposit(deposit); err != nil {
-				c.logger.Error("update btc deposit status error", "err", err, "status", types.InvoiceSuccessed)
+				c.logger.Error("update btc deposit status error", "err", err, "status", types.InvoiceSuccess)
 				continue
 			}
 		}
@@ -373,14 +373,26 @@ func (c *Control) watchInscriptionDeposits() {
 }
 
 func (c *Control) ProcessInscription() ([]*types.InscriptionDeposit, error) {
-	return c.btcClient.GetInscriptionDeposits(2585594, c.config.Bitcoin.BitcoinMultisig, c.config.Bitcoin.MinConfirms)
+	inscriptionDeposits, err := c.btcClient.GetInscriptionDeposits(2585166, c.config.Bitcoin.BitcoinMultisig, c.config.Bitcoin.MinConfirms)
+	if err != nil {
+		c.logger.Error("watchInscription: get btc deposits from btc client error", "err", err)
+		return nil, err
+	}
+
+	if err := c.BitcoinDB().StoreInscriptionDeposits(inscriptionDeposits); err != nil {
+		c.logger.Error("watchInscription: store inscription deposits error", "err", err)
+		return nil, err
+	}
+
+	c.logger.Info("watchInscription: store inscription deposits success")
+	return inscriptionDeposits, nil
 }
 
 func (c *Control) Start() {
 	c.wg.Add(5)
 	go c.watchBitcoinDeposits()
 	go c.watchInscriptionDeposits()
-	go c.processNewDeposits()
+	go c.processNewBTCDeposits()
 	go c.watchEvm()
 	go c.processOutCome()
 }
