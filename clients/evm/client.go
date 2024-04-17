@@ -4,6 +4,7 @@ import (
 	"context"
 	"log/slog"
 	"math/big"
+	"strconv"
 	"time"
 
 	"github.com/aura-nw/lotus-core/clients/evm/contracts"
@@ -19,7 +20,8 @@ type Client interface {
 	ChainID() int64
 	GetAddress() common.Address
 
-	CreateIncomingInvoice(deposit *types.BtcDeposit) error
+	CreateBTCIncomingInvoice(deposit *types.BtcDeposit) error
+	CreateInscriptionIncomingInvoice(deposit *types.InscriptionDeposit) error
 
 	FilterOutgoingInvoice() ([]types.BtcWithdraw, error)
 	SubmitTXContent(btcWithdraws []types.BtcWithdraw, txHex string) error
@@ -33,13 +35,14 @@ type clientImpl struct {
 	logger *slog.Logger
 	info   config.EvmInfo
 
-	client          *ethclient.Client
-	auth            *bind.TransactOpts
-	gatewayContract *contracts.Gateway
+	client               *ethclient.Client
+	auth                 *bind.TransactOpts
+	gatewayContract      *contracts.Gateway
+	brc20GatewayContract *contracts.Brc20Gateway
 }
 
 // CreateIncomingInvoice implements Client.
-func (c *clientImpl) CreateIncomingInvoice(deposit *types.BtcDeposit) error {
+func (c *clientImpl) CreateBTCIncomingInvoice(deposit *types.BtcDeposit) error {
 	utxo := deposit.TxId
 
 	if err := c.updateGasPrice(); err != nil {
@@ -49,7 +52,7 @@ func (c *clientImpl) CreateIncomingInvoice(deposit *types.BtcDeposit) error {
 	amount := big.NewInt(int64(deposit.Amount))
 	tx, err := c.gatewayContract.CreateIncomingInvoice(c.auth, utxo, amount, common.HexToAddress(deposit.Receiver))
 	if err != nil {
-		c.logger.Error("call CreateIncomingInvoice error", "err", err)
+		c.logger.Error("call CreateBTCIncomingInvoice error", "err", err)
 		return err
 	}
 
@@ -163,5 +166,35 @@ func (c *clientImpl) updateGasPrice() error {
 	}
 	c.logger.Info("suggest gas price", "gas", gasPrice)
 	c.auth.GasPrice = gasPrice
+	return nil
+}
+
+func (c *clientImpl) CreateInscriptionIncomingInvoice(deposit *types.InscriptionDeposit) error {
+	utxo := deposit.TxHash
+
+	if err := c.updateGasPrice(); err != nil {
+		return err
+	}
+
+	amount, err := strconv.ParseInt(deposit.Amount, 10, 64)
+	if err != nil {
+		c.logger.Error("err: ", err)
+		return err
+	}
+
+	tx, err := c.brc20GatewayContract.CreateIncomingInvoice(c.auth, utxo, deposit.Token, big.NewInt(amount), common.HexToAddress(deposit.Receiver))
+	if err != nil {
+		c.logger.Error("Brc20 CreateIncomingInvoice error", "err", err)
+		return err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(c.info.CallTimeout)*time.Second)
+	defer cancel()
+	receipt, err := bind.WaitMined(ctx, c.client, tx)
+	if err != nil {
+		c.logger.Error("call WaitMined error", "err", err)
+		return err
+	}
+	c.logger.Info("call WaitMined ok", "tx_hash", receipt.TxHash.Hex())
 	return nil
 }

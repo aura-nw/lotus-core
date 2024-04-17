@@ -29,7 +29,7 @@ func TestCallCreateIncomingInvoice(t *testing.T) {
 
 	t.Log("sender", client.GetAddress().Hex())
 
-	err = client.CreateIncomingInvoice(&testDeposit)
+	err = client.CreateBTCIncomingInvoice(&testDeposit)
 	require.NoError(t, err)
 }
 

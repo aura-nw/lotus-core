@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/hex"
+	"fmt"
 	"log/slog"
 	"math/big"
 	"sync"
@@ -155,7 +156,7 @@ func (c *Control) processNewBTCDeposits() {
 				c.logger.Error("update btc deposit status error", "err", err, "status", types.InvoiceProcessing)
 				continue
 			}
-			if err := c.evmClient.CreateIncomingInvoice(deposit); err != nil {
+			if err := c.evmClient.CreateBTCIncomingInvoice(deposit); err != nil {
 				c.logger.Error("create incoming invoice error", "err", err)
 				deposit.Status = types.InvoiceFailed
 				if err := c.db.BitcoinDB.UpdateBtcDeposit(deposit); err != nil {
@@ -167,6 +168,51 @@ func (c *Control) processNewBTCDeposits() {
 			deposit.Status = types.InvoiceSuccess
 			if err := c.db.BitcoinDB.UpdateBtcDeposit(deposit); err != nil {
 				c.logger.Error("update btc deposit status error", "err", err, "status", types.InvoiceSuccess)
+				continue
+			}
+		}
+		time.Sleep(3 * time.Second)
+	}
+}
+
+func (c *Control) processNewInscriptionDeposits() {
+	c.logger.Info("starting processing inscription deposit events", "multisig", c.config.Bitcoin.BitcoinMultisig)
+	defer c.wg.Done()
+
+	for {
+		pendingDeposits, err := c.BitcoinDB().GetInscriptionDepositsByStatus([]types.InvoiceStatus{
+			types.InvoiceNew,
+			types.InvoiceFailed,
+		})
+		fmt.Println("pendingDeposits:", pendingDeposits)
+		if err != nil {
+			c.logger.Error("get pending inscription deposits error", "err", err)
+			time.Sleep(3 * time.Second)
+			continue
+		}
+		if len(pendingDeposits) == 0 {
+			c.logger.Info("no pending inscription deposits")
+			time.Sleep(3 * time.Second)
+			continue
+		}
+		for _, deposit := range pendingDeposits {
+			deposit.Status = types.InvoiceProcessing
+			if err := c.db.BitcoinDB.UpdateInscriptionDeposit(deposit); err != nil {
+				c.logger.Error("update inscription deposit status error", "err", err, "status", types.InvoiceProcessing)
+				continue
+			}
+			if err := c.evmClient.CreateInscriptionIncomingInvoice(deposit); err != nil {
+				c.logger.Error("create incoming inscription invoice error", "err", err)
+				deposit.Status = types.InvoiceFailed
+				if err := c.db.BitcoinDB.UpdateInscriptionDeposit(deposit); err != nil {
+					c.logger.Error("update inscription deposit status error", "err", err, "status", types.InvoiceFailed)
+					continue
+				}
+				continue
+			}
+			deposit.Status = types.InvoiceSuccess
+			if err := c.db.BitcoinDB.UpdateInscriptionDeposit(deposit); err != nil {
+				c.logger.Error("update inscription deposit status error", "err", err, "status", types.InvoiceSuccess)
 				continue
 			}
 		}
@@ -389,12 +435,14 @@ func (c *Control) ProcessInscription() ([]*types.InscriptionDeposit, error) {
 }
 
 func (c *Control) Start() {
-	c.wg.Add(5)
+	c.wg.Add(6)
 	go c.watchBitcoinDeposits()
-	go c.watchInscriptionDeposits()
 	go c.processNewBTCDeposits()
 	go c.watchEvm()
 	go c.processOutCome()
+
+	go c.watchInscriptionDeposits()
+	go c.processNewInscriptionDeposits()
 }
 func (c *Control) Stop() {
 	c.ctxCancel()

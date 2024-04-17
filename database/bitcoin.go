@@ -17,6 +17,7 @@ type ChainView interface {
 	GetLastSeenBtcHeight() (int64, error)
 	GetLastInscriptionHeight() (int64, error)
 	GetDepositsByStatus(status []types.InvoiceStatus) ([]*types.BtcDeposit, error)
+	GetInscriptionDepositsByStatus(status []types.InvoiceStatus) ([]*types.InscriptionDeposit, error)
 }
 
 type BitcoinDB interface {
@@ -36,6 +37,7 @@ type BitcoinDB interface {
 	// For incriptions transfer
 	StoreInscriptionDeposits([]*types.InscriptionDeposit) error
 	StoreInscriptionWithdrawals([]*types.InscriptionWithdrawal) error
+	UpdateInscriptionDeposit(*types.InscriptionDeposit) error
 }
 
 type bitcoinDBImpl struct {
@@ -76,6 +78,17 @@ func (b *bitcoinDBImpl) GetDepositsByStatus(status []types.InvoiceStatus) ([]*ty
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return []*types.BtcDeposit{}, nil
+		}
+	}
+	return results, err
+}
+
+func (b *bitcoinDBImpl) GetInscriptionDepositsByStatus(status []types.InvoiceStatus) ([]*types.InscriptionDeposit, error) {
+	var results []*types.InscriptionDeposit
+	err := b.db.Where("status IN (?)", status).Find(&results).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return []*types.InscriptionDeposit{}, nil
 		}
 	}
 	return results, err
@@ -130,6 +143,10 @@ func (b *bitcoinDBImpl) StoreInscriptionWithdrawals(withdrawals []*types.Inscrip
 	}
 
 	return result.Error
+}
+
+func (b *bitcoinDBImpl) UpdateInscriptionDeposit(deposit *types.InscriptionDeposit) error {
+	return b.db.Save(deposit).Error
 }
 
 // StoreBtcWithdraw implements BitcoinDB.
